@@ -1,3 +1,4 @@
+from math import dist
 import torch
 from torch import distributions
 
@@ -41,6 +42,11 @@ class discrete(Dist):
         prob = pars[0]
         super().__init__('discrete', distributions.Categorical(prob), 0)
 
+class bernoulli(Dist):
+    def __init__(self, pars):
+        p = pars[0]
+        super().__init__('bernoulli', distributions.Bernoulli(p), 1, p)
+
 def vector(x):
     try:
         vector = torch.stack(x)
@@ -81,6 +87,21 @@ def hash_map(x):
     result = dict(zip(new_keys, value))
     return result
 
+def append(x):
+    first = x[0]
+    second = x[1]
+
+    if first == 'vector':
+        first = torch.tensor([])
+    elif first.dim() == 0:
+        first = first.unsqueeze(0)
+    if second == 'vector':
+        second = torch.tensor([])
+    if second.dim() == 0:
+        second = second.unsqueeze(0)
+    return torch.cat((first, second))
+
+
 baseprimitives = {
     '+': lambda x: x[0] + x[1],
     '-': lambda x: x[0] - x[1],
@@ -92,6 +113,8 @@ baseprimitives = {
     '<=': lambda x: x[0] <= x[1],
     '==': lambda x: x[0] == x[1],
     'sqrt': lambda x: torch.sqrt(x[0]),
+    'exp': lambda x: torch.exp(x[0]),
+    'log': lambda x: torch.log(x[0]),
     'vector': vector,
     'list': list,
     'get': get,
@@ -99,9 +122,12 @@ baseprimitives = {
     'hash-map': hash_map,
     'first': lambda x: x[0][0],
     'last': lambda x: x[0][-1],
-    'append': lambda x: torch.tensor(list(x[0]) + [x[1]]),
+    'nth': lambda x: x[0][int(x[1].item())],
     'second': lambda x: x[0][1],
     'rest': lambda x: x[0][1:],
+    'append': append,
+    'cons': lambda x: append([x[1],x[0]]),
+    'conj': append,
     'mat-add': lambda x: x[0] + x[1],
     'mat-mul': lambda x: torch.matmul(x[0], x[1]),
     'mat-transpose': lambda x: x[0].T,
@@ -114,5 +140,6 @@ distlist = {
     'beta' : beta,
     'exponential' : exponential,
     'uniform' : uniform,
-    'discrete' : discrete
+    'discrete' : discrete,
+    'bernoulli': bernoulli
 }

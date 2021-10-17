@@ -8,8 +8,6 @@ from evaluation_based_sampling import evaluate_program
 
 from tests import is_tol, run_prob_test,load_truth
 
-from collections import defaultdict
-
 def topological_sort(graph):
     nodes = graph[1]['V']
     edges = graph[1]['A']
@@ -40,6 +38,9 @@ env = {**baseprimitives, **distlist}
 
 def deterministic_eval(exp):
     "Evaluation function for the deterministic target language of the graph based representation."
+    if isinstance(exp, list):
+        if exp[0] == 'hash-map':
+            exp = ['hash-map'] + [value for expression in exp[1:] for value in expression]
     return evaluate_program(exp)
 
 def value_subs(expressions, variables):
@@ -67,7 +68,6 @@ def sample_from_joint(graph):
         if first_statement == 'observe*':
             result = graph[1]['Y'].get(node)
         results[node] = result
-
     return deterministic_eval(value_subs(graph[2], results))
 
 
@@ -87,7 +87,7 @@ def get_stream(graph):
 
 def run_deterministic_tests():
     
-    for i in range(1,13):
+    for i in range(1,14):
         #note: this path should be with respect to the daphne path!
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.daphne'.format(i)])
         truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.truth'.format(i))
@@ -130,10 +130,8 @@ def run_probabilistic_tests():
 if __name__ == '__main__':
     
 
-    # run_deterministic_tests()
-    # run_probabilistic_tests()
-
-
+    run_deterministic_tests()
+    run_probabilistic_tests()
 
 
     for i in range(1,5):

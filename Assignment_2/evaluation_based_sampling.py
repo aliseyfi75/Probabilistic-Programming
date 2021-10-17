@@ -67,16 +67,15 @@ def eval(x, sigma, l, funcs):
         first_statemnt, other_statements = statements[0], statements[1:]
         if first_statemnt in baseprimitives:
             result = baseprimitives[first_statemnt](other_statements)
-
         elif first_statemnt in distlist:
             result = distlist[first_statemnt](other_statements)
 
-        if first_statemnt in funcs:
+        elif first_statemnt in funcs:
             _, variables, process = funcs[first_statemnt]
             assignment = {key:value for key, value in zip(variables, other_statements)}
             result, sigma = eval(process, sigma, {**l, **assignment}, funcs)
         else:
-            pass
+            result = torch.tensor(statements)
     return result, sigma
            
     
@@ -91,10 +90,10 @@ def get_stream(ast):
 
 def run_deterministic_tests():
     
-    for i in range(15,16):
+    for i in range(1,35):
         #note: this path should be with respect to the daphne path!
-        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.daphne'.format(i)])
-        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.truth'.format(i))
+        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic_tests/test_{}.daphne'.format(i)])
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic_tests/test_{}.truth'.format(i))
         ret = evaluate_program(ast)
         try:
             assert(is_tol(ret, truth))
@@ -112,10 +111,10 @@ def run_probabilistic_tests():
     num_samples=1e4
     max_p_value = 1e-4
     
-    for i in range(2,3):
+    for i in range(1,7):
         #note: this path should be with respect to the daphne path!        
-        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/new_test/test_{}.daphne'.format(i)])
-        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/new_test/test_{}.truth'.format(i))
+        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/probabilistic/test_{}.daphne'.format(i)])
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/probabilistic/test_{}.truth'.format(i))
         stream = get_stream(ast)
         p_val = run_prob_test(stream, truth, num_samples)
         
@@ -131,11 +130,10 @@ def run_probabilistic_tests():
         
 if __name__ == '__main__':
 
-    # run_deterministic_tests()
+    run_deterministic_tests()
     run_probabilistic_tests()
 
-
-    # for i in range(1,5):
-    #     ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/{}.daphne'.format(i)])
-    #     print('\n\n\nSample of prior of program {}:'.format(i))
-    #     print(evaluate_program(ast))
+    for i in range(1,5):
+        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/{}.daphne'.format(i)])
+        print('\n\n\nSample of prior of program {}:'.format(i))
+        print(evaluate_program(ast))

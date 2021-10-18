@@ -57,7 +57,6 @@ def value_subs(expressions, variables):
 
 def sample_from_joint(graph):
     "This function does ancestral sampling starting from the prior."
-    # TODO insert your code here
     node_order = topological_sort(graph)
     results = {}
     for node in node_order:

@@ -3,3 +3,6 @@
 daphne/
 __pycache__
 lein.txt
+*.aux
+*.log
+*.gz

@@ -1,0 +1,532 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{listings} % For displaying code
+\usepackage{algorithm2e} % pseudo-code
+\usepackage{mathtools}
+% for inline image 
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+% Python
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,    
+    frame = lines,             
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\rubric#1{\gre{Rubric: \{#1\}}}{}
+
+% Answers
+
+\def\ans#1{\par\gre{Answer: #1}}
+
+% Colors
+\definecolor{blu}{rgb}{0,0,1}
+\def\blu#1{{\color{blu}#1}}
+\definecolor{gre}{rgb}{0,.5,0}
+\def\gre#1{{\color{gre}#1}}
+\definecolor{red}{rgb}{1,0,0}
+\def\red#1{{\color{red}#1}}
+\def\norm#1{\|#1\|}
+
+% Math
+\def\R{\mathbb{R}}
+\def\argmax{\mathop{\rm arg\,max}}
+\def\argmin{\mathop{\rm arg\,min}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\alignStar}[1]{\begin{align*}#1\end{align*}}
+\def\half{\frac 1 2}
+
+% LaTeX
+\newcommand{\fig}[2]{\includegraphics[width=#1\textwidth]{#2}}
+\newcommand{\centerfig}[2]{\begin{center}\includegraphics[width=#1\textwidth]{#2}\end{center}}
+\newcommand{\centerfigcap}[3]{\begin{figure}[H]
+\begin{center}\includegraphics[width=#1\textwidth]{#2} \caption{#3}\end{center}
+\end{figure}}
+\newcommand{\matCode}[1]{\lstinputlisting[language=Matlab]{a2f/#1.m}}
+\def\items#1{\begin{itemize}#1\end{itemize}}
+\def\enum#1{\begin{enumerate}#1\end{enumerate}}
+
+\begin{document}
+
+
+\title{\vspace{-20mm}
+CPSC 532W Assignment 2}
+\author{Ali Seyfi - 97446637}
+\date{}
+\maketitle
+
+\section{Evaluation Based Sampling}
+
+\blu{Write a FOPPL evaluator that evaluates the FOPPL as described in lecture and in the book (Alg. 6)}
+
+\subsection{Code}
+\blu{Provide code snippets that document critical aspects of your implementation sufficient to allow us to quickly determine whether or not you individually completed the assignment.}
+\subsubsection{primitives}
+\label{primitives}
+\lstinputlisting[language=Python, caption=primitives.py - Base primitives, firstline=104, lastline=135]{../primitives.py}
+\pagebreak
+\lstinputlisting[language=Python, caption=primitives.py - Functions, firstline=49, lastline=101]{../primitives.py}
+\pagebreak
+\lstinputlisting[language=Python, caption=primitives.py - Distributions, firstline=1, lastline=47]{../primitives.py}
+\lstinputlisting[language=Python, caption=primitives.py - distlist, firstline=137, lastline=144]{../primitives.py}
+\pagebreak
+\subsubsection{evaluate program}
+\lstinputlisting[language=Python, caption=evaluation\_based\_sampling.py - evaluate\_program, firstline=6, lastline=32]{../evaluation_based_sampling.py}
+\subsubsection{eval}
+\lstinputlisting[language=Python, caption=evaluation\_based\_sampling.py - evaluate\_program, firstline=34, lastline=79]{../evaluation_based_sampling.py}
+\subsection{Results}
+\blu{Draw 1000 samples for each of the task programs.}
+\subsubsection{Marginal Expectation}
+\blu{Report marginal expectations for all return value dimensions.}\\
+Definitely  the result changes each time we draw the samples, and in the following I have provided the result of the only one run of the code.
+\paragraph{Task 1}
+Marginal Expectation of mu is: \textbf{0.9896}
+\paragraph{Task 2}
+Marginal Expectation of slope is: \textbf{-0.1806}\\
+Marginal Expectation of bias is: \textbf{0.0168}
+\paragraph{Task 3}
+Marginal Expectation of each step is these numbers by order:\\ \textbf{1.8824,1.6470,1.7058,1.6471,1.7059,0.9412,1.1176,1.2941,\\1.2353,1.7647,1.5294,1.11765,1.11765,1.3529,1.3529,1.5882}
+\paragraph{Task 4}
+Marginal Expectation of $w_1$ elements are:
+\[
+\begin{bmatrix}
+-0.1264 \\ -0.3671 \\ 0.0419 \\ 0.0767 \\ 0.1846 \\ -0.1250 \\ 0.2340 \\ 0.2118 \\ -0.1531 \\ 0.6157 \\ -0.1788 \\ 0.1203 \\ 0.8325 \\ -0.1807 \\ 0.0838 \\ -0.2090 \\ -0.0974
+\end{bmatrix}
+\]
+
+Marginal Expectation of $b_1$ elements are:
+\[
+\begin{bmatrix}
+0.2112 \\ 0.5417 \\ 0.048 \\ 0.2376 \\ -0.0978 \\ -0.0586 \\ 0.3023 \\ -0.4403 \\ -0.5109 \\
+-0.0517\\
+-0.1594\\
+-0.1185\\
+0.7249\\
+0.0214\\
+0.0119\\
+-0.3293\\
+0.0979
+\end{bmatrix}
+\]
+
+Marginal Expectation of $w_2$ elements are:
+\[
+\begin{bmatrix}
+-0.0354 &
+0.0195&
+-0.0046&
+-0.0041&
+-0.0542&
+0.028&
+-0.0106&
+0.0013&
+0.0318&
+0.0063\\
+0.0385&
+-0.0414&
+-0.0328&
+-0.0524&
+0.0058&
+-0.0672&
+-0.0242&
+-0.0182&
+-0.0357&
+0.0026\\
+-0.0005&
+0.0281&
+-0.0467&
+-0.0054&
+-0.0168&
+0.0125&
+-0.0054&
+0.0226&
+0.0022&
+-0.023\\
+-0.0065&
+0.0267&
+0.03&
+0.0366&
+0.0354&
+0.046&
+0.0115&
+-0.0267&
+0.0344&
+-0.004\\
+0.0507&
+-0.0629&
+0.0439&
+0.0585&
+0.0141&
+-0.0153&
+-0.0057&
+0.0291&
+-0.0244&
+0.0308\\
+-0.0106&
+-0.0203&
+0.0332&
+0.0199&
+0.0279&
+-0.0208&
+0.0066&
+0.0153&
+0.0396&
+-0.0323\\
+-0.0101&
+-0.0367&
+0.0427&
+0.0245&
+-0.0546&
+0.0185&
+0.0037&
+-0.0173&
+0.0014&
+0.0599\\
+-0.0261&
+0.0029&
+-0.0164&
+-0.0138&
+0.0364&
+0.0285&
+0.0475&
+-0.0012&
+-0.0091&
+-0.052\\
+-0.0146&
+-0.0539&
+-0.0297&
+-0.0349&
+0.0144&
+-0.0121&
+-0.0167&
+-0.0114&
+0.0126&
+0.0041\\
+0.0027&
+-0.0295&
+-0.0509&
+0.0139&
+0.0441&
+0.0168&
+-0.0433&
+-0.0706&
+0.0254&
+0.0179
+
+\end{bmatrix}
+\]
+
+Marginal Expectation of $b_2$ elements are:
+\[
+\begin{bmatrix}
+-0.3279\\
+0.2553\\
+0.4049\\
+0.1395\\
+0.1667\\
+-0.3218\\
+0.3551\\
+0.1866\\
+0.1888\\
+0.0709\\
+-0.0666\\
+-0.0663\\
+0.0215\\
+0.3254\\
+0.198\\
+-0.1191\\
+-0.1661
+\end{bmatrix}
+\]
+\subsubsection{Histograms}
+\paragraph{Task 1}
+\centerfigcap{0.6}{../Results/eval_1}{Histogram of mu}
+\paragraph{Task 2}
+\centerfigcap{0.6}{../Results/eval_2_slope}{Histogram of slope}
+\centerfigcap{0.6}{../Results/eval_2_bias}{Histogram of bias}
+\centerfigcap{0.7}{../Results/eval_2_both}{Histogram of slope and bias together}
+\paragraph{Task 3}
+\centerfigcap{1}{../Results/eval_3}{Histogram of states in each step}
+\paragraph{Task 4}
+\centerfigcap{0.7}{../Results/eval_4_w1}{Histogram of $W_1$ elements together}
+\centerfigcap{0.7}{../Results/eval_4_b1}{Histogram of $b_1$ elements together}
+\centerfigcap{1}{../Results/eval_4_w2}{Histogram of $W_2$ elements together}
+\centerfigcap{0.7}{../Results/eval_4_b2}{Histogram of $b_2$ elements together}
+\pagebreak
+\section{Graph Based Sampling}
+\blu{Write a FOPPL evaluator that evaluates the FOPPL program via ancestral sampling in the graphical model.}
+
+\subsection{Code}
+\blu{Provide code snippets that document critical aspects of your implementation sufficient to allow us to quickly determine whether or not you individually completed the assignment.}
+\subsubsection{primitives}
+This part is exactly same as \ref{primitives}
+\subsubsection{topological sort}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - topological\_sort, firstline=11, lastline=33]{../graph_based_sampling.py}
+\subsubsection{environment}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - environment, firstline=37, lastline=37]{../graph_based_sampling.py}
+\subsubsection{deterministic eval}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - deterministic\_eval, firstline=39, lastline=44]{../graph_based_sampling.py}
+\subsubsection{value substitution}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - value\_subs, firstline=46, lastline=56]{../graph_based_sampling.py}
+\subsubsection{sample from joint}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - sample\_from\_joint, firstline=58, lastline=70]{../graph_based_sampling.py}
+
+\subsection{Results}
+\blu{Draw 1000 samples for each of the task programs.}
+\subsubsection{Marginal Expectation}
+\blu{Report marginal expectations for all return value dimensions.}
+Definitely  the result changes each time we draw the samples, and in the following I have provided the result of the only one run of the code.
+\paragraph{Task 1}
+Marginal Expectation of mu is: \textbf{1.0183}
+\paragraph{Task 2}
+Marginal Expectation of slope is: \textbf{-0.1693}\\
+Marginal Expectation of bias is: \textbf{0.1126}
+\paragraph{Task 3}
+Marginal Expectation of each step is these numbers by order:\\ \textbf{1.2353
+1.3529
+1.5294
+1.5882
+0.8824
+1.3529
+1.9412
+1.3529\\
+1.4118
+1.5294
+1.6471
+1.2353
+1.2941
+1.1176
+1.2941
+1.5294
+1.2353}
+\paragraph{Task 4}
+Marginal Expectation of $w_1$ elements are:
+\[
+\begin{bmatrix}
+-0.0116\\
+-0.1254\\
+0.3629\\
+-0.2237\\
+0.2997\\
+-0.0427\\
+-0.0172\\
+-0.2322\\
+0.0637\\
+-0.2389\\
+0.172\\
+-0.1198\\
+0.2513\\
+-0.3007\\
+-0.1563\\
+-0.0328\\
+-0.1635
+\end{bmatrix}
+\]
+
+Marginal Expectation of $b_1$ elements are:
+\[
+\begin{bmatrix}
+-0.213\\
+0.1301\\
+-0.3042\\
+0.1645\\
+-0.2951\\
+-0.0824\\
+0.5833\\
+-0.1653\\
+0.1151\\
+-0.1317\\
+0.1903\\
+-0.1795\\
+-0.4252\\
+0.7888\\
+-0.0638\\
+0.3291\\
+-0.2595
+\end{bmatrix}
+\]
+
+Marginal Expectation of $w_2$ elements are:
+\[
+\begin{bmatrix}
+-0.0142&
+-0.0052&
+-0.0494&
+0.0185&
+-0.0629&
+-0.0547&
+0.009&
+-0.0188&
+0.0162&
+-0.004\\
+-0.0064&
+0.0193&
+-0.0407&
+0.0317&
+0.0051&
+-0.0126&
+-0.0207&
+-0.0025&
+0.0251&
+-0.0516\\
+-0.057&
+-0.0017&
+0.0374&
+0.0038&
+-0.0176&
+-0.0082&
+0.0151&
+-0.0269&
+-0.0085&
+-0.0243\\
+0.0122&
+-0.0005&
+-0.0448&
+-0.0564&
+0.0005&
+0.0345&
+0.0718&
+0.0308&
+0.005&
+-0.0089\\
+-0.0819&
+-0.0145&
+-0.0286&
+-0.0325&
+-0.0565&
+0.044&
+0.0178&
+-0.0043&
+0.0271&
+0.0003\\
+0.0219&
+0.0345&
+0.0251&
+0.0254&
+-0.0139&
+0.047&
+0.0051&
+0.0255&
+0.0469&
+0.0204\\
+0.0492&
+-0.0257&
+-0.003&
+0.0182&
+-0.035&
+-0.0264&
+0.0609&
+0.0106&
+0.0003&
+-0.0122\\
+-0.019&
+0.0187&
+-0.0308&
+-0.0158&
+0.0189&
+-0.0126&
+0.0241&
+-0.0395&
+-0.0088&
+0.0434\\
+-0.0166&
+-0.0015&
+-0.0674&
+0.0265&
+-0.0046&
+0.0763&
+-0.0201&
+0.0072&
+0.0231&
+-0.004\\
+-0.0346&
+-0.026&
+0.0248&
+-0.0126&
+-0.0444&
+0.0066&
+0.0662&
+-0.0013&
+-0.0439&
+0.0088
+\end{bmatrix}
+\]
+
+Marginal Expectation of $b_2$ elements are:
+\[
+\begin{bmatrix}
+0.0754\\
+-0.044\\
+0.1044\\
+-0.3383\\
+0.115\\
+-0.0623\\
+-0.6844\\
+0.255\\
+0.0021\\
+0.3057\\
+1.155\\
+0.1589\\
+0.0446\\
+-0.1136\\
+-1.0082\\
+-0.3659\\
+-0.0531
+\end{bmatrix}
+\]
+\subsubsection{Histograms}
+\paragraph{Task 1}
+\centerfigcap{0.6}{../Results/graph_1}{Histogram of mu}
+\paragraph{Task 2}
+\centerfigcap{0.6}{../Results/graph_2_slope}{Histogram of slope}
+\centerfigcap{0.6}{../Results/graph_2_bias}{Histogram of bias}
+\centerfigcap{0.7}{../Results/graph_2_both}{Histogram of slope and bias together}
+\paragraph{Task 3}
+\centerfigcap{1}{../Results/graph_3}{Histogram of states in each step}
+\paragraph{Task 4}
+\centerfigcap{0.7}{../Results/graph_4_w1}{Histogram of $W_1$ elements together}
+\centerfigcap{0.7}{../Results/graph_4_b1}{Histogram of $b_1$ elements together}
+\centerfigcap{1}{../Results/graph_4_w2}{Histogram of $W_2$ elements together}
+\centerfigcap{0.7}{../Results/graph_4_b2}{Histogram of $b_2$ elements together}
+\end{document}
+%

@@ -90,11 +90,12 @@ def get_stream(ast):
 
 def run_deterministic_tests():
     
-    for i in range(1,35):
+    for i in range(1,14):
         #note: this path should be with respect to the daphne path!
-        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic_tests/test_{}.daphne'.format(i)])
-        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic_tests/test_{}.truth'.format(i))
+        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.daphne'.format(i)])
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.truth'.format(i))
         ret = evaluate_program(ast)
+        print(ret)
         try:
             assert(is_tol(ret, truth))
         except AssertionError:

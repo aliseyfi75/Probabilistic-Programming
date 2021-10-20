@@ -86,11 +86,12 @@ def get_stream(graph):
 
 def run_deterministic_tests():
     
-    for i in range(1,14):
+    for i in range(1,13):
         #note: this path should be with respect to the daphne path!
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.daphne'.format(i)])
         truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/tests/deterministic/test_{}.truth'.format(i))
         ret = deterministic_eval(graph[-1])
+        print(ret)
         try:
             assert(is_tol(ret, truth))
         except AssertionError:

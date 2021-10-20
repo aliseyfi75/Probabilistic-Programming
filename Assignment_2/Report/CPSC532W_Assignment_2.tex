@@ -115,9 +115,61 @@ CPSC 532W Assignment 2}
 \subsubsection{eval}
 \lstinputlisting[language=Python, caption=evaluation\_based\_sampling.py - evaluate\_program, firstline=34, lastline=79]{../evaluation_based_sampling.py}
 \subsection{Results}
-\blu{Draw 1000 samples for each of the task programs.}
+\subsubsection{Tests Results}
+\blu{Results of Tests}\\
+Here are the results of the test files:\\
+\textbf{Deterministic}\\
+tensor(7., dtype=torch.float64)\\
+Test passed\\
+tensor(1.4142, dtype=torch.float64)\\
+Test passed\\
+tensor(24., dtype=torch.float64)\\
+Test passed\\
+tensor(0.2500, dtype=torch.float64)\\
+Test passed\\
+tensor(0.1802, dtype=torch.float64)\\
+Test passed\\
+tensor([2., 3., 4., 5.], dtype=torch.float64)\\
+Test passed\\
+tensor(4., dtype=torch.float64)\\
+Test passed\\
+tensor([2., 3., 3., 5.], dtype=torch.float64)\\
+Test passed\\
+tensor(2., dtype=torch.float64)\\
+Test passed\\
+tensor(5., dtype=torch.float64)\\
+Test passed\\
+tensor([2.0000, 3.0000, 4.0000, 5.0000, 3.1400], dtype=torch.float64)\\
+Test passed\\
+tensor(5.3000, dtype=torch.float64)\\
+Test passed\\
+{6.0: tensor(2., dtype=torch.float64), 1.0: tensor(3.2000, dtype=torch.float64)}\\
+Test passed\\
+All deterministic tests passed\\
+\pagebreak
+
+\textbf{Probabilistic}
+('normal', 5, 1.4142136)\\
+p value 0.0012557687750447137\\
+Test 1 passed\\
+('beta', 2.0, 5.0)\\
+p value 0.7075526288252392\\
+Test 2 passed\\
+('exponential', 0.0, 5.0)\\
+p value 0.09598741374360209\\
+Test 3 passed\\
+('normal', 5.3, 3.2)\\
+p value 0.016072128150235995\\
+Test 4 passed\\
+('normalmix', 0.1, -1, 0.3, 0.9, 1, 0.3)\\
+p value 0.3676183768222948\\
+Test 5 passed\\
+('normal', 0, 1.44)\\
+p value 0.1907566727266461\\
+Test 6 passed\\
+All probabilistic tests passed\\
 \subsubsection{Marginal Expectation}
-\blu{Report marginal expectations for all return value dimensions.}\\
+\blu{Draw 1000 samples for each of the task programs and report marginal expectations for all return value dimensions.}\\
 Definitely  the result changes each time we draw the samples, and in the following I have provided the result of the only one run of the code.
 \paragraph{Task 1}
 Marginal Expectation of mu is: \textbf{0.9896}
@@ -312,9 +364,51 @@ This part is exactly same as \ref{primitives}
 \lstinputlisting[language=Python, caption=graph\_based\_sampling.py - sample\_from\_joint, firstline=58, lastline=70]{../graph_based_sampling.py}
 
 \subsection{Results}
-\blu{Draw 1000 samples for each of the task programs.}
+\subsubsection{Tests Results}
+\blu{Results of Tests}\\
+Here are the results of the test files:\\
+\textbf{Deterministic}\\
+tensor(7., dtype=torch.float64)\\
+Test passed\\
+tensor(1.4142, dtype=torch.float64)\\
+Test passed\\
+tensor(24., dtype=torch.float64)\\
+Test passed\\
+tensor(0.2500, dtype=torch.float64)\\
+Test passed\\
+tensor(0.1802, dtype=torch.float64)\\
+Test passed\\
+tensor([2., 3., 4., 5.], dtype=torch.float64)\\
+Test passed\\
+tensor(4., dtype=torch.float64)\\
+Test passed\\
+tensor([2., 3., 3., 5.], dtype=torch.float64)\\
+Test passed\\
+tensor(2., dtype=torch.float64)\\
+Test passed\\
+tensor(5., dtype=torch.float64)\\
+Test passed\\
+tensor([2.0000, 3.0000, 4.0000, 5.0000, 3.1400], dtype=torch.float64)\\
+Test passed\\
+tensor(5.3000, dtype=torch.float64)\\
+Test passed\\
+All deterministic tests passed\\
+\textbf{Probabilistic}
+('normal', 5, 1.4142136)\\
+p value 0.5663323302205264\\
+('beta', 2.0, 5.0)\\
+p value 0.3206785223599047\\
+('exponential', 0.0, 5.0)\\
+p value 0.32984046631598296\\
+('normal', 5.3, 3.2)\\
+p value 0.5410338117003856\\
+('normalmix', 0.1, -1, 0.3, 0.9, 1, 0.3)\\
+p value 0.03844514904336682\\
+('normal', 0, 1.44)\\
+p value 0.6072736562958746\\
+All probabilistic tests passed
 \subsubsection{Marginal Expectation}
-\blu{Report marginal expectations for all return value dimensions.}
+\blu{Draw 1000 samples for each of the task programs and report marginal expectations for all return value dimensions.}\\
 Definitely  the result changes each time we draw the samples, and in the following I have provided the result of the only one run of the code.
 \paragraph{Task 1}
 Marginal Expectation of mu is: \textbf{1.0183}

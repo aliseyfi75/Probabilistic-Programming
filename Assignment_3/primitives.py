@@ -1,5 +1,6 @@
 import torch
 from torch import distributions
+from torch.distributions.bernoulli import Bernoulli
 
 class Dist:
     def __init__(self, name, distribution, num_par, *par):
@@ -48,6 +49,27 @@ class bernoulli(Dist):
     def __init__(self, pars):
         p = pars[0]
         super().__init__('bernoulli', distributions.Bernoulli(p), 1, p)
+
+class gamma(Dist):
+    def __init__(self, pars):
+        alpha = pars[0]
+        betta = pars[1]
+        super().__init__('gamma', distributions.Gamma(alpha, betta), 2, alpha, betta)
+
+class dirichlet(Dist):
+    def __init__(self, pars):
+        super().__init__('dirichlet', distributions.Dirichlet(*pars), len(pars), *pars)
+
+class dirac():
+
+    def __init__(self, value):
+        self.value = value
+    
+    def sample(self):
+        return self.value
+
+    def log_prob(self, c):
+        return self.value==c
 
 def vector(x):
     try:
@@ -114,6 +136,9 @@ baseprimitives = {
     '<': lambda x: x[0] < x[1],
     '<=': lambda x: x[0] <= x[1],
     '==': lambda x: x[0] == x[1],
+    '=': lambda x: torch.tensor([1]) if x[0] == x[1] else torch.tensor([0]),
+    'and': lambda x: x[0] and x[1],
+    'or': lambda x: x[0] or x[1],
     'sqrt': lambda x: torch.sqrt(x[0]),
     'exp': lambda x: torch.exp(x[0]),
     'log': lambda x: torch.log(x[0]),
@@ -143,5 +168,9 @@ distlist = {
     'exponential' : exponential,
     'uniform' : uniform,
     'discrete' : discrete,
-    'bernoulli': bernoulli
+    'bernoulli': bernoulli,
+    'gamma': gamma,
+    'dirichlet': dirichlet,
+    'flip': bernoulli,
+    'dirac': dirac
 }

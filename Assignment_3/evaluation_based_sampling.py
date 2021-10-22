@@ -49,19 +49,25 @@ def eval(x, sigma, l, funcs):
     elif x[0] == 'if':
         cond_result, sigma = eval(x[1], sigma, l, funcs)
         if cond_result:
-            result = x[2]
+            result, sigma = eval(x[2], sigma, l, funcs)
         else:
-            result = x[3]
+            result, sigma = eval(x[3], sigma, l, funcs)
     elif x[0] == 'let':
-        result_temp, sigma = eval(x[1][1], sigma, l, funcs)
-        for e in x[2:-1]:
-            _, sigma = eval(e, sigma, {**l, **{x[1][0]: result_temp}}, funcs)
-        result, sigma = eval(x[-1], sigma, {**l, **{x[1][0]: result_temp}}, funcs)
+        # result_temp, sigma = eval(x[1][1], sigma, l, funcs)
+        # for e in x[2:-1]:
+        #     _, sigma = eval(e, sigma, {**l, **{x[1][0]: result_temp}}, funcs)
+        # result, sigma = eval(x[-1], sigma, {**l, **{x[1][0]: result_temp}}, funcs)
+        name, exp = x[1]
+        result, sigma = eval(exp, sigma, l, funcs)
+        l[name]= result
+        return eval(x[2], sigma, l, funcs)
     elif x[0] == 'sample':
         dist, sigma = eval(x[1], sigma, l, funcs)
         result = dist.sample()
     elif x[0] == 'observe':
         dist, sigma = eval(x[1], sigma, l, funcs)
+        while isinstance(dist, list):
+            dist, sigma = eval(dist, sigma, l, funcs)
         result, sigma = eval(x[2], sigma, l, funcs)
         sigma['logW'] = sigma['logW'] + dist.log_prob(result)
     else:
@@ -86,17 +92,24 @@ def eval(x, sigma, l, funcs):
            
     
 def likelihood_weighting(L, exp):
-    results = torch.zeros(L)
-    weights = torch.zeros(L)
+    sigma = {'logW':0}
+    results_temp , sigma_temp = evaluate_program(exp, sigma)
+    n_params = 1
+    if results_temp.dim() != 0:
+        n_params = len(results_temp)
+    results = torch.zeros(n_params, L)
+    weights = []
     for l in range(L):
         sigma = {'logW':0}
-        results[l] , sigma_temp = evaluate_program(exp, sigma)
-        weights[l] = sigma_temp['logW']
-    return results, weights
+        results_temp , sigma_temp = evaluate_program(exp, sigma)
+        results[:,l] = results_temp
+        weights.append(sigma_temp['logW'])
+    return results, torch.tensor(weights)
 
 def expectation_calculator(results, log_weights, func, *args):
     weights = torch.exp(log_weights)
-    return torch.sum(weights * func(results, *args)) / torch.sum(weights)
+    func_result = func(results, *args)
+    return torch.sum(weights*func_result, dim=1) / torch.sum(weights)
 
 def get_stream(ast):
     """Return a stream of prior samples"""
@@ -151,10 +164,11 @@ if __name__ == '__main__':
     # run_deterministic_tests()
     # run_probabilistic_tests()
 
-    for i in range(1,2):
-        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_2/programs/{}.daphne'.format(i)])
+    for i in range(1,6):
+        ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3/programs/{}.daphne'.format(i)])
         print('\n\n\nSample of posterior of program {}:'.format(i))
-        results, weights = likelihood_weighting(10000, ast)
+        results, weights = likelihood_weighting(100000, ast)
         mean = expectation_calculator(results, weights, lambda x:x)
-        var = expectation_calculator(results, weights, lambda x: x**2 - mean**2)
+        var = expectation_calculator(results, weights, lambda x: x**2 - mean.view(results.shape[0],1)**2)
+
         print(mean, var)

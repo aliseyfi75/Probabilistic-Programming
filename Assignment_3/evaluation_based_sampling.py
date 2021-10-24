@@ -3,6 +3,8 @@ from tests import is_tol, run_prob_test,load_truth
 
 import torch
 
+import time
+
 from primitives import baseprimitives, distlist
 
         
@@ -100,7 +102,7 @@ def likelihood_weighting(L, exp):
     n_params = 1
     if results_temp.dim() != 0:
         n_params = len(results_temp)
-    results = torch.zeros(n_params, L)
+    results = torch.zeros((n_params, L))
     weights = []
     for l in range(L):
         sigma = {'logW':0}
@@ -172,9 +174,14 @@ if __name__ == '__main__':
         print('\n\n\nSample of posterior of program {}:'.format(i))
         
         # Importance sampling
+        n_samples = int(1e2)
         print('\nImportance sampling:')
-        results, weights = likelihood_weighting(100000, ast)
+        start_time = time.time()
+        results, weights = likelihood_weighting(n_samples, ast)
+        print('Time taken:', time.time() - start_time)
         mean = expectation_calculator(results, weights, lambda x:x)
         var = expectation_calculator(results, weights, lambda x: x**2 - mean.view(results.shape[0],1)**2)
 
-        print(mean, var)
+        print('Number of samples: ', n_samples)
+        print('Mean: ', mean)
+        print('Variance: ', var)

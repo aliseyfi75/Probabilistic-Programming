@@ -1,18 +1,16 @@
 import torch
-import torch.distributions as dist
 
 import copy
+import time
 
 from daphne import daphne
 
 from primitives import baseprimitives, distlist
-from evaluation_based_sampling import evaluate_program
+from evaluation_based_sampling import evaluate_program, expectation_calculator
 
 from tests import is_tol, run_prob_test,load_truth
 
-from plot import draw_hists
-import seaborn as sns
-import matplotlib.pyplot as plt
+from plot import draw_hists, draw_trace
 
 def topological_sort(graph):
     nodes = graph[1]['V']
@@ -223,8 +221,10 @@ def energy(P, M_inverse, unobserved_variables, observed_variables, r):
     K = torch.matmul(r, torch.matmul(M_inverse, r)) * 0.5
 
     U = 0
-    for variable in observed_variables:
-        U -= deterministic_eval(value_subs(P[variable][1], {**unobserved_variables, **observed_variables})).log_prob(observed_variables[variable])
+
+    all_variables = {**observed_variables, **unobserved_variables}
+    for variable in all_variables:
+        U = U - deterministic_eval(value_subs(P[variable][1], {**unobserved_variables, **observed_variables})).log_prob(all_variables[variable])
 
     return K + U
 
@@ -322,15 +322,25 @@ if __name__ == '__main__':
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3//programs/{}.daphne'.format(i)])
         print('\n\n\nSample of posterior of program {}:'.format(i)) 
         # MH within gibbs
+        n_samples = int(1e3)
         print('\n\n\nMH within Gibbs:')
-        samples = mh_within_gibbs_sampling(graph, num_samples=1000)
-        samples_mean = torch.mean(samples, dim=1)
-        samples_var = torch.var(samples, dim=1)
+        start_time = time.time()
+        samples = mh_within_gibbs_sampling(graph, num_samples=n_samples)
+        print('Time taken: {}'.format(time.time() - start_time))
 
+        samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
+        samples_var = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)
+
+        mean = torch.mean(samples, dim=1)
+        print('test mean: ', mean)
+        print('number of samples: ', n_samples)
         print('Mean:', samples_mean)
         print('Var:', samples_var)
 
         draw_hists("MH within Gibbs", samples, i)
+
+        if i<3 or i==5:
+            draw_trace("MH within Gibbs", samples, i)
 
         if i == 2:
             # Computing covariance matrix of samples using matrix multiplication
@@ -340,12 +350,17 @@ if __name__ == '__main__':
             print(cov_matrix)
 
         # HMC
-        if i<3:
+        if i<3 or i==5:
             print('\n\n\nHMC:')
-            samples = hmc(graph, num_samples=1000)
-            samples_mean = torch.mean(samples, dim=1)
-            samples_var = torch.var(samples, dim=1)
+            n_samples = int(1e4)
+            start_time = time.time()
+            samples = hmc(graph, num_samples=n_samples)
+            print('Time taken: {}'.format(time.time() - start_time))
 
+            samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
+            samples_var = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)
+
+            print('number of samples: ', n_samples)
             print('Mean:', samples_mean)
             print('Var:', samples_var)
 
@@ -356,4 +371,6 @@ if __name__ == '__main__':
                 print(cov_matrix)
 
             draw_hists("HMC", samples, i)
+
+            draw_trace("HMC", samples, i)
             

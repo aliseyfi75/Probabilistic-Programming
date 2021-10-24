@@ -199,7 +199,7 @@ def hmc(graph, num_samples=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
         current_energy = energy(P, M_inverse, unobserved_variables, observed_variables, r)
         new_energy = energy(P, M_inverse, new_unobserved_variables, observed_variables, new_r)
 
-        energy_diff = new_energy - current_energy
+        energy_diff = current_energy - new_energy
         energy_diff_clip = torch.clip(energy_diff, max=0)
         if u < torch.exp(energy_diff_clip):
             unobserved_variables = new_unobserved_variables
@@ -342,7 +342,7 @@ if __name__ == '__main__':
         # HMC
         if i<3:
             print('\n\n\nHMC:')
-            samples = hmc(graph, num_samples=10000)
+            samples = hmc(graph, num_samples=1000)
             samples_mean = torch.mean(samples, dim=1)
             samples_var = torch.var(samples, dim=1)
 

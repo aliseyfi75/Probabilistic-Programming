@@ -69,7 +69,11 @@ class dirac():
         return self.value
 
     def log_prob(self, c):
-        return self.value==c
+        if self.value == c:
+            result = torch.tensor(1.0)
+        else:
+            result = torch.tensor(0.0)
+        return result
 
 def vector(x):
     try:

@@ -10,6 +10,10 @@ from evaluation_based_sampling import evaluate_program
 
 from tests import is_tol, run_prob_test,load_truth
 
+from plot import draw_hists
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 def topological_sort(graph):
     nodes = graph[1]['V']
     edges = graph[1]['A']
@@ -194,7 +198,10 @@ def hmc(graph, num_samples=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
         u = torch.rand(1)
         current_energy = energy(P, M_inverse, unobserved_variables, observed_variables, r)
         new_energy = energy(P, M_inverse, new_unobserved_variables, observed_variables, new_r)
-        if u < torch.exp(current_energy - new_energy):
+
+        energy_diff = new_energy - current_energy
+        energy_diff_clip = torch.clip(energy_diff, max=0)
+        if u < torch.exp(energy_diff_clip):
             unobserved_variables = new_unobserved_variables
 
         samples.append(unobserved_variables)
@@ -302,8 +309,6 @@ def run_probabilistic_tests():
         assert(p_val > max_p_value)
     
     print('All probabilistic tests passed')    
-
-
         
         
 if __name__ == '__main__':
@@ -313,17 +318,26 @@ if __name__ == '__main__':
     # run_probabilistic_tests()
 
 
-    for i in range(1,6):
+    for i in range(2,6):
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3//programs/{}.daphne'.format(i)])
         print('\n\n\nSample of posterior of program {}:'.format(i)) 
         # MH within gibbs
         print('\n\n\nMH within Gibbs:')
-        samples = mh_within_gibbs_sampling(graph, num_samples=10000)
+        samples = mh_within_gibbs_sampling(graph, num_samples=1000)
         samples_mean = torch.mean(samples, dim=1)
         samples_var = torch.var(samples, dim=1)
 
         print('Mean:', samples_mean)
         print('Var:', samples_var)
+
+        draw_hists("MH within Gibbs", samples, i)
+
+        if i == 2:
+            # Computing covariance matrix of samples using matrix multiplication
+            samples_rm_mean = samples.T - samples_mean
+            cov_matrix = torch.matmul(samples, torch.t(samples)) / (samples.shape[1] - 1)
+            print('Covariance matrix:')
+            print(cov_matrix)
 
         # HMC
         if i<3:
@@ -335,4 +349,11 @@ if __name__ == '__main__':
             print('Mean:', samples_mean)
             print('Var:', samples_var)
 
-    
+            if i == 2:
+                samples_rm_mean = samples.T - samples_mean
+                cov_matrix = torch.matmul(samples, torch.t(samples)) / (samples.shape[1] - 1)
+                print('Covariance matrix:')
+                print(cov_matrix)
+
+            draw_hists("HMC", samples, i)
+            

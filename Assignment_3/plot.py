@@ -1,10 +1,12 @@
 import os,torch,itertools
+from seaborn.categorical import _SwarmPlotter
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style("white")
 dirn = os.path.dirname(os.path.abspath(__file__))
-labels = { 1: "", 2: "", 3: "", 4: {0: "W_0", 1: "b_0", 2: "W_1", 3: "b_1" }}
+# labels = { 1: "", 2: "", 3: "", 4: {0: "W_0", 1: "b_0", 2: "W_1", 3: "b_1" }}
+labels = {1:{0:""}, 2:{0:'bias', 1:'slope'}, 3:{0:""}, 4:{0:""}, 5:{0:""}}
 def get_title(eval,i,dim=False,d=0):
     if dim:
         label = labels[i][d]
@@ -36,7 +38,7 @@ def plot_hists_n(eval, i, hists):
             plt.clf()
 def plot_hist_arr(eval, i, samples, dim=False, d=0):
     plt.figure(figsize=(10,7))
-    nbins = int(max(samples.max()-samples.min(),8))
+    nbins = int(max(samples.max()-samples.min(),30))
     sns.histplot(data=samples,kde=True,stat='density',cbar=True,multiple='dodge',bins=nbins)
     fname = get_fname(eval, i,dim,d)
     title = get_title(eval, i, dim, d)
@@ -61,16 +63,15 @@ def gen_hists(eval, i, samples):
     except:
         try:
             # 1 rnd var
-            samples = torch.stack(samples).numpy()
+            assert(samples.dim <= 1)
+            samples = samples.detach().numpy().T
             plot_hist_arr(eval, i, samples)
         except:
             # n rnd vars
             hists = []
-            for d in range(len(samples)):
-                hists.append([torch.squeeze(sample[d].t()).numpy() for sample in samples])
+            samples = samples.detach().numpy()
+            for d in range(samples.shape[0]):
+                hists.append(samples[d,:].T)
             plot_hists_n(eval, i, hists)
-def draw_hists(eval, i,stream,n_samples):
-    samples = []
-    for _ in range(int(n_samples)):
-        samples.append(next(stream))
+def draw_hists(eval, samples, i):
     gen_hists(eval, i, samples)

@@ -69,7 +69,10 @@ def eval(x, sigma, l, funcs):
         while isinstance(dist, list):
             dist, sigma = eval(dist, sigma, l, funcs)
         result, sigma = eval(x[2], sigma, l, funcs)
-        sigma['logW'] = sigma['logW'] + dist.log_prob(result)
+        try:
+            sigma['logW'] = sigma['logW'] + dist.log_prob(result)
+        except:
+            pass
     else:
         statements = []
         for expression in x:

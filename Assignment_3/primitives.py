@@ -60,20 +60,32 @@ class dirichlet(Dist):
     def __init__(self, pars):
         super().__init__('dirichlet', distributions.Dirichlet(*pars), len(pars), *pars)
 
-class dirac():
+# class dirac():
 
-    def __init__(self, value):
-        self.value = value
+#     def __init__(self, value):
+#         self.value = value
     
-    def sample(self):
-        return self.value
+#     def sample(self):
+#         return self.value
 
-    def log_prob(self, c):
-        if self.value == c:
-            result = torch.tensor(1.0)
-        else:
-            result = torch.tensor(0.0)
-        return result
+#     def log_prob(self, c):
+#         if self.value == c:
+#             result = torch.tensor(1.0)
+#         else:
+#             result = torch.tensor(0.0)
+#         return result
+
+class dirac(Dist):
+    # def __init__(self, value):
+    #     mu = torch.tensor(value)
+    #     var = torch.tensor(1e-5)
+    #     super().__init__([mu, var])
+    def __init__(self, value):
+        mean = value[0]
+        mean = torch.clip(mean, -1e10, 1e10)
+        var = torch.tensor(1e-5)
+        super().__init__('normal', distributions.Normal(mean, var), 2, mean, var)
+
 
 def vector(x):
     try:

@@ -1,6 +1,8 @@
 import torch
 import torch.distributions as dist
 
+import copy
+
 from daphne import daphne
 
 from primitives import baseprimitives, distlist
@@ -75,18 +77,20 @@ def sample_from_joint(graph, var=False):
 
 # MH with Gibbs sampling
 
-def mh_within_gibbs_sampling(graph, num_steps):
+def mh_within_gibbs_sampling(graph, num_samples):
     
     _, unobserved_variables = extract_variables(graph)
     _, free_variables_inverse = extract_free_variables(graph)
 
-    values = mh_within_gibbs(graph, num_steps, unobserved_variables, free_variables_inverse)
+    values = [sample_from_joint(graph, var=True)]
+    for _ in range(num_samples):
+        values.append(gibbs_step(graph[1]['P'], unobserved_variables, values[-1], free_variables_inverse))
 
     sample_temp = deterministic_eval(value_subs(graph[2], values[0]))
     n_params = 1
     if sample_temp.dim() != 0:
         n_params = len(sample_temp)
-    samples = torch.zeros(n_params, num_steps+1)
+    samples = torch.zeros(n_params, num_samples+1)
 
     for idx, value in enumerate(values):
         sample = deterministic_eval(value_subs(graph[2], value))
@@ -130,14 +134,6 @@ def extract_free_variables(graph):
     return free_variables, free_var_inverse
 
 
-def mh_within_gibbs(graph, num_steps, unobserved_variables, free_var_inverse):
-    values = [sample_from_joint(graph, var=True)]
-    for _ in range(num_steps):
-        values.append(gibbs_step(graph[1]['P'], unobserved_variables, values[-1], free_var_inverse))
-
-    return values
-
-
 def gibbs_step(p, unobserved_variables, value, free_var_inverse):
     for selected_variable in unobserved_variables:
         q = deterministic_eval(value_subs(p[selected_variable][1], value))
@@ -167,7 +163,7 @@ def mh_accept(p, selected_variable, value_new, value_old, free_var_inverse):
 
 # Hamiltonian Monte Carlo
 
-def hmc(graph, num_steps=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
+def hmc(graph, num_samples=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
     list_observed_variables, list_unobserved_variables = extract_variables(graph)
     initial_variable_values = sample_from_joint(graph, var=True)
 
@@ -178,11 +174,11 @@ def hmc(graph, num_steps=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
             observed_variables[variable] = initial_variable_values[variable]
         else:
             unobserved_variables[variable] = initial_variable_values[variable]
-
-    for variable in list_unobserved_variables:
-        if not torch.is_tensor(unobserved_variables[variable]):
-            unobserved_variables[variable] = torch.tensor(unobserved_variables[variable], dtype=torch.float64)
-        unobserved_variables[variable].requires_grad = True
+            if not torch.is_tensor(unobserved_variables[variable]):
+                unobserved_variables[variable] = torch.tensor(unobserved_variables[variable], dtype=torch.float64)
+            else:
+                unobserved_variables[variable] = unobserved_variables[variable].type(torch.float64)
+            unobserved_variables[variable].requires_grad = True
 
     if M is None:
         M = torch.eye(len(list_unobserved_variables))
@@ -192,9 +188,9 @@ def hmc(graph, num_steps=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
     samples = []
 
     normal_generator = torch.distributions.MultivariateNormal(torch.zeros(len(M)), M)
-    for step in range(num_steps):
+    for _ in range(num_samples):
         r = normal_generator.sample()
-        new_unobserved_variables, new_r = leapfrog(P, num_leapfrog_steps, epsilon, unobserved_variables.deepcopy(), observed_variables, r)
+        new_unobserved_variables, new_r = leapfrog(P, num_leapfrog_steps, epsilon, copy.deepcopy(unobserved_variables), observed_variables, r)
         u = torch.rand(1)
         current_energy = energy(P, M_inverse, unobserved_variables, observed_variables, r)
         new_energy = energy(P, M_inverse, new_unobserved_variables, observed_variables, new_r)
@@ -208,7 +204,7 @@ def hmc(graph, num_steps=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
     n_params = 1
     if sample_temp.dim() != 0:
         n_params = len(sample_temp)
-    final_samples = torch.zeros(n_params, num_steps)
+    final_samples = torch.zeros(n_params, num_samples)
 
     for idx, sample in enumerate(samples):
         final_sample = deterministic_eval(value_subs(graph[2], sample))
@@ -227,11 +223,11 @@ def energy(P, M_inverse, unobserved_variables, observed_variables, r):
 
 def leapfrog(P, num_leapfrog_steps, epsilon, unobserved_variables, observed_variables, r):
     r_half = r - 0.5*epsilon*grad_energy(P, unobserved_variables, observed_variables)
-    new_unobserved_variables = unobserved_variables.copy()
+    new_unobserved_variables = unobserved_variables
     for _ in range(num_leapfrog_steps):
-        new_unobserved_variables = detach_and_add_dict_vector(new_unobserved_variables + epsilon*r_half)
+        new_unobserved_variables = detach_and_add_dict_vector(new_unobserved_variables, epsilon*r_half)
         r_half = r_half - epsilon*grad_energy(P, new_unobserved_variables, observed_variables)
-    final_unobserved_variables = detach_and_add_dict_vector(new_unobserved_variables + epsilon*r_half)
+    final_unobserved_variables = detach_and_add_dict_vector(new_unobserved_variables, epsilon*r_half)
     final_r = r_half - 0.5*epsilon*grad_energy(P, final_unobserved_variables, observed_variables)
     return final_unobserved_variables, final_r
 
@@ -319,13 +315,24 @@ if __name__ == '__main__':
 
     for i in range(1,6):
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3//programs/{}.daphne'.format(i)])
-        print('\n\n\nSample of prior of program {}:'.format(i))
-        # print(sample_from_joint(graph)) 
-        samples = hmc(graph)
+        print('\n\n\nSample of posterior of program {}:'.format(i)) 
+        # MH within gibbs
+        print('\n\n\nMH within Gibbs:')
+        samples = mh_within_gibbs_sampling(graph, num_samples=10000)
         samples_mean = torch.mean(samples, dim=1)
         samples_var = torch.var(samples, dim=1)
 
         print('Mean:', samples_mean)
         print('Var:', samples_var)
+
+        # HMC
+        if i<3:
+            print('\n\n\nHMC:')
+            samples = hmc(graph, num_samples=10000)
+            samples_mean = torch.mean(samples, dim=1)
+            samples_var = torch.var(samples, dim=1)
+
+            print('Mean:', samples_mean)
+            print('Var:', samples_var)
 
     

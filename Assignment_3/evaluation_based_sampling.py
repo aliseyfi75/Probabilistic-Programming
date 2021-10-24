@@ -170,6 +170,9 @@ if __name__ == '__main__':
     for i in range(1,6):
         ast = daphne(['desugar', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3/programs/{}.daphne'.format(i)])
         print('\n\n\nSample of posterior of program {}:'.format(i))
+        
+        # Importance sampling
+        print('\nImportance sampling:')
         results, weights = likelihood_weighting(100000, ast)
         mean = expectation_calculator(results, weights, lambda x:x)
         var = expectation_calculator(results, weights, lambda x: x**2 - mean.view(results.shape[0],1)**2)

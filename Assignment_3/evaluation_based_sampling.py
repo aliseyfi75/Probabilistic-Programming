@@ -1,4 +1,5 @@
 from daphne import daphne
+from plot import draw_hists
 from tests import is_tol, run_prob_test,load_truth
 
 import torch
@@ -55,10 +56,6 @@ def eval(x, sigma, l, funcs):
         else:
             result, sigma = eval(x[3], sigma, l, funcs)
     elif x[0] == 'let':
-        # result_temp, sigma = eval(x[1][1], sigma, l, funcs)
-        # for e in x[2:-1]:
-        #     _, sigma = eval(e, sigma, {**l, **{x[1][0]: result_temp}}, funcs)
-        # result, sigma = eval(x[-1], sigma, {**l, **{x[1][0]: result_temp}}, funcs)
         name, exp = x[1]
         result, sigma = eval(exp, sigma, l, funcs)
         l[name]= result
@@ -95,7 +92,6 @@ def eval(x, sigma, l, funcs):
             result = torch.tensor(statements)
     return result, sigma
            
-    
 def likelihood_weighting(L, exp):
     sigma = {'logW':0}
     results_temp , sigma_temp = evaluate_program(exp, sigma)
@@ -174,14 +170,20 @@ if __name__ == '__main__':
         print('\n\n\nSample of posterior of program {}:'.format(i))
         
         # Importance sampling
-        n_samples = int(1e2)
+        n_samples = int(1e5)
         print('\nImportance sampling:')
         start_time = time.time()
-        results, weights = likelihood_weighting(n_samples, ast)
+        samples, log_weights = likelihood_weighting(n_samples, ast)
         print('Time taken:', time.time() - start_time)
-        mean = expectation_calculator(results, weights, lambda x:x)
-        var = expectation_calculator(results, weights, lambda x: x**2 - mean.view(results.shape[0],1)**2)
+        samples_mean = expectation_calculator(samples, log_weights, lambda x:x)
+        samples_var = expectation_calculator(samples, log_weights, lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)
+        print('Mean:', samples_mean)
+        weighted_samples = samples * torch.exp(log_weights) / torch.sum(torch.exp(log_weights))
+        weighted_samples_remove_mean = weighted_samples - samples_mean.view(samples.shape[0],1)
+        cov_matrix = torch.matmul(weighted_samples_remove_mean, torch.t(weighted_samples_remove_mean)) / (weighted_samples_remove_mean.shape[1] - 1)
 
         print('Number of samples: ', n_samples)
-        print('Mean: ', mean)
-        print('Variance: ', var)
+        print('Mean: ', samples_mean)
+        print('Variance: ', samples_var)
+        print('Covariance matrix: ', cov_matrix)
+        draw_hists("Importance_Sampling", samples, i, weights=torch.exp(log_weights))

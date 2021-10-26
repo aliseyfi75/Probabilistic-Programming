@@ -10,7 +10,7 @@ from evaluation_based_sampling import evaluate_program, expectation_calculator
 
 from tests import is_tol, run_prob_test,load_truth
 
-from plot import draw_hists, draw_trace
+from plot import draw_hists, draw_trace, draw_log_joint
 
 def topological_sort(graph):
     nodes = graph[1]['V']
@@ -97,7 +97,7 @@ def mh_within_gibbs_sampling(graph, num_samples):
     for idx, value in enumerate(values):
         sample = deterministic_eval(value_subs(graph[2], value))
         samples[:, idx] = sample
-    return samples
+    return samples, values
 
 
 def extract_variables(graph):
@@ -214,8 +214,8 @@ def hmc(graph, num_samples=1000, num_leapfrog_steps=10, epsilon=0.1, M=None):
     for idx, sample in enumerate(samples):
         final_sample = deterministic_eval(value_subs(graph[2], sample))
         final_samples[:, idx] = final_sample
-    
-    return final_samples
+
+    return final_samples, samples
 
 def energy(P, M_inverse, unobserved_variables, observed_variables, r):
     K = torch.matmul(r, torch.matmul(M_inverse, r)) * 0.5
@@ -318,34 +318,34 @@ if __name__ == '__main__':
     # run_probabilistic_tests()
 
 
-    for i in range(2,6):
+    for i in range(1,6):
         graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_3//programs/{}.daphne'.format(i)])
         print('\n\n\nSample of posterior of program {}:'.format(i)) 
         # MH within gibbs
-        n_samples = int(1e3)
+        n_samples = int(1e5)
         print('\n\n\nMH within Gibbs:')
         start_time = time.time()
-        samples = mh_within_gibbs_sampling(graph, num_samples=n_samples)
+        samples, nodes_values = mh_within_gibbs_sampling(graph, num_samples=n_samples)
         print('Time taken: {}'.format(time.time() - start_time))
 
         samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
         samples_var = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)
 
-        mean = torch.mean(samples, dim=1)
-        print('test mean: ', mean)
         print('number of samples: ', n_samples)
         print('Mean:', samples_mean)
         print('Var:', samples_var)
 
-        draw_hists("MH within Gibbs", samples, i)
+        draw_hists("MH_within_Gibbs", samples, i)
 
         if i<3 or i==5:
-            draw_trace("MH within Gibbs", samples, i)
+            draw_trace("MH_within_Gibbs", samples, i)
+            draw_log_joint("MH_within_Gibbs", i, graph, nodes_values, deterministic_eval, value_subs)
+
 
         if i == 2:
             # Computing covariance matrix of samples using matrix multiplication
             samples_rm_mean = samples.T - samples_mean
-            cov_matrix = torch.matmul(samples, torch.t(samples)) / (samples.shape[1] - 1)
+            cov_matrix = torch.matmul(torch.t(samples_rm_mean), samples_rm_mean) / (samples_rm_mean.shape[0] - 1)
             print('Covariance matrix:')
             print(cov_matrix)
 
@@ -354,7 +354,7 @@ if __name__ == '__main__':
             print('\n\n\nHMC:')
             n_samples = int(1e4)
             start_time = time.time()
-            samples = hmc(graph, num_samples=n_samples)
+            samples, nodes_values = hmc(graph, num_samples=n_samples)
             print('Time taken: {}'.format(time.time() - start_time))
 
             samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
@@ -366,11 +366,14 @@ if __name__ == '__main__':
 
             if i == 2:
                 samples_rm_mean = samples.T - samples_mean
-                cov_matrix = torch.matmul(samples, torch.t(samples)) / (samples.shape[1] - 1)
+                cov_matrix = torch.matmul(torch.t(samples_rm_mean), samples_rm_mean) / (samples_rm_mean.shape[0] - 1)
                 print('Covariance matrix:')
                 print(cov_matrix)
 
             draw_hists("HMC", samples, i)
 
             draw_trace("HMC", samples, i)
+
+            draw_log_joint("HMC", i, graph, nodes_values, deterministic_eval, value_subs)
+
             

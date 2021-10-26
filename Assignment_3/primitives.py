@@ -36,8 +36,7 @@ class exponential(Dist):
 
 class uniform(Dist):
     def __init__(self, pars):
-        a = pars[0]
-        b = pars[1]
+        a, b = pars[0], pars[1]
         super().__init__('uniform', distributions.Uniform(a, b), 2, a, b)
 
 class discrete(Dist):
@@ -52,37 +51,17 @@ class bernoulli(Dist):
 
 class gamma(Dist):
     def __init__(self, pars):
-        alpha = pars[0]
-        betta = pars[1]
+        alpha, beta = pars[0], pars[1]
         super().__init__('gamma', distributions.Gamma(alpha, betta), 2, alpha, betta)
 
 class dirichlet(Dist):
     def __init__(self, pars):
         super().__init__('dirichlet', distributions.Dirichlet(*pars), len(pars), *pars)
 
-# class dirac():
-
-#     def __init__(self, value):
-#         self.value = value
-    
-#     def sample(self):
-#         return self.value
-
-#     def log_prob(self, c):
-#         if self.value == c:
-#             result = torch.tensor(1.0)
-#         else:
-#             result = torch.tensor(0.0)
-#         return result
-
 class dirac(Dist):
-    # def __init__(self, value):
-    #     mu = torch.tensor(value)
-    #     var = torch.tensor(1e-5)
-    #     super().__init__([mu, var])
     def __init__(self, value):
         mean = value[0]
-        mean = torch.clip(mean, -1e10, 1e10)
+        mean = torch.clip(mean, -1e5, 1e5)
         var = torch.tensor(1e-5)
         super().__init__('normal', distributions.Normal(mean, var), 2, mean, var)
 

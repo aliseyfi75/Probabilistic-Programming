@@ -20,14 +20,14 @@ class Dist:
         return self.distribution.log_prob(c)
 
     def parameters(self):
-        return self.dist.Parameters()
+        return self.distribution.Parameters()
 
     def make_copy_with_grads(self):
-        temp_dist = self.dist
-        self.dist = None
+        temp_dist = self.distribution
+        self.distribution = None
         dist_copy = copy.deepcopy(self)
-        self.dist = temp_dist
-        dist_copy.dist = temp_dist.make_copy_with_grads()
+        self.distribution = temp_dist
+        dist_copy.distribution = temp_dist.make_copy_with_grads()
         return dist_copy
 
 class normal(Dist):

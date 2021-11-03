@@ -155,3 +155,10 @@ def draw_log_joint(eval, i, graph, nodes_values, deterministic_eval, value_subs)
     plt.savefig(fname)
     plt.clf()
 
+def draw_hitmap(eval, matrix, i):
+    sns.heatmap(matrix, annot=True)
+    fname = get_fname(eval, i, fig_type='hitmap')
+    title = get_title(eval, i, fig_type='hitmap')
+    plt.title(title)
+    plt.savefig(fname)
+    plt.clf()

@@ -141,7 +141,29 @@ class Gamma(dist.Gamma):
         
         return super().log_prob(x)
 
+class Uniform(dist.Uniform):
 
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        super().__init__(a, b)
+
+    def Parameters(self):
+        """Return a list of parameters for the distribution"""
+        return [self.a, self.b]
+
+    def make_copy_with_grads(self):
+        """
+        Return a copy  of the distribution, with parameters that require_grad
+        """
+        a, b = [p.clone().detach().requires_grad_() for p in self.Parameters()]
+        return Uniform(a, b)
+
+    def log_prob(self, x):
+        if x > self.b or x < self.a:
+            return float('-inf')
+        else:
+            return super().log_prob(x)
 
 
 if __name__ == '__main__':

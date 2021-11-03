@@ -51,7 +51,10 @@ class exponential(Dist):
 class uniform(Dist):
     def __init__(self, pars):
         a, b = pars[0], pars[1]
-        super().__init__('uniform', distributions.Uniform(a, b), 2, a, b)
+        if a > b:
+            b = 5
+        uniform_dist = dist.Uniform(a, b)
+        super().__init__('uniform', uniform_dist, 2, a, b)
 
 class discrete(Dist):
     def __init__(self, pars):
@@ -73,7 +76,7 @@ class gamma(Dist):
 
 class dirichlet(Dist):
     def __init__(self, pars):
-        dirichlet_dist = dist.Dirichlet(pars)
+        dirichlet_dist = dist.Dirichlet(pars[0])
         super().__init__('dirichlet', dirichlet_dist, len(pars), *pars)
 
 class dirac(Dist):
@@ -155,6 +158,7 @@ baseprimitives = {
     'sqrt': lambda x: torch.sqrt(x[0]),
     'exp': lambda x: torch.exp(x[0]),
     'log': lambda x: torch.log(x[0]),
+    'abs': lambda x: torch.abs(x[0]),
     'vector': vector,
     'list': list,
     'get': get,
@@ -185,5 +189,6 @@ distlist = {
     'gamma': gamma,
     'dirichlet': dirichlet,
     'flip': bernoulli,
-    'dirac': dirac
+    'dirac': dirac,
+    'uniform-continuous': uniform
 }

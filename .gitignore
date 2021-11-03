@@ -6,3 +6,4 @@ lein.txt
 *.aux
 *.log
 *.gz
+wandb/

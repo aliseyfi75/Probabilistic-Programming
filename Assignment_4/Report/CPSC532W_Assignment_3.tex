@@ -151,7 +151,7 @@ Posterior mean of bias is: \textbf{-0.4039}\\
 $T = 2*10^3$ and $L = 50$ for this task.\\
 Time of drawing samples: \textbf{581.53 seconds}\\
 Posterior mean of probability that the first and second datapoint are in the same cluster is: \textbf{0.7743}\\
-\red{Should talk about the mode-seeking behaviour of VI}
+\gre{Here we have symmetric between our states due to our choice of prior, so our optimization model will converge to different solutions each time we run the program,  which is actually the mode-seeking behaviour.}
 \centerfigcap{0.7}{../figures/ELBO_3}{ELBO in task 3}
 \subsection{Task 4}
 Time of drawing samples: \textbf{595.87 seconds}\\
@@ -160,7 +160,7 @@ Time of drawing samples: \textbf{595.87 seconds}\\
 \centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_b1}{Posterior distribution of $b_1$}
 \centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_w1}{Posterior distribution of $w_1$}
 \centerfigcap{1}{../figures/ELBO_4}{ELBO in task 4}
-\red{should compare and contrast mean-field BBVI to parameter estimation via gradient descent.}
+\gre{In BBVI method, we need proposal distributions to be differentiable.  However, in parameter estimation via gradient descent we need both proposal distribution and joint distribution to be differentiable.  So the advantage of BBVI will be working with discrete and continuous models, but the variance could be a problem in this case.  But in the other method we have generally a better behaved variance.}
 
 
 \subsection{Task 5}

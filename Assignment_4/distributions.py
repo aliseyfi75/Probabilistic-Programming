@@ -3,13 +3,15 @@ import torch.distributions as dist
 
 class Normal(dist.Normal):
     
-    def __init__(self, loc, scale):
-        
-        if scale > 20.:
-            self.optim_scale = scale.clone().detach().requires_grad_()
+    def __init__(self, loc, scale, copy=False):
+    
+        if not copy:    
+            if scale > 20.:
+                self.optim_scale = scale.clone().detach().requires_grad_()
+            else:
+                self.optim_scale = torch.log(torch.exp(scale) - 1).clone().detach().requires_grad_()
         else:
-            self.optim_scale = torch.log(torch.exp(scale) - 1).clone().detach().requires_grad_()
-        
+            self.optim_scale = scale
         
         super().__init__(loc, torch.nn.functional.softplus(self.optim_scale))
     
@@ -24,7 +26,7 @@ class Normal(dist.Normal):
         
         ps = [p.clone().detach().requires_grad_() for p in self.Parameters()]
          
-        return Normal(*ps)
+        return Normal(*ps, copy=True)
     
     def log_prob(self, x):
         
@@ -113,12 +115,14 @@ class Dirichlet(dist.Dirichlet):
 
 class Gamma(dist.Gamma):
     
-    def __init__(self, concentration, rate):
-        if rate > 20.:
-            self.optim_rate = rate.clone().detach().requires_grad_()
+    def __init__(self, concentration, rate, copy=False):
+        if not copy:
+            if rate > 20.:
+                self.optim_rate = rate.clone().detach().requires_grad_()
+            else:
+                self.optim_rate = torch.log(torch.exp(rate) - 1).clone().detach().requires_grad_()
         else:
-            self.optim_rate = torch.log(torch.exp(rate) - 1).clone().detach().requires_grad_()
-        
+            self.optim_rate = rate
         
         super().__init__(concentration, torch.nn.functional.softplus(self.optim_rate))
     
@@ -133,7 +137,7 @@ class Gamma(dist.Gamma):
         
         concentration,rate = [p.clone().detach().requires_grad_() for p in self.Parameters()]
         
-        return Gamma(concentration, rate)
+        return Gamma(concentration, rate, copy=True)
 
     def log_prob(self, x):
         
@@ -161,7 +165,7 @@ class Uniform(dist.Uniform):
 
     def log_prob(self, x):
         if x > self.b or x < self.a:
-            return float('-inf')
+            return -1e10
         else:
             return super().log_prob(x)
 

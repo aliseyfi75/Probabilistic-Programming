@@ -1,0 +1,171 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{listings} % For displaying code
+\usepackage{algorithm2e} % pseudo-code
+\usepackage{mathtools}
+% for inline image 
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+% Python
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,    
+    frame = lines,             
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\rubric#1{\gre{Rubric: \{#1\}}}{}
+
+% Answers
+
+\def\ans#1{\par\gre{Answer: #1}}
+
+% Colors
+\definecolor{blu}{rgb}{0,0,1}
+\def\blu#1{{\color{blu}#1}}
+\definecolor{gre}{rgb}{0,.5,0}
+\def\gre#1{{\color{gre}#1}}
+\definecolor{red}{rgb}{1,0,0}
+\def\red#1{{\color{red}#1}}
+\def\norm#1{\|#1\|}
+
+% Math
+\def\R{\mathbb{R}}
+\def\argmax{\mathop{\rm arg\,max}}
+\def\argmin{\mathop{\rm arg\,min}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\alignStar}[1]{\begin{align*}#1\end{align*}}
+\def\half{\frac 1 2}
+
+% LaTeX
+\newcommand{\fig}[2]{\includegraphics[width=#1\textwidth]{#2}}
+\newcommand{\centerfig}[2]{\begin{center}\includegraphics[width=#1\textwidth]{#2}\end{center}}
+\newcommand{\centerfigcap}[3]{\begin{figure}[H]
+\begin{center}\includegraphics[width=#1\textwidth]{#2} \caption{#3}\end{center}
+\end{figure}}
+\newcommand{\matCode}[1]{\lstinputlisting[language=Matlab]{a2f/#1.m}}
+\def\items#1{\begin{itemize}#1\end{itemize}}
+\def\enum#1{\begin{enumerate}#1\end{enumerate}}
+
+\begin{document}
+
+
+\title{\vspace{-20mm}
+CPSC 532W Assignment 4}
+\author{Ali Seyfi - 97446637}
+\date{}
+\maketitle
+
+Here is the link to the repository:\\
+\url{https://github.com/aliseyfi75/Probabilistic-Programming/tree/master/Assignment_4}
+
+
+\blu{write a black-box variational inference (VI) evaluator following section 4.4 of the book.  }
+
+\section{Code}
+\blu{Show code snippets that demonstrate the completeness and correctness of your BBVI implementation.}
+\subsection{primitives}
+\label{primitives}
+\lstinputlisting[language=Python, caption=primitives.py - Base primitives, firstline=145, lastline=180]{../primitives.py}
+\pagebreak
+\lstinputlisting[language=Python, caption=primitives.py - Functions, firstline=90, lastline=142]{../primitives.py}
+\pagebreak
+\lstinputlisting[language=Python, caption=primitives.py - Distributions, firstline=5, lastline=87]{../primitives.py}
+\lstinputlisting[language=Python, caption=primitives.py - distlist, firstline=182, lastline=194]{../primitives.py}
+\subsection{evaluation based sampling}
+This part is same as last assignment.
+\subsection{topological sort}
+This part is same as last assignment.
+\pagebreak
+\subsection{BBVI evaluator}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - BBVI\_evaluator, firstline=266, lastline=298]{../graph_based_sampling.py}
+\subsection{grad log prob}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - grad\_log\_prob, firstline=300, lastline=307]{../graph_based_sampling.py}
+\pagebreak
+\subsection{BBVI}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - BBVI, firstline=309, lastline=347]{../graph_based_sampling.py}
+\subsection{infinity skipper}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - inf\_skipper, firstline=349, lastline=359]{../graph_based_sampling.py}
+\pagebreak
+\subsection{ELBO gradient}
+\lstinputlisting[language=Python, caption=graph\_based\_sampling.py - ELBO\_gradient, firstline=361, lastline=410]{../graph_based_sampling.py}
+
+
+\section{Results}
+\subsection{Task 1}
+$T = 10^4$ and $L = 50$ for this task.\\
+Time of drawing samples: \textbf{410.81 seconds}\\
+Posterior expected value of mu is: \textbf{7.3007}\\
+Parameters of the posterior distribution of mu: $mu = 7.2742$ and $\sigma = 0.4931$.\\
+
+\centerfigcap{0.6}{../figures/BBVI_plt_hist_program_1_d_0}{Histogram of posterior distribution of mu}
+\centerfigcap{1}{../figures/ELBO_1}{ELBO in task 1}
+
+\subsection{Task 2}
+$T = 5*10^3$ and $L = 50$ for this task.\\
+Time of drawing samples: \textbf{510.36 seconds}\\
+Posterior mean of slope is: \textbf{2.1169}\\
+Posterior mean of bias is: \textbf{-0.4039}\\
+\centerfigcap{1}{../figures/ELBO_2}{ELBO in task 2}
+
+\subsection{Task 3}
+$T = 2*10^3$ and $L = 50$ for this task.\\
+Time of drawing samples: \textbf{581.53 seconds}\\
+Posterior mean of probability that the first and second datapoint are in the same cluster is: \textbf{0.7743}\\
+\red{Should talk about the mode-seeking behaviour of VI}
+\centerfigcap{0.7}{../figures/ELBO_3}{ELBO in task 3}
+\subsection{Task 4}
+Time of drawing samples: \textbf{595.87 seconds}\\
+\centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_b0}{Posterior distribution of $b_0$}
+\centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_w0}{Posterior distribution of $w_0$}
+\centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_b1}{Posterior distribution of $b_1$}
+\centerfigcap{0.6}{../figures/BBVI_plt_hitmap_program_4_w1}{Posterior distribution of $w_1$}
+\centerfigcap{1}{../figures/ELBO_4}{ELBO in task 4}
+\red{should compare and contrast mean-field BBVI to parameter estimation via gradient descent.}
+
+
+\subsection{Task 5}
+$T = 2*10^3$ and $L = 25$ for this task.\\
+Time of drawing samples: \textbf{45.19 seconds}\\
+learned variational distribution for s: \textbf{Uniform(0.9024, 1.7703)} 
+\centerfigcap{1}{../figures/ELBO_5}{ELBO in task 5}
+\end{document}

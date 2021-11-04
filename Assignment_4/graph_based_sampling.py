@@ -14,9 +14,9 @@ from tests import is_tol, run_prob_test,load_truth
 from plot import draw_hists, draw_trace, draw_log_joint, draw_hitmap
 import matplotlib.pyplot as plt
 
-# import wandb
+import wandb
 
-# wandb.init(project="HW4", entity="aliseyfi")
+wandb.init(project="HW4", entity="aliseyfi")
 
 def topological_sort(graph):
     nodes = graph[1]['V']
@@ -298,9 +298,11 @@ def BBVI_evaluator(order_node, graph, sigma):
     return results, sigma
 
 def grad_log_prob(dist, value):
+    for param in dist.parameters():
+        param = param.clone().detach()
+        param.requires_grad = True
     log_prob = dist.log_prob(value)
     log_prob.backward()
-    #.clone().detach()
     grad = [param.grad for param in dist.parameters()]
     return grad
 
@@ -340,17 +342,7 @@ def BBVI(graph, T, L):
         result_temp = deterministic_eval(value_subs(graph[2], result))
         results.append(result_temp)
         log_weights.append(log_ws[-1])
-
-        # print_weights = torch.exp(torch.stack(log_weights)).detach().numpy()
-        # print_results = torch.stack(results).detach().numpy()
-
-        # print_mean = (print_results * print_weights.reshape(-1,1)).sum(axis=0) / print_weights.sum()
-        
-        # wandb.log({'ELBO': torch.mean(torch.stack(log_weights)).detach().numpy()})
-
-        # for i in range(len(print_mean)):
-        #     wandb.log({'mean_'+str(i): print_mean[i]})
-
+        wandb.log({'ELBO': torch.mean(torch.stack(log_weights)).detach().numpy()})
 
     return results, log_weights, posteriers
 
@@ -410,7 +402,6 @@ def ELBO_gradients(gradients, log_ws, posteriors):
         if var in stack:
             counter_2 = stack[var]
         g_hat = np.array([np.sum(Fs[:, v] - b_hat * Gs[:, v]) / len_grads for v in range(counter_1, counter_1+counter_2)])
-        # g_hat = np.array([np.sum(Fs[:, v]) / len_grads for v in range(counter_1, counter_1 + counter_2)])
         if var in stack:
             g_hat = [g_hat]
         for i, parameter in enumerate(posteriors[var].parameters()):
@@ -481,19 +472,15 @@ if __name__ == '__main__':
     # Task 1
     # graph_1 = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_4/programs/{}.daphne'.format(1)])
     # print('\n\n\nSample of posterior of program {}:'.format(1)) 
-    # T_1 = int(5 * 1e3)
-    # L_1 = 25
+    # T_1 = int(1 * 1e4)
+    # L_1 = 50
     # start_time_1 = time.time()
     # samples_1, log_weights_1, posteriors_1 = BBVI(graph_1, T_1, L_1)
     # print('Time taken:', time.time() - start_time_1)
     # samples_1 = torch.stack(samples_1).numpy()
     # weights_1 = np.exp(torch.stack(log_weights_1).detach().numpy())
-    
-    # samples_mean = (samples_1 * weights_1).sum() / weights_1.sum()
-    # samples_var =  ((samples_1 **2 - samples_mean ** 2) * weights_1).sum() / weights_1.sum()
-    
-    # print(samples_mean)
-    # print(samples_var)
+
+    # print(posteriors_1[-1]['sample2'])
 
     # new_samples = torch.distributions.Normal(*posteriors_1[-1]['sample2']).sample((10000,)).view(1,-1)
     # draw_hists('BBVI', new_samples, 1)
@@ -502,8 +489,8 @@ if __name__ == '__main__':
     # Task 2
     # graph_2 = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_4/programs/{}.daphne'.format(2)])
     # print('\n\n\nSample of posterior of program {}:'.format(2)) 
-    # T_2 = int(5 * 1e3)
-    # L_2 = 25
+    # T_2 = int(1 * 1e4)
+    # L_2 = 50
     # start_time_2 = time.time()
     # samples_2, log_weights_2, posteriors_2 = BBVI(graph_2, T_2, L_2)
     # print('Time taken:', time.time() - start_time_2)
@@ -517,11 +504,11 @@ if __name__ == '__main__':
     # print(samples_mean_slope)
     # print(samples_mean_bias)
 
-    # Task 3
+    # # Task 3
     # graph_3 = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_4/programs/{}.daphne'.format(3)])
     # print('\n\n\nSample of posterior of program {}:'.format(3)) 
-    # T_3 = int(5 * 1e1)
-    # L_3 = 25
+    # T_3 = int(2 * 1e3)
+    # L_3 = 50
     # start_time_3 = time.time()
     # samples_3, log_weights_3, posteriors_3 = BBVI(graph_3, T_3, L_3)
     # print('Time taken:', time.time() - start_time_3)
@@ -535,8 +522,8 @@ if __name__ == '__main__':
     # Task 4
     # graph_4 = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_4/programs/{}.daphne'.format(4)])
     # print('\n\n\nSample of posterior of program {}:'.format(4)) 
-    # T_4 = int(5 * 1e0)
-    # L_4 = 25
+    # T_4 = int(2 * 1e2)
+    # L_4 = 50
     # start_time_4 = time.time()
     # samples_4, log_weights_4, posteriors_4 = BBVI(graph_4, T_4, L_4)
     # print('Time taken:', time.time() - start_time_4)
@@ -568,11 +555,12 @@ if __name__ == '__main__':
     # Task 5
     graph_5 = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_4/programs/{}.daphne'.format(5)])
     print('\n\n\nSample of posterior of program {}:'.format(5))
-    T_5 = int(5 * 1e3)
+    T_5 = int(2 * 1e3)
     L_5 = 25
     start_time_5 = time.time()
     samples_5, log_weights_5, posteriors_5 = BBVI(graph_5, T_5, L_5)
     print('Time taken:', time.time() - start_time_5)
 
+    print(posteriors_5[-1]['sample2'])
     new_samples = torch.distributions.Uniform(*posteriors_5[-1]['sample2']).sample((10000,)).view(1,-1)
     draw_hists('BBVI', new_samples, 5)

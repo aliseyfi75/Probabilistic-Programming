@@ -150,8 +150,8 @@ Posterior mean of bias is: \textbf{-0.4039}\\
 \subsection{Task 3}
 $T = 2*10^3$ and $L = 50$ for this task.\\
 Time of drawing samples: \textbf{581.53 seconds}\\
-Posterior mean of probability that the first and second datapoint are in the same cluster is: \textbf{0.7743}\\
-\gre{Here we have symmetric between our states due to our choice of prior, so our optimization model will converge to different solutions each time we run the program,  which is actually the mode-seeking behaviour.}
+Posterior mean of probability that the first and second datapoint are in the same cluster is: \textbf{0.6715}\\
+\gre{Here we have symmetric between our states due to our choice of prior, so our optimization model will converge to different solutions each time we run the program,  which is actually the mode-seeking behaviour. Also during the optimization, we can see jumps in ELBO values, and the reason of that is actually jumping between modes and show the mode-seeking behaviour of this method.}
 \centerfigcap{0.7}{../figures/ELBO_3}{ELBO in task 3}
 \subsection{Task 4}
 Time of drawing samples: \textbf{595.87 seconds}\\

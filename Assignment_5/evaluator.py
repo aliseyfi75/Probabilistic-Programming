@@ -3,7 +3,7 @@ from torchvision.models.detection import retinanet
 from primitives import env as penv, Env, Procedure
 from daphne import daphne
 from tests import is_tol, run_prob_test,load_truth
-from pyrsistent import pmap,plist
+from pyrsistent import pmap
 import torch
 
 Symbol = str              # A Scheme Symbol is implemented as a Python str
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     # run_probabilistic_tests()
     
 
-    for i in range(1,4):
+    for i in range(3,4):
         print(i)
         exp = daphne(['desugar-hoppl', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/{}.daphne'.format(i)])
         print('\n\n\nSample of prior of program {}:'.format(i))

@@ -152,8 +152,8 @@ def append(x):
     return torch.cat((first, second))
 
 def conj(x):
-    first = x[1]
-    second = x[0]
+    first = x[0]
+    second = x[1]
 
     if type(first) == type([]):
         first = torch.tensor(first)
@@ -193,6 +193,7 @@ env = {
         'nth': lambda x: x[0][int(x[1].item())],
         'second': lambda x: x[0][1],
         'rest': lambda x: x[0][1:],
+        'peek': lambda x: x[0][-1],
         'append': append,
         # 'cons': lambda x: append([x[1],x[0]]),
         'conj': conj,

@@ -1,0 +1,287 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{listings} % For displaying code
+\usepackage{algorithm2e} % pseudo-code
+\usepackage{mathtools}
+% for inline image 
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+% Python
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,    
+    frame = lines,             
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\rubric#1{\gre{Rubric: \{#1\}}}{}
+
+% Answers
+
+\def\ans#1{\par\gre{Answer: #1}}
+
+% Colors
+\definecolor{blu}{rgb}{0,0,1}
+\def\blu#1{{\color{blu}#1}}
+\definecolor{gre}{rgb}{0,.5,0}
+\def\gre#1{{\color{gre}#1}}
+\definecolor{red}{rgb}{1,0,0}
+\def\red#1{{\color{red}#1}}
+\def\norm#1{\|#1\|}
+
+% Math
+\def\R{\mathbb{R}}
+\def\argmax{\mathop{\rm arg\,max}}
+\def\argmin{\mathop{\rm arg\,min}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\alignStar}[1]{\begin{align*}#1\end{align*}}
+\def\half{\frac 1 2}
+
+% LaTeX
+\newcommand{\fig}[2]{\includegraphics[width=#1\textwidth]{#2}}
+\newcommand{\centerfig}[2]{\begin{center}\includegraphics[width=#1\textwidth]{#2}\end{center}}
+\newcommand{\centerfigcap}[3]{\begin{figure}[H]
+\begin{center}\includegraphics[width=#1\textwidth]{#2} \caption{#3}\end{center}
+\end{figure}}
+\newcommand{\matCode}[1]{\lstinputlisting[language=Matlab]{a2f/#1.m}}
+\def\items#1{\begin{itemize}#1\end{itemize}}
+\def\enum#1{\begin{enumerate}#1\end{enumerate}}
+
+\begin{document}
+
+
+\title{\vspace{-20mm}
+CPSC 532W Assignment 5}
+\author{Ali Seyfi - 97446637}
+\date{}
+\maketitle
+
+Here is the link to the repository:\\
+\url{https://github.com/aliseyfi75/Probabilistic-Programming/tree/master/Assignment_5}
+
+\section{Code}
+\blu{Report successful in passing all of the deterministic tests in the HW support code.}
+
+\subsection{primitives}
+\blu{Provide code snippets that document critical aspects of your implementation sufficient to allow us to quickly determine whether or not you individually completed the assignment.}
+\lstinputlisting[language=Python, caption=primitives.py - Env and Procedure definitions, firstline=7, lastline=27]{../primitives.py}
+\lstinputlisting[language=Python, caption=primitives.py -distributions, firstline=29, lastline=86]{../primitives.py}
+\lstinputlisting[language=Python, caption=primitives.py - functions, firstline=88, lastline=166]{../primitives.py}
+\lstinputlisting[language=Python, caption=primitives.py - environment, firstline=169, lastline=213]{../primitives.py}
+
+\subsection{evaluator}
+
+\lstinputlisting[language=Python, caption=evaluator.py - standard env,  firstline=16, lastline=21]{../evaluator.py}
+\lstinputlisting[language=Python, caption=evaluator.py - evaluate,  firstline=25, lastline=33]{../evaluator.py}
+\lstinputlisting[language=Python, caption=evaluator.py - eval,  firstline=35, lastline=91]{../evaluator.py}
+
+\pagebreak
+\section{Program 1}
+\blu{Results of Tests}\\
+Here are the results of the test files:\\
+\subsection{Deterministic}
+tensor(7.)\\
+FOPPL Tests passed\\
+tensor(1.4142)\\
+FOPPL Tests passed\\
+tensor(24.)\\
+FOPPL Tests passed\\
+tensor(0.2500)\\
+FOPPL Tests passed\\
+tensor(0.1802)\\
+FOPPL Tests passed\\
+tensor([2., 3., 4., 5.])\\
+FOPPL Tests passed\\
+tensor(4.)\\
+FOPPL Tests passed\\
+tensor([2., 3., 3., 5.])\\
+FOPPL Tests passed\\
+tensor(2.)\\
+FOPPL Tests passed\\
+tensor(5.)\\
+FOPPL Tests passed\\
+tensor([2.0000, 3.0000, 4.0000, 5.0000, 3.1400])\\
+FOPPL Tests passed\\
+tensor(5.3000)\\
+FOPPL Tests passed\\
+\{1.0: tensor(3.2000), 6.0: tensor(2.)\}\\
+FOPPL Tests passed\\
+\pagebreak
+\subsection{HOPPL Deterministic}
+tensor(71.)\\
+Test passed\\
+tensor(89.)\\
+Test passed\\
+tensor(6.)\\
+Test passed\\
+tensor(1.)\\
+Test passed\\
+tensor([10.,  9.])\\
+Test passed\\
+tensor(1.)\\
+Test passed\\
+tensor(4.)\\
+Test passed\\
+tensor([11.,  2.,  8.])\\
+Test passed\\
+tensor(4.)\\
+Test passed\\
+tensor(120.)\\
+Test passed\\
+tensor(6.)\\
+Test passed\\
+tensor([2., 3., 4.])\\
+Test passed\\
+All deterministic tests passed\\
+
+\subsection{Probabilistic}
+('normal', 5, 1.4142136)\\
+p value 0.976905685570249\\
+('beta', 2.0, 5.0)\\
+p value 0.9649610549178714\\
+('exponential', 0.0, 5.0)\\
+p value 0.28116937738711634\\
+('normal', 5.3, 3.2)\\
+p value 0.21365199633322285\\
+('normalmix', 0.1, -1, 0.3, 0.9, 1, 0.3)\\
+p value 0.718135587890695\\
+('normal', 0, 1.44)\\
+p value 0.6593599766116442\\
+All probabilistic tests passed\\
+
+\pagebreak
+\section{Program 2}
+I draw \textbf{20000} samples.\\
+Mean of until success is: \textbf{98.8752}\\
+Variance of until success is: \textbf{10014.3056}\\
+Running time: \textbf{2 min and 9.8 seconds}
+
+\centerfigcap{1}{../Results/fig2}{Histogram of untill success}
+
+\pagebreak
+\section{Program 3}
+I draw \textbf{100000} samples.\\
+Mean of $\mu$ is: \textbf{1.0016}.\\
+Variance of $\mu$ is: \textbf{4.9907}\\
+Running time: \textbf{38.8 seconds}
+
+\centerfigcap{1}{../Results/fig3}{Histogram of $\mu$}
+
+\pagebreak
+\section{Program 4}
+I draw \textbf{100000} samples.\\
+Running time: \textbf{3 minutes and 39.4 seconds}
+
+The distribution over states in each step is:
+
+\[ \begin{bmatrix}
+0.33351 & 0.33351 & 0.33141\\
+0.15164 & 0.28333 & 0.56503\\
+0.15587 & 0.21700 & 0.62713\\
+0.15293 & 0.21487 & 0.63220\\
+0.15289 & 0.21514 & 0.63197\\
+0.15137 & 0.21454 & 0.63409\\
+0.15278 & 0.21604 & 0.63118\\
+0.15353 & 0.21461 & 0.63186\\
+0.15249 & 0.21352 & 0.63399\\
+0.15324 & 0.21412 & 0.63264\\
+0.15311 & 0.21334 & 0.63355\\
+0.15281 & 0.21573 & 0.63146\\
+0.15356 & 0.21176 & 0.63468\\
+0.15296 & 0.21367 & 0.63337\\
+0.15222 & 0.21193 & 0.63585\\
+0.15261 & 0.21384 & 0.63355\\
+0.15254 & 0.21318 & 0.63428
+\end{bmatrix} \]
+
+The mean of the state value in each step is:
+
+\[
+\begin{bmatrix}
+0.99790\\
+1.41339\\
+1.47126\\
+1.47927\\
+1.47908\\
+1.48272\\
+1.47840\\
+1.47833\\
+1.48150\\
+1.47940\\
+1.48044\\
+1.47865\\
+1.48112\\
+1.48041\\
+1.48363\\
+1.48094\\
+1.48174
+\end{bmatrix}
+\]
+
+\pagebreak
+The variance of the state value in each step is:
+
+\[
+\begin{bmatrix}
+0.664922\\
+0.545784\\
+0.560920\\
+0.555436\\
+0.555348\\
+0.552447\\
+0.555099\\
+0.556596\\
+0.554643\\
+0.556061\\
+0.555843\\
+0.555170\\
+0.556769\\
+0.555542\\
+0.554178\\
+0.554862\\
+0.554752
+\end{bmatrix}
+\]
+\centerfigcap{1}{../Results/fig4}{Histogram of states in each step}
+
+\end{document}
+%

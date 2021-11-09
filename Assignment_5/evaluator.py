@@ -22,7 +22,7 @@ def standard_env():
 
 
 
-def evaluate(exp, env=None): #TODO: add sigma, or something
+def evaluate(exp, env=None): 
 
     if env is None or len(env) == 0:
         env = standard_env()
@@ -103,6 +103,7 @@ def run_deterministic_tests():
         exp = daphne(['desugar-hoppl', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/tests/deterministic/test_{}.daphne'.format(i)])
         truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/tests/deterministic/test_{}.truth'.format(i))
         ret = evaluate(exp)
+        print(ret)
         try:
             assert(is_tol(ret, truth))
         except:
@@ -115,6 +116,7 @@ def run_deterministic_tests():
         exp = daphne(['desugar-hoppl', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/tests/hoppl-deterministic/test_{}.daphne'.format(i)])
         truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/tests/hoppl-deterministic/test_{}.truth'.format(i))
         ret = evaluate(exp)
+        print(ret)
         try:
             assert(is_tol(ret, truth))
         except:
@@ -148,11 +150,11 @@ def run_probabilistic_tests():
 
 if __name__ == '__main__':
     
-    # run_deterministic_tests()
-    # run_probabilistic_tests()
+    run_deterministic_tests()
+    run_probabilistic_tests()
     
 
-    for i in range(3,4):
+    for i in range(1,4):
         print(i)
         exp = daphne(['desugar-hoppl', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_5/programs/{}.daphne'.format(i)])
         print('\n\n\nSample of prior of program {}:'.format(i))

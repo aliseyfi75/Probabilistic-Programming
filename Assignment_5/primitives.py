@@ -151,9 +151,9 @@ def append(x):
         second = second.unsqueeze(0)
     return torch.cat((first, second))
 
-def conj(x):
-    first = x[0]
-    second = x[1]
+def cons(x):
+    first = x[1]
+    second = x[0]
 
     if type(first) == type([]):
         first = torch.tensor(first)
@@ -195,8 +195,8 @@ env = {
         'rest': lambda x: x[0][1:],
         'peek': lambda x: x[0][-1],
         'append': append,
-        # 'cons': lambda x: append([x[1],x[0]]),
-        'conj': conj,
+        'cons': cons,
+        'conj': append,
         'mat-add': lambda x: x[0] + x[1],
         'mat-mul': lambda x: torch.matmul(x[0], x[1]),
         'mat-transpose': lambda x: x[0].T,

@@ -54,7 +54,7 @@ def eval(exp, env=None):
             else:
                 result = eval(false_exp, env)
         
-        elif operation == 'define':
+        elif operation == 'defn':
             (name, value) = args
             env[name] = eval(value, env)
             result = None
@@ -62,11 +62,6 @@ def eval(exp, env=None):
         elif operation == 'fn':
             (params, body) = args
             result = Procedure(params[1:], body, env, eval)
-
-        elif operation == 'set!':
-            (name, value) = args
-            env.find(name)[name] = eval(value, env)
-            result = None
 
         elif operation == 'sample':
             alpha = eval(args[0], env)

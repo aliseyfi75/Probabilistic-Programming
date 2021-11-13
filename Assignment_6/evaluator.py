@@ -73,8 +73,9 @@ def evaluate(exp, env=None):
             d = evaluate(args[1], env=env)
             s = d.sample()
             k = evaluate(args[2], env=env)
-            sigma = {'type' : 'sample'
-                     #TODO: put any other stuff you need here
+            sigma = {'type' : 'sample',
+                     'alpha' : alpha,
+                     'sample' : s
                      }
             return k, [s], sigma
         elif op == 'observe':
@@ -82,8 +83,9 @@ def evaluate(exp, env=None):
             d = evaluate(args[1], env=env)
             c = evaluate(args[2], env=env)
             k = evaluate(args[3], env=env)
-            sigma = {'type' : 'observe'
-                     #TODO: put any other stuff you need here
+            sigma = {'type' : 'observe',
+                     'alpha' : alpha,
+                     'logprob' : d.log_prob(c)
                      }
             return k, [c], sigma
         elif op == 'if':
@@ -130,17 +132,17 @@ def get_stream(exp):
         yield sample_from_prior(exp)
 
 
-def run_deterministic_tests(use_cache=True, cache='programs/tests/'):
+def run_deterministic_tests(use_cache=True, cache='/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/'):
 
     for i in range(1,15):
         if use_cache:
             with open(cache + 'deterministic/test_{}.json'.format(i),'r') as f:
                 exp = json.load(f)
         else:
-            exp = daphne(['desugar-hoppl-cps', '-i', '../../HW6/programs/tests/deterministic/test_{}.daphne'.format(i)])
+            exp = daphne(['desugar-hoppl-cps', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/deterministic/test_{}.daphne'.format(i)])
             with open(cache + 'deterministic/test_{}.json'.format(i),'w') as f:
                 json.dump(exp, f)
-        truth = load_truth('programs/tests/deterministic/test_{}.truth'.format(i))
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/deterministic/test_{}.truth'.format(i))
         ret = sample_from_prior(exp)
         try:
             assert(is_tol(ret, truth))
@@ -155,11 +157,11 @@ def run_deterministic_tests(use_cache=True, cache='programs/tests/'):
             with open(cache + 'hoppl-deterministic/test_{}.json'.format(i),'r') as f:
                 exp = json.load(f)
         else:
-            exp = daphne(['desugar-hoppl-cps', '-i', '../../HW6/programs/tests/hoppl-deterministic/test_{}.daphne'.format(i)])
+            exp = daphne(['desugar-hoppl-cps', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/hoppl-deterministic/test_{}.daphne'.format(i)])
             with open(cache + 'hoppl-deterministic/test_{}.json'.format(i),'w') as f:
                 json.dump(exp, f)
 
-        truth = load_truth('programs/tests/hoppl-deterministic/test_{}.truth'.format(i))
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/hoppl-deterministic/test_{}.truth'.format(i))
         ret = sample_from_prior(exp)
 
         try:
@@ -173,7 +175,7 @@ def run_deterministic_tests(use_cache=True, cache='programs/tests/'):
 
 
 
-def run_probabilistic_tests(use_cache=True, cache='programs/tests/'):
+def run_probabilistic_tests(use_cache=True, cache='/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/'):
 
     num_samples=1e4
     max_p_value = 1e-2
@@ -183,10 +185,10 @@ def run_probabilistic_tests(use_cache=True, cache='programs/tests/'):
             with open(cache + 'probabilistic/test_{}.json'.format(i),'r') as f:
                 exp = json.load(f)
         else:
-            exp = daphne(['desugar-hoppl-cps', '-i', '../../HW6/programs/tests/probabilistic/test_{}.daphne'.format(i)])
+            exp = daphne(['desugar-hoppl-cps', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/probabilistic/test_{}.daphne'.format(i)])
             with open(cache + 'probabilistic/test_{}.json'.format(i),'w') as f:
                 json.dump(exp, f)
-        truth = load_truth('programs/tests/probabilistic/test_{}.truth'.format(i))
+        truth = load_truth('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/tests/probabilistic/test_{}.truth'.format(i))
 
         stream = get_stream(exp)
 
@@ -200,11 +202,17 @@ def run_probabilistic_tests(use_cache=True, cache='programs/tests/'):
 
 if __name__ == '__main__':
     # run the tests, if you wish:  
-   # run_deterministic_tests(use_cache=False)
-   # run_probabilistic_tests(use_cache=False)
+    # run_deterministic_tests(use_cache=False)
+    # run_probabilistic_tests(use_cache=False)
+
+    # precompile programs
+    # for i in range(1,5):
+    #     exp = daphne(['desugar-hoppl-cps', '-i', '/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/{}.daphne'.format(i)])
+    #     with open('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/{}.json'.format(i),'w') as f:
+    #         json.dump(exp, f)
 
     #load your precompiled json's here:
-    with open('programs/{}.json'.format(4),'r') as f:
+    with open('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/{}.json'.format(4),'r') as f:
         exp = json.load(f)
 
     #this should run a sample from the prior
@@ -212,12 +220,12 @@ if __name__ == '__main__':
 
 
     #you can see how the CPS works here, you define a continuation for the last call:
-    output = lambda x: x #The output is the identity
+    # output = lambda x: x #The output is the identity
 
-    res =  evaluate(exp, env=None)('addr_start', output) #set up the initial call, every evaluate returns a continuation, a set of arguments, and a map sigma at every procedure call, every sample, and every observe
-    cont, args, sigma = res
-    print(cont, args, sigma)
-    #you can keep calling this to run the program forward:
-    res = cont(*args)
-    #you know the program is done, when "res" is not a tuple, but a simple data object
+    # res =  evaluate(exp, env=None)('addr_start', output) #set up the initial call, every evaluate returns a continuation, a set of arguments, and a map sigma at every procedure call, every sample, and every observe
+    # cont, args, sigma = res
+    # print(cont, args, sigma)
+    # #you can keep calling this to run the program forward:
+    # res = cont(*args)
+    # #you know the program is done, when "res" is not a tuple, but a simple data object
 

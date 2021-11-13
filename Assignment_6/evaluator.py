@@ -85,7 +85,7 @@ def evaluate(exp, env=None):
             k = evaluate(args[3], env=env)
             sigma = {'type' : 'observe',
                      'alpha' : alpha,
-                     'logprob' : d.log_prob(c)
+                     'log_prob' : d.log_prob(c)
                      }
             return k, [c], sigma
         elif op == 'if':

@@ -22,7 +22,18 @@ def run_until_observe_or_end(res):
     return res
 
 def resample_particles(particles, log_weights):
-    #TODO
+    paricles_length = len(particles)
+
+    weights = torch.exp(torch.FloatTensor(log_weights)) # convert to weights
+    weights = weights + 1e-10 # add a small number to avoid zero weights
+    weights = weights / weights.sum() # normalize weights
+
+    logZ = torch.log(torch.mean(weights)) # calculate logZ
+
+    # resample
+    indices = torch.multinomial(weights, paricles_length, replacement=True)
+    new_particles = [particles[i] for i in indices]
+
     return logZ, new_particles
 
 
@@ -47,6 +58,7 @@ def SMC(n_particles, exp):
     done = False
     smc_cnter = 0
     while not done:
+        new_address = ''
         print('In SMC step {}, Zs: '.format(smc_cnter), logZs)
         for i in range(n_particles): #Even though this can be parallelized, we run it serially
             res = run_until_observe_or_end(particles[i])
@@ -59,12 +71,22 @@ def SMC(n_particles, exp):
                     if not done:
                         raise RuntimeError('Failed SMC, finished one calculation before the other')
             else:
-                pass #TODO: check particle addresses, and get weights and continuations
+                if i == 0:
+                    new_address = res[2]['alpha']
+                else:
+                    address = res[2]['alpha']
+                    if address != new_address:
+                        raise RuntimeError('Failed SMC, address changed')
+                
+                log_prob = res[2]['log_prob']
+                weights[i] = weights[i] + log_prob
+                particles[i] = res
 
         if not done:
             #resample and keep track of logZs
             logZn, particles = resample_particles(particles, weights)
             logZs.append(logZn)
+            # weights = [0.] * n_particles
         smc_cnter += 1
     logZ = sum(logZs)
     return logZ, particles
@@ -73,12 +95,13 @@ def SMC(n_particles, exp):
 if __name__ == '__main__':
 
     for i in range(1,5):
-        with open('programs/{}.json'.format(i),'r') as f:
+        with open('/Users/aliseyfi/Documents/UBC/Semester3/Probabilistic-Programming/HW/Probabilistic-Programming/Assignment_6/programs/{}.json'.format(i),'r') as f:
             exp = json.load(f)
-        n_particles = None #TODO 
+        n_particles = 10**3 #TODO 
         logZ, particles = SMC(n_particles, exp)
 
         print('logZ: ', logZ)
 
         values = torch.stack(particles)
         #TODO: some presentation of the results
+    print(values)

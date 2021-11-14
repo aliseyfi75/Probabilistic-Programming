@@ -25,13 +25,13 @@ def resample_particles(particles, log_weights):
     paricles_length = len(particles)
 
     weights = torch.exp(torch.FloatTensor(log_weights)) # convert to weights
-    weights = weights + 1e-10 # add a small number to avoid zero weights
-    weights = weights / weights.sum() # normalize weights
+    normalized_weights = weights + 1e-10 # add a small number to avoid zero weights
+    normalized_weights = normalized_weights / normalized_weights.sum() # normalize weights
 
     logZ = torch.log(torch.mean(weights)) # calculate logZ
 
     # resample
-    indices = torch.multinomial(weights, paricles_length, replacement=True)
+    indices = torch.multinomial(normalized_weights, paricles_length, replacement=True)
     new_particles = [particles[i] for i in indices]
 
     return logZ, new_particles
@@ -86,7 +86,7 @@ def SMC(n_particles, exp):
             #resample and keep track of logZs
             logZn, particles = resample_particles(particles, weights)
             logZs.append(logZn)
-            # weights = [0.] * n_particles
+            # weights = [0.] * n_particles # TODO : Should we do this?
         smc_cnter += 1
     logZ = sum(logZs)
     return logZ, particles

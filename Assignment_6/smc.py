@@ -23,14 +23,12 @@ def run_until_observe_or_end(res):
 
 def resample_particles(particles, log_weights):
     paricles_length = len(particles)
-
     weights = torch.exp(torch.FloatTensor(log_weights)) # convert to weights
     normalized_weights = weights + 1e-10 # add a small number to avoid zero weights
     normalized_weights = normalized_weights / normalized_weights.sum() # normalize weights
 
     logZ = torch.log(torch.mean(weights)) # calculate logZ
 
-    # resample
     indices = torch.multinomial(normalized_weights, paricles_length, replacement=True)
     new_particles = [particles[i] for i in indices]
 
@@ -46,26 +44,22 @@ def SMC(n_particles, exp):
     output = lambda x: x
 
     for i in range(n_particles):
-
         res = evaluate(exp, env=None)('addr_start', output)
         logW = 0.
-
-
         particles.append(res)
         weights.append(logW)
 
-    #can't be done after the first step, under the address transform, so this should be fine:
     done = False
     smc_cnter = 0
     while not done:
         new_address = ''
         print('In SMC step {}, Zs: '.format(smc_cnter), logZs)
-        for i in range(n_particles): #Even though this can be parallelized, we run it serially
+        for i in range(n_particles): 
             res = run_until_observe_or_end(particles[i])
-            if 'done' in res[2]: #this checks if the calculation is done
+            if 'done' in res[2]: 
                 particles[i] = res[0]
                 if i == 0:
-                    done = True  #and enforces everything to be the same as the first particle
+                    done = True  
                     address = ''
                 else:
                     if not done:
@@ -83,12 +77,11 @@ def SMC(n_particles, exp):
                 particles[i] = res
 
         if not done:
-            #resample and keep track of logZs
             logZn, particles = resample_particles(particles, weights)
             logZs.append(logZn)
-            # weights = [0.] * n_particles # TODO : Should we do this?
+            weights = [0.] * n_particles
         smc_cnter += 1
-    logZ = sum(logZs)
+    logZ = logZs
     return logZ, particles
 
 

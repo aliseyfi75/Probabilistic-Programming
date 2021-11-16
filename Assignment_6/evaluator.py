@@ -65,7 +65,6 @@ def evaluate(exp, env=None):
     if env is None:
         env = standard_env()
         
-    
     if type(exp) is list:
         op, *args = exp
         if op == 'sample':
@@ -73,20 +72,14 @@ def evaluate(exp, env=None):
             d = evaluate(args[1], env=env)
             s = d.sample()
             k = evaluate(args[2], env=env)
-            sigma = {'type' : 'sample',
-                     'alpha' : alpha,
-                     'sample' : s
-                     }
+            sigma = {'type' : 'sample', 'alpha' : alpha, 'sample' : s}
             return k, [s], sigma
         elif op == 'observe':
             alpha = evaluate(args[0], env=env)
             d = evaluate(args[1], env=env)
             c = evaluate(args[2], env=env)
             k = evaluate(args[3], env=env)
-            sigma = {'type' : 'observe',
-                     'alpha' : alpha,
-                     'log_prob' : d.log_prob(c)
-                     }
+            sigma = {'type' : 'observe', 'alpha' : alpha, 'log_prob' : d.log_prob(c)}
             return k, [c], sigma
         elif op == 'if':
             cond,conseq,alt = args
@@ -100,9 +93,7 @@ def evaluate(exp, env=None):
         else: #func eval
             proc = evaluate(op, env=env)
             values = [evaluate(e, env=env) for e in args]
-            sigma = {'type' : 'proc'
-                     #TODO: put any other stuff you need here
-                     }
+            sigma = {'type' : 'proc'}
             return proc, values, sigma
     elif type(exp) is str:
         if exp[0] == "\"":  # strings have double, double quotes

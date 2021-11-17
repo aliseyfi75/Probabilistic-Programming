@@ -1,0 +1,397 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{listings} % For displaying code
+\usepackage{algorithm2e} % pseudo-code
+\usepackage{mathtools}
+% for inline image 
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+% Python
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,    
+    frame = lines,             
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\def\rubric#1{\gre{Rubric: \{#1\}}}{}
+
+% Answers
+
+\def\ans#1{\par\gre{Answer: #1}}
+
+% Colors
+\definecolor{blu}{rgb}{0,0,1}
+\def\blu#1{{\color{blu}#1}}
+\definecolor{gre}{rgb}{0,.5,0}
+\def\gre#1{{\color{gre}#1}}
+\definecolor{red}{rgb}{1,0,0}
+\def\red#1{{\color{red}#1}}
+\def\norm#1{\|#1\|}
+
+% Math
+\def\R{\mathbb{R}}
+\def\argmax{\mathop{\rm arg\,max}}
+\def\argmin{\mathop{\rm arg\,min}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\alignStar}[1]{\begin{align*}#1\end{align*}}
+\def\half{\frac 1 2}
+
+% LaTeX
+\newcommand{\fig}[2]{\includegraphics[width=#1\textwidth]{#2}}
+\newcommand{\centerfig}[2]{\begin{center}\includegraphics[width=#1\textwidth]{#2}\end{center}}
+\newcommand{\centerfigcap}[3]{\begin{figure}[H]
+\begin{center}\includegraphics[width=#1\textwidth]{#2} \caption{#3}\end{center}
+\end{figure}}
+\newcommand{\matCode}[1]{\lstinputlisting[language=Matlab]{a2f/#1.m}}
+\def\items#1{\begin{itemize}#1\end{itemize}}
+\def\enum#1{\begin{enumerate}#1\end{enumerate}}
+
+\begin{document}
+
+
+\title{\vspace{-20mm}
+CPSC 532W Assignment 6}
+\author{Ali Seyfi - 97446637}
+\date{}
+\maketitle
+
+Here is a link to the repository:\\
+\url{https://github.com/aliseyfi75/Probabilistic-Programming/tree/master/Assignment_6}
+
+
+\section{Code}
+\subsection{evaluator}
+\label{evaluator}
+\lstinputlisting[language=Python, caption=evaluator.py - evaluate, firstline=63, lastline=108]{../evaluator.py}
+\subsection{SMC}
+\lstinputlisting[language=Python, caption=smc.py - SMC, firstline=41, lastline=86]{../smc.py}
+\lstinputlisting[language=Python, caption=smc.py - resample\_particles, firstline=24, lastline=35]{../smc.py}
+
+\section{Results}
+\subsection{Task 1}
+\subsubsection{Number of particles: $1$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{22}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_0}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{73.7}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_1}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^2$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{97.35}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_2}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^3$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{97.474}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_3}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^4$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{96.4183}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_4}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^5$}
+\paragraph{Posterior expectation}
+Posterior expected value of until success is: \textbf{98.9192}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_1_5}{Histogram of posterior distribution of until success}
+\paragraph{marginal evidence estimate}
+marginal evidence estimateof until success is: \textbf{NA}\\
+
+%\centerfigcap{0.6}{../Figures/Evidence_1}{Marginal evidence estimate of until success for different number of particles}
+\centerfigcap{0.6}{../Figures/Mean-Std_1}{Marginal mean and std of until success for different number of particles}
+\pagebreak
+\subsection{Task 2}
+\subsubsection{Number of particles: $1$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{0.8076}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_0}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-35.7038}\\
+marginal evidence estimate of mu is: \textbf{$3.1191*10^{-16}$}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{4.9418}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_1}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-15.9816}\\
+marginal evidence estimate of mu is: \textbf{$1.1462 * 10^{-7}$}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^2$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{4.3897}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_2}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-9.0384}\\
+marginal evidence estimate of mu is: \textbf{0.0001187}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^3$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.5386}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_3}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-7.9729}\\
+marginal evidence estimate of mu is: \textbf{0.000344}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^4$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.2384}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_4}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-8.23083}\\
+marginal evidence estimate of mu is: \textbf{0.00027}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^5$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.2103}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_2_5}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-8.23384}\\
+marginal evidence estimate of mu is: \textbf{0.000266}\\
+
+\begin{minipage}{.5\textwidth}
+  \centering
+\centerfigcap{1}{../Figures/Evidence_2}{Marginal evidence estimate of mu for different number of particles}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\centerfigcap{1}{../Figures/Mean-Std_2}{Marginal mean and std of mu for different number of particles}
+\end{minipage}
+
+
+\subsection{Task 3}
+\subsubsection{Number of particles: $1$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{1,0,0,2,2,0,1,0,2,2,2,2,2,2,2,2,1}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_0}{Marginal mean and std of states in each step}
+
+\paragraph{Histogram}
+\centerfigcap{0.7}{../Figures/Histogram_3_0}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-52.73303}\\
+marginal evidence estimate of states in each step is: \textbf{$1.254118*10^{-23}$}\\
+
+\subsubsection{Number of particles: $10$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{[]}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_1}{Marginal mean and std of states in each step}
+\paragraph{Histogram}
+\centerfigcap{1}{../Figures/Histogram_3_1}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-45.1086}\\
+marginal evidence estimate of states in each step is: \textbf{$2.56789*10^{-20}$}\\
+
+\subsubsection{Number of particles: $10^2$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{?}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_2}{Marginal mean and std of states in each step}
+\paragraph{Histogram}
+\centerfigcap{1}{../Figures/Histogram_3_2}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-44.41735}\\
+marginal evidence estimate of states in each step is: \textbf{$5.12611*10^{-20}$}\\
+
+\subsubsection{Number of particles: $10^3$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{?}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_3}{Marginal mean and std of states in each step}
+\paragraph{Histogram}
+\centerfigcap{1}{../Figures/Histogram_3_3}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-44.29677}\\
+marginal evidence estimate of states in each step is: \textbf{$5.783042*10^{-20}$}\\
+
+\subsubsection{Number of particles: $10^4$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{?}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_4}{Marginal mean and std of states in each step}
+\paragraph{Histogram}
+\centerfigcap{1}{../Figures/Histogram_3_4}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-44.44874}\\
+marginal evidence estimate of states in each step is: \textbf{$4.9677*10^{-20}$}\\
+
+\subsubsection{Number of particles: $10^5$}
+\paragraph{Posterior expectation}
+Posterior expected value of states in each step is: \textbf{?}\\
+
+\centerfigcap{0.6}{../Figures/Mean-Std_3_5}{Marginal mean and std of states in each step}
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_3_5}{Histogram of posterior distribution of states in each step}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of states in each step is: \textbf{-44.43314}\\
+marginal evidence estimate of states in each step is: \textbf{$5.04581*10^{-20}$}\\
+
+\centerfigcap{0.6}{../Figures/Evidence_3}{Marginal evidence estimate of mu for different number of particles}
+
+
+\pagebreak
+\subsection{Task 4}
+\subsubsection{Number of particles: $1$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{2.8495}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_0}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-35.165577}\\
+marginal evidence estimate of mu is: \textbf{$5.3429 * 10^{-16}$}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{3.8222}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_1}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-15.06296}\\
+marginal evidence estimate of mu is: \textbf{$2.8724*10^{-7}$}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^2$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.3450}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_2}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-7.62482}\\
+marginal evidence estimate of mu is: \textbf{0.000488}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^3$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.1552}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_3}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-7.9910}\\
+marginal evidence estimate of mu is: \textbf{0.00034}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^4$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.1179}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_4}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-8.40138}\\
+marginal evidence estimate of mu is: \textbf{0.00023}\\
+
+\pagebreak
+\subsubsection{Number of particles: $10^5$}
+\paragraph{Posterior expectation}
+Posterior expected value of mu is: \textbf{7.2363}\\
+
+\paragraph{Histogram}
+\centerfigcap{0.6}{../Figures/Histogram_4_5}{Histogram of posterior distribution of mu}
+\paragraph{marginal evidence estimate}
+marginal log evidence estimate of mu is: \textbf{-8.22765}\\
+marginal evidence estimate of mu is: \textbf{0.00027}\\
+
+\begin{minipage}{.5\textwidth}
+  \centering
+\centerfigcap{1}{../Figures/Evidence_4}{Marginal evidence estimate of mu for different number of particles}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\centerfigcap{1}{../Figures/Mean-Std_4}{Marginal mean and std of mu for different number of particles}
+\end{minipage}
+
+\end{document}

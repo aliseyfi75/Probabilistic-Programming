@@ -81,7 +81,7 @@ def SMC(n_particles, exp):
             logZs.append(logZn)
             weights = [0.] * n_particles
         smc_cnter += 1
-    logZ = logZs
+    logZ = sum(logZs)
     return logZ, particles
 
 

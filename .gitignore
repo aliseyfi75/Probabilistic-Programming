@@ -7,3 +7,5 @@ lein.txt
 *.log
 *.gz
 wandb/
+*.fls
+*.fdb*

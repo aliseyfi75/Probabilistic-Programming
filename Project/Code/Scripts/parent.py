@@ -14,6 +14,7 @@ TRANSLATION_TABLE = str.maketrans(NUCLEOTIDES, "TGAC")
 RETURN_MINUS_INF = None
 
 PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 class MyStrand(object):   
     def __init__(self, sequence, complement=None):

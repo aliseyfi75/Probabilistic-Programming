@@ -13,6 +13,8 @@ NUCLEOTIDES = "ACTG"
 TRANSLATION_TABLE = str.maketrans(NUCLEOTIDES, "TGAC")
 RETURN_MINUS_INF = None
 
+PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+
 class MyStrand(object):   
     def __init__(self, sequence, complement=None):
         """Create a strand by providing a sequence from 5' to 3' ends"""
@@ -57,16 +59,16 @@ class ParentComplex(object):
         self.sodium = sodium
         self.magnesium = magnesium
 
-        with open("./CTMCs/"+self.dataset_name+ "/" + "statespace" + "/" + "statespace" + str(self.docID), "rb") as state_file:
+        with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "statespace" + "/" + "statespace" + str(self.docID), "rb") as state_file:
             self.statespace = pickle.load(state_file, encoding='latin1')
 
-        with open("./CTMCs/"+self.dataset_name+ "/" + "energy" + "/" + "energy" + str(self.docID), "rb") as energy_file:
+        with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "energy" + "/" + "energy" + str(self.docID), "rb") as energy_file:
             self.energies = pickle.load(energy_file, encoding='latin1')
 
-        with open("./CTMCs/"+self.dataset_name+ "/" + "transition_structure" + "/" + "transition_structure" + str(self.docID), "rb") as context_file:
+        with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "transition_structure" + "/" + "transition_structure" + str(self.docID), "rb") as context_file:
             self.transition_structure= pickle.load(context_file, encoding='latin1')
 
-        with open("./CTMCs/"+self.dataset_name+ "/" + "fast_access" + "/" + "fast_access" + str(self.docID), "rb") as fast_file:
+        with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "fast_access" + "/" + "fast_access" + str(self.docID), "rb") as fast_file:
             self.fast_access = pickle.load(fast_file, encoding='latin1')
         
         self.neighbours_dictionary = {s:set([]) for s in self.statespace}

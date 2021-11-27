@@ -8,6 +8,7 @@ import helix
 import three_waystranddisplacement
 import four_waystrandexchange
 
+PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 
 def open_csv(document) :
     """open a csv file"""
@@ -150,7 +151,7 @@ def main():
         if reaction_type == "bubble":
             for reaction_dataset in datasets[reaction_type]:
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -159,7 +160,7 @@ def main():
         if reaction_type == "four_waystrandexchange":
             for reaction_dataset in datasets[reaction_type]:
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -170,7 +171,7 @@ def main():
                 _zip = bool(int(reaction_dataset[-1]))
                 j = reaction_dataset[-3]
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -180,7 +181,7 @@ def main():
             for reaction_dataset in datasets[reaction_type]:
                 _zip = bool(int(reaction_dataset[-1]))
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -190,7 +191,7 @@ def main():
             for reaction_dataset in datasets[reaction_type]:
                 _zip = bool(int(reaction_dataset[-1]))
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -200,7 +201,7 @@ def main():
             for reaction_dataset in datasets[reaction_type]:
                 _zip = bool(int(reaction_dataset[-1]))
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -210,7 +211,7 @@ def main():
             for reaction_dataset in datasets[reaction_type]:
                 _zip = False
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -219,7 +220,7 @@ def main():
         elif reaction_type == "three_waystranddisplacement":
             for reaction_dataset in datasets[reaction_type]:
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :
@@ -228,7 +229,7 @@ def main():
         elif reaction_type == "three_waystranddisplacement1":
             for reaction_dataset in datasets[reaction_type]:
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
-                document_name = "./dataset" + reaction_id + ".csv"
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
                 while row < len(file) and file[row][0] != '' :

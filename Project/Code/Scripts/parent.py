@@ -202,7 +202,6 @@ class ParentComplex(object):
     def MFPT_paths(self, rate_method):
         # TODO: Gillespie / SSA approximation of MFPT
         """finds the MFPT from the initial state to the final state simulating paths """
-        # trying a comment here. 
         pass
         
     def MFPT_matrix(self, rate_method):

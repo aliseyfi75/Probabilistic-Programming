@@ -120,7 +120,7 @@ def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, ki
 def main(): 
 
     # kinetic_model = "ARRHENIUS"
-    kinetic_model = "METROPOLIS"
+    kinetic_model = "ARRHENIUS"
 
     if kinetic_model == "ARRHENIUS":
         # Initial parameter set for the Arrhenius model
@@ -159,84 +159,84 @@ def main():
                 while row < len(file) and file[row][0] != '' :
                     estimate_AltanBonnet(row, theta, file, reaction_id, str(row), "Altanbonnet", kinetic_model)
                     row+=1
-        # if reaction_type == "four_waystrandexchange":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_DabbyThesis(row, theta, file, reaction_id, str(row), "Dabby", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "hairpin":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         _zip = bool(int(reaction_dataset[-1]))
-        #         j = reaction_dataset[-3]
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_Bonnet(row, theta, _zip, file, reaction_id, str(row), "Bonnet"+j, kinetic_model)
-        #             row+=1
-        # elif reaction_type == "hairpin1":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         _zip = bool(int(reaction_dataset[-1]))
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_BonnetThesis(row, theta, _zip, file, reaction_id, str(row), "GoddardT", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "hairpin4":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         _zip = bool(int(reaction_dataset[-1]))
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_Kim(row, theta, _zip, file, reaction_id, str(row), "Kim", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "helix":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         _zip = bool(int(reaction_dataset[-1]))
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_Morrison(row, theta, _zip, file, reaction_id, str(row), "Morrison", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "helix1":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         _zip = False
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_ReynaldoDissociate(row, theta, _zip, file, reaction_id, str(row), "ReynaldoDissociate", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "three_waystranddisplacement":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_Zhang(row, theta, file, reaction_id, str(row), "Zhang", kinetic_model)
-        #             row+=1
-        # elif reaction_type == "three_waystranddisplacement1":
-        #     for reaction_dataset in datasets[reaction_type]:
-        #         reaction_id = "/" + reaction_type + "/" + reaction_dataset
-        #         document_name = PATH + "/dataset" + reaction_id + ".csv"
-        #         file =  open_csv(document_name)
-        #         row = 1
-        #         while row < len(file) and file[row][0] != '' :
-        #             estimate_ReyanldoSequential(row, theta, file, reaction_id, str(row), "ReynaldoSequential", kinetic_model)
-        #             row+=1
+        if reaction_type == "four_waystrandexchange":
+            for reaction_dataset in datasets[reaction_type]:
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_DabbyThesis(row, theta, file, reaction_id, str(row), "Dabby", kinetic_model)
+                    row+=1
+        if reaction_type == "hairpin":
+            for reaction_dataset in datasets[reaction_type]:
+                _zip = bool(int(reaction_dataset[-1]))
+                j = reaction_dataset[-3]
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_Bonnet(row, theta, _zip, file, reaction_id, str(row), "Bonnet"+j, kinetic_model)
+                    row+=1
+        if reaction_type == "hairpin1":
+            for reaction_dataset in datasets[reaction_type]:
+                _zip = bool(int(reaction_dataset[-1]))
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_BonnetThesis(row, theta, _zip, file, reaction_id, str(row), "GoddardT", kinetic_model)
+                    row+=1
+        if reaction_type == "hairpin4":
+            for reaction_dataset in datasets[reaction_type]:
+                _zip = bool(int(reaction_dataset[-1]))
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_Kim(row, theta, _zip, file, reaction_id, str(row), "Kim", kinetic_model)
+                    row+=1
+        if reaction_type == "helix":
+            for reaction_dataset in datasets[reaction_type]:
+                _zip = bool(int(reaction_dataset[-1]))
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_Morrison(row, theta, _zip, file, reaction_id, str(row), "Morrison", kinetic_model)
+                    row+=1
+        if reaction_type == "helix1":
+            for reaction_dataset in datasets[reaction_type]:
+                _zip = False
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_ReynaldoDissociate(row, theta, _zip, file, reaction_id, str(row), "ReynaldoDissociate", kinetic_model)
+                    row+=1
+        if reaction_type == "three_waystranddisplacement":
+            for reaction_dataset in datasets[reaction_type]:
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_Zhang(row, theta, file, reaction_id, str(row), "Zhang", kinetic_model)
+                    row+=1
+        if reaction_type == "three_waystranddisplacement1":
+            for reaction_dataset in datasets[reaction_type]:
+                reaction_id = "/" + reaction_type + "/" + reaction_dataset
+                document_name = PATH + "/dataset" + reaction_id + ".csv"
+                file =  open_csv(document_name)
+                row = 1
+                while row < len(file) and file[row][0] != '' :
+                    estimate_ReyanldoSequential(row, theta, file, reaction_id, str(row), "ReynaldoSequential", kinetic_model)
+                    row+=1
         else:
             pass
 

@@ -4,6 +4,7 @@ import numpy as np
 import  random
 import math
 import pickle as pickle
+from numpy.lib.function_base import average
 from  scipy.sparse.linalg import spsolve
 from scipy.sparse import csr_matrix, coo_matrix
 
@@ -200,16 +201,44 @@ class ParentComplex(object):
         
         return rate1
 
+    def sample_path(self, s, final, rate_method):
+        ''' samples a path from s->final, returns the time'''
+        time = 0
+        while s != final:
+            rates = []
+            ps = list(self.possible_states(s))  # possible sstates
+            for si in ps: 
+                if rate_method == "ARRHENIUS":
+                    rate = self.Arrhenius_rate(s, si)
+                elif rate_method == "METROPOLIS":
+                    rate = self.Metropolis_rate(s, si)
+                rates.append(rate)
+            unnormalized_probs = [1/r for r in rates]
+            summ = sum(unnormalized_probs)
+            probs = [p/summ for p in unnormalized_probs]
+            # sample next state 
+            s = ps[list(np.random.multinomial(1, probs)).index(1)]
+            # sample holding time from exponential
+            time += np.random.exponential(1/sum(rates))
+        return time
+
     def MFPT_paths(self, rate_method):
-        # TODO: Gillespie / SSA approximation of MFPT
-        """finds the MFPT from the initial state to the final state simulating paths """
-        pass
+        """finds the MFPT from the initial state to the final state simulating paths (SSA) """
+        [initialState,finalState] = self.initial_final_state()
+        
+        samples = []
+        n_paths = 1000
+        for _ in range(n_paths):
+            samples.append(self.sample_path(self.statespace[initialState], self.statespace[finalState], rate_method))
+
+        return average(samples)
         
     def MFPT_matrix(self, rate_method):
         """finds the MFPT from the initial state to the final state by solving a system of linear equations """
         
         [initialState,finalState] = self.initial_final_state()
         self.num_complex()
+
 
         vals = []
         rows = []
@@ -219,10 +248,12 @@ class ParentComplex(object):
         diags = [0 for i in range (len(self.statespace) ) ]
 
         lens = len(self.statespace)
+
         for s1 in  range(lens)  :
+
             state = self.statespace[s1]
             ps = self.possible_states(state )
-          
+
             for state2 in ps:
                 s2 = self.fast_access[state2]
                 if rate_method =="ARRHENIUS":
@@ -291,6 +322,9 @@ class ParentComplex(object):
     def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model):
         """ Computes the estimated rate constant, and the error """
         mfpt = self.MFPT_matrix(kinetic_model)
+
+        # This estimates MFPT using SSA. Only works for very quick reactions such as hairpins
+        # mfpt = self.MFPT_paths(kinetic_model)
 
         # Estimating reaction rate constant from first passage time.
         if bimolTransition == True :

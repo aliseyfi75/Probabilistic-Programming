@@ -267,7 +267,7 @@ class ParentComplex(object):
         
                 if (sss[0], sss[1] ) not in d1 : 
                    
-                    diags[sss[0] ] = diags[sss[0]]  - sss[2].detach().numpy()
+                    diags[sss[0] ] = diags[sss[0]]  - sss[2]
                     d1 [sss[0] , sss[1] ] = 1 
                 if sss[0] == finalState or sss[1] == finalState: 
                     continue 

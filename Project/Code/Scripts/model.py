@@ -26,21 +26,25 @@ def estimate_AltanBonnet(row, theta, file, dataset_name, docID, name, kinetic_mo
     real_log_10_rate = 1 / float( file[row][5])
 
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
-        = bubble.main(real_log_10_rate, theta, file[row][1].rstrip(),file[row][2].rstrip(),file[row][3].rstrip(), (1000/ float (file[row][4] ))-273.15, float (file[row][8] ), float (file[row][9] ), 0, flurPosition, dataset_name, docID, kinetic_model) 
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+        = bubble.main(real_log_10_rate, theta, file[row][1].rstrip(),file[row][2].rstrip(),file[row][3].rstrip(), (1000/ float (file[row][4] ))-273.15, float (file[row][8] ), float (file[row][9] ), 0, flurPosition, dataset_name, docID, kinetic_model)  
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # four_waystrandexchange
 def estimate_DabbyThesis(row, theta , file, dataset_name , docID, name, kinetic_model) :
     docID = name +docID
     [  error ,  predicted_log_10_rate, real_log_10_rate ,  stuctureCounterUniLocal, half_context_biLocal] \
         = four_waystrandexchange.main(float( file[row][8]) ,   float( file[row][13])  ,  int(file[row][1]) , int(file[row][2]) ,  file[row][3]  ,  file[row][4]  , file[row][5] ,  6,6 , theta,  1000/  float (file[row][6] )- 273.15 , np.max ( ( float (file[row][16] ), float (file[row][17]  ) ) ) ,  float (file[row][11]) ,float (file[row][12])  ,  dataset_name, docID , name, kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # hairpin
 def estimate_Bonnet(row, theta, _zip, file, dataset_name, docID, name, kinetic_model):
@@ -48,10 +52,12 @@ def estimate_Bonnet(row, theta, _zip, file, dataset_name, docID, name, kinetic_m
     magnesium = 0
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         = hairpin.main( float (file[row][5]), theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float( file[row][3] )- 273.15, float ( file[row][7] ), float ( file[row][8] ), magnesium, dataset_name, docID, kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # hairpin1
 def estimate_BonnetThesis( row, theta, _zip, file, dataset_name, docID, name, kinetic_model):
@@ -59,10 +65,12 @@ def estimate_BonnetThesis( row, theta, _zip, file, dataset_name, docID, name, ki
     real_log_10_rate = 1 / float( file[row][4])
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         =   hairpin.main(  real_log_10_rate, theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float (file[row][3] ) - 273.15,  float (file[row][7] ), float (file[row][8] ), 0, dataset_name, docID , kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # hairpin4
 def estimate_Kim( row, theta, _zip, file, dataset_name, docID, name, kinetic_model):
@@ -70,30 +78,36 @@ def estimate_Kim( row, theta, _zip, file, dataset_name, docID, name, kinetic_mod
     magnesium = 0
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         =   hairpin.main( float (file[row][5]), theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float( file[row][3] )- 273.15, float ( file[row][7] ), float ( file[row][8] ), magnesium, dataset_name, docID, kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # helix
 def estimate_Morrison( row, theta, _zip, file, dataset_name, docID, name, kinetic_model) :
     docID = name + str(_zip) +docID
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         = helix.main(  pow(10, float (file[row][5] )), theta, file[row][1].rstrip(), _zip, 1000/  float (file[row][3] ) - 273.15, np.max ( ( float (file[row][16] ), float (file[row][17]  ) ) ), float (file[row][8] ), 0, "", dataset_name, docID, name, kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # helix1
 def estimate_ReynaldoDissociate( row, theta, _zip, file, dataset_name, docID, name, kinetic_model) :
     docID = name + str(_zip) +docID
     [error, predicted_log_10_rate, real_log_10_rate,stuctureCounterUniLocal, half_context_biLocal] \
         = helix.main(  float( file[row][5] ), theta, file[row][2].rstrip(), _zip, float (file[row][3] ), np.max ( ( float (file[row][16] ), float (file[row][17]  ) ) ), float (file[row][7] ), float (file[row][8] ),file[row][9], dataset_name, docID, name , kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # three_waystranddisplacement
 def estimate_Zhang( row, theta, file,dataset_name, docID, name, kinetic_model) :
@@ -101,10 +115,12 @@ def estimate_Zhang( row, theta, file,dataset_name, docID, name, kinetic_model) :
     real_log_10_rate = pow(10, float( file[row][7])  )
     [error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         = three_waystranddisplacement.main( True, file[row][2], real_log_10_rate, int ( file[row][1]   )  ,file[row][3], file[row][4], theta, 1000/ float (file[row][5]) - 273.15, np.max ( ( float (file[row][16] ), float (file[row][17]  ) ) ), float (file[row][9]), float (file[row][10]), "", dataset_name, docID, name, "", "", "", "", kinetic_model )
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 # three_waystranddisplacement1
 def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, kinetic_model) :
@@ -112,10 +128,12 @@ def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, ki
     real_log_10_rate =float( file[row][5])
     [error, predicted_log_10_rate, real_log_10_rate,  stuctureCounterUniLocal, half_context_biLocal] \
         = three_waystranddisplacement.main( False ,"",  real_log_10_rate, 0 ,file[row][2] ,"", theta, float( file[row][3]), np.max ( ( float (file[row][16] ), float (file[row][17]  ) ) ), float (file[row][7]), float( file[row][8]), file[row][9], dataset_name, docID, name,  "", "", "", "" , kinetic_model)
-    print("error", error)
-    print("predicted_log_10_rate", predicted_log_10_rate)
-    print("real_log_10_rate", real_log_10_rate)
-    print("\n\n")
+    # print("error", error)
+    # print("predicted_log_10_rate", predicted_log_10_rate)
+    # print("real_log_10_rate", real_log_10_rate)
+    # print("\n\n")
+
+    return predicted_log_10_rate, real_log_10_rate
 
 def main(): 
 

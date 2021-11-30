@@ -12,10 +12,10 @@ R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
 NUCLEOTIDES = "ACTG"
 TRANSLATION_TABLE = str.maketrans(NUCLEOTIDES, "TGAC")
-RETURN_MINUS_INF = None
+RETURN_MINUS_INF = 1e-10
 
 PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 class MyStrand(object):   
     def __init__(self, sequence, complement=None):
@@ -252,7 +252,7 @@ class ParentComplex(object):
         for s1 in  range(lens)  :
 
             state = self.statespace[s1]
-            ps = self.possible_states(state )
+            ps = self.possible_states(state)
 
             for state2 in ps:
                 s2 = self.fast_access[state2]
@@ -267,7 +267,7 @@ class ParentComplex(object):
         
                 if (sss[0], sss[1] ) not in d1 : 
                    
-                    diags[sss[0] ] = diags[sss[0]]  - sss[2]
+                    diags[sss[0] ] = diags[sss[0]]  - sss[2].detach().numpy()
                     d1 [sss[0] , sss[1] ] = 1 
                 if sss[0] == finalState or sss[1] == finalState: 
                     continue 
@@ -333,7 +333,10 @@ class ParentComplex(object):
             predicted_rate= 1.0 / mfpt
         warnings.filterwarnings('error')
         
-        predicted_log_10_rate =np.log(predicted_rate)/np.log(10)
+        try:
+            predicted_log_10_rate = np.log(predicted_rate)/np.log(10)
+        except:
+            predicted_log_10_rate = RETURN_MINUS_INF
         real_log_10_rate = np.log(real_rate)/np.log(10)
         error  = math.pow( real_log_10_rate - predicted_log_10_rate, 2)
 

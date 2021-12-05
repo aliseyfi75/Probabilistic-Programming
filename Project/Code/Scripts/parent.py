@@ -1,5 +1,6 @@
 from __future__ import division
 import warnings
+import os
 import numpy as np
 import  random
 import math
@@ -7,6 +8,7 @@ import pickle as pickle
 from numpy.lib.function_base import average
 from  scipy.sparse.linalg import spsolve
 from scipy.sparse import csr_matrix, coo_matrix
+from scipy.special import logsumexp as logsumexp 
 
 R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
@@ -54,6 +56,7 @@ class ParentComplex(object):
         else:
             raise ValueError('Error: Please specify rate_method to be Arrhenius or Metropolis in the configuration file!')
         
+        # self.create_discotress = False
         self.dataset_name = dataset_name
         self.docID = docID 
         self.T = T
@@ -72,11 +75,25 @@ class ParentComplex(object):
 
         with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "fast_access" + "/" + "fast_access" + str(self.docID), "rb") as fast_file:
             self.fast_access = pickle.load(fast_file, encoding='latin1')
+
+
+        # if self.create_discotress:
+        #     try:
+        #         self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
+        #         try:
+        #             os.mkdir(PATH + "CTMCs" +self.dataset_name+"/" + "discotress")
+        #         except:
+        #             pass
+        #         os.mkdir(PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID))
+        #     except:
+        #         print("Exception creating directories")
+        #         raise
         
         self.neighbours_dictionary = {s:set([]) for s in self.statespace}
         for s0, s1 in list(self.transition_structure.keys()):
             self.neighbours_dictionary[s1].add(s0)
             self.neighbours_dictionary[s0].add(s1)
+
 
         self.rates ={}
         self.local_context_bi = dict()     
@@ -86,7 +103,7 @@ class ParentComplex(object):
             for j in self.kinetic_parameters:
                 self.local_context_bi [i , j]  = 0
                 self.local_context_uni [i  , j]  = 0
-  
+
 
     def possible_states(self, state):
         return self.neighbours_dictionary[state] 
@@ -138,8 +155,8 @@ class ParentComplex(object):
         self.rates[transition2] = rate2
         
         return rate1
-   
-    
+
+       
     def Arrhenius_rate(self, state1, state2   ):
         """Uses the Arrhenius kinetic model to calculate the transition  rate from state1 to state and the transition rate from state2 to state1. Only returns the transition rate from state1 to state2 """
 
@@ -316,8 +333,60 @@ class ParentComplex(object):
             firstpassagetime = firstpassagetimes[initialState-1]
         else : 
             firstpassagetime = firstpassagetimes[initialState]
+
+        # if self.create_discotress:
+        #     self.create_discotress_files()
+
         return firstpassagetime
+    
+    def create_discotress_files(self):
+        "making input for DISCOTRESS"
         
+        self.create_discotress = False
+
+        self.stat_prob = dict()
+        kb = 1.380649E10-23
+        C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
+
+        with open(self.discotress_path+"stat_prob.dat", "a") as f:
+            for si in self.statespace:
+                self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
+                line = str(self.stat_prob[si])+"\n"
+                f.write(line)
+
+        with open(self.discotress_path+"input.kmc", "a") as f:
+            text = "NNODES " + str(len(self.statespace))+"\n"
+            text += "NEDGES " + str(len(self.transition_structure))+"\n"
+            text += "WRAPPER BTOA" + "\n"
+            text += "TRAJ BKL" + "\n"
+            text += "BRANCHPROBS" + "\n"
+            text += "NABPATHS 100000" + "\n"
+            text += "COMMSFILE communities.dat " + str(len(self.statespace))+"\n"
+            text += "NODESAFILE nodes.A 1"+"\n"
+            text += "NODESBFILE nodes.B 1"+"\n"
+            text += "NTHREADS 4"+"\n"
+            f.write(text)
+
+        with open(self.discotress_path+"communities.dat", "a") as f:
+            for i in range(len(self.statespace)):
+                f.write(str(i)+"\n")
+
+        initial, final = self.initial_final_state()
+        with open(self.discotress_path+"nodes.A", "a") as f:
+            f.write(str(final+1)+"\n")
+        with open(self.discotress_path+"nodes.B", "a") as f:
+            f.write(str(initial+1)+"\n")       
+        
+        with open(self.discotress_path+"edge_conns.dat", "a") as f:
+            for s1, s2 in self.transition_structure.keys():
+                line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
+                f.write(line)
+
+        with open(self.discotress_path+"edge_weights.dat", "a") as f:
+            for s1, s2 in self.transition_structure.keys():
+                line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
+                f.write(line)
+    
         
     def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model):
         """ Computes the estimated rate constant, and the error """

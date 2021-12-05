@@ -57,7 +57,6 @@ def estimate_BonnetThesis( row, theta, _zip, file, dataset_name, docID, name, ki
     real_log_10_rate = 1 / float( file[row][4])
     [sq_error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
         =   hairpin.main(  real_log_10_rate, theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float (file[row][3] ) - 273.15,  float (file[row][7] ), float (file[row][8] ), 0, dataset_name, docID , kinetic_model)
-
     return predicted_log_10_rate, real_log_10_rate, sq_error
 
 
@@ -114,18 +113,18 @@ def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, ki
 
 def main(): 
 
-    kinetic_model = "METROPOLIS"
+    # kinetic_model = "METROPOLIS"
     kinetic_model = "ARRHENIUS"
 
     if kinetic_model == "ARRHENIUS":
         # Initial parameter set for the Arrhenius model
-        theta = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
+        # theta = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
 
         # near optimal parameter set for the Arrhenius model (roughly fig 6 from DNA23) : Total error 131
         # theta = [13.0580, 5, 17.0580, 5,  10.0580, 1, 1.0580, -2,  13.0580, 1, 5.0580, 0,  4.0580, -2,   0.0402 ]
 
         # result from importance sampling : Total error 87
-        # theta = [11.8214,  2.4291, 13.5964,  3.7051, 14.5229,  2.7318, 11.2671,  3.9952, 12.7210,  3.8409, 12.5655,  4.5394, 11.9421,  2.3308,  0.1189]
+        theta = [11.8214,  2.4291, 13.5964,  3.7051, 14.5229,  2.7318, 11.2671,  3.9952, 12.7210,  3.8409, 12.5655,  4.5394, 11.9421,  2.3308,  0.1189]
 
 
     elif kinetic_model == "METROPOLIS":
@@ -185,13 +184,17 @@ def main():
                     total_sq_error.append(sq_error)
                     row+=1
         if reaction_type == "hairpin1":
-            for reaction_dataset in datasets[reaction_type]:
+            # for reaction_dataset in datasets[reaction_type]:
+            for reaction_dataset in datasets[reaction_type][1:]:
+                # TODO: set back to normal
                 _zip = bool(int(reaction_dataset[-1]))
                 reaction_id = "/" + reaction_type + "/" + reaction_dataset
                 document_name = PATH + "/dataset" + reaction_id + ".csv"
                 file =  open_csv(document_name)
                 row = 1
-                while row < len(file) and file[row][0] != '' :
+                # TODO: set back to normal
+                # while row < len(file) and file[row][0] != '' :
+                while row==1:
                     pred, real, sq_error = estimate_BonnetThesis(row, theta, _zip, file, reaction_id, str(row), "GoddardT", kinetic_model)
                     print(pred, real, sq_error)
                     total_sq_error.append(sq_error)
@@ -261,13 +264,13 @@ def main():
         if e <= log10(3):
             count+=1
     print("MSE", mse)
-    print("Within factor of three", count/len(total_sq_error))
+    print("Within factor of three (Nasim)", count/len(total_sq_error))
 
     count = 0
     for e in total_sq_error:
         if sqrt(e) <= log10(3):
             count+=1
-    print("Within factor of three again", count/len(total_sq_error))
+    print("Within factor of three (correct)", count/len(total_sq_error))
 
 
 if __name__ == "__main__":

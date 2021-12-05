@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 from math import floor
 from math import sqrt
 
+
+relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue1/'
+
 class Analyse_fpp_properties(object):
 
     def __init__(self,stat,nbins,binw,bin_min,binall,logvals):
@@ -32,10 +35,10 @@ class Analyse_fpp_properties(object):
     def get_hist_arr(self):
         hist_arr = np.zeros(self.nbins,dtype=int)
         vals=[]
-        with open("fpp_properties.dat","r") as pathprops_f:
+        with open(relative+"fpp_properties.dat","r") as pathprops_f:
             for line in pathprops_f.readlines():
                 val=float(line.split()[stat])
-                if self.logvals: val=np.log10(val)
+                if self.logvals: val=np.log10(1/val)
                 vals.append(val)
                 if not (val>=self.bin_max or val<self.bin_min):
                     hist_arr[int(floor((val-self.bin_min)/self.binw))] += 1
@@ -53,8 +56,8 @@ class Analyse_fpp_properties(object):
         plt.figure(figsize=(10.,7.)) # size in inches
         plt.bar(bins,hist_arr,self.binw,color=color,edgecolor=color)
         if self.logvals:
-            plt.xlabel("$\log_{10}("+fpd_name+")$",fontsize=42)
-            plt.ylabel("$p ( \log_{10} ("+fpd_name+") )$",fontsize=42)
+            plt.xlabel("$\log_{10}(1/"+fpd_name+")$",fontsize=42)
+            plt.ylabel("$p ( \log_{10} (1/"+fpd_name+") )$",fontsize=42)
         else:
             plt.xlabel("$"+fpd_name+"$",fontsize=42)
             plt.ylabel("$p("+fpd_name+")$",fontsize=42)
@@ -84,6 +87,9 @@ class Analyse_fpp_properties(object):
         if not self.logvals: return np.sum(self.vals)/float(self.ntpaths)
         else: return np.sum([10**val for val in self.vals])/float(self.ntpaths)
 
+    def calc_rate(self):
+        return np.sum(self.vals)/float(self.ntpaths)
+
     ''' calculate variance of first passage time (FPT) distribution '''
     def calc_var_fptd(self):
         if not self.logvals:
@@ -110,9 +116,9 @@ if __name__=="__main__":
 
     # binning params
 
-    nbins=40
+    nbins=100
     binw=0.1
-    bin_min=1.
+    bin_min=0.
     binall=False # enforce that all values must be encompassed in the bin range
     logvals=True # take log_10 of values
     # plot params
@@ -120,7 +126,6 @@ if __name__=="__main__":
     nyticks=10 # no. of ticks on y axis
     ymax=0.1 # max value for y (prob) axis
     # can add one or more vertical lines to plot (e.g. to indicate mean value)
-    linevals = np.array([3.612046E+03])
 
     # run
     calc_hist_obj=Analyse_fpp_properties(stat,nbins,binw,bin_min,binall,logvals)
@@ -129,19 +134,25 @@ if __name__=="__main__":
     print("\ntotal number of observed A<-B transition paths:\t",calc_hist_obj.ntpaths)
     print("total number of binned A<-B transition paths:\t",np.sum(hist_arr))
     mfpt = calc_hist_obj.calc_mfpt()
+    rate = calc_hist_obj.calc_rate()
     var_fptd = calc_hist_obj.calc_var_fptd()
     std_err = calc_hist_obj.calc_stderr_mfpt(mfpt)
     std_dev=sqrt(var_fptd)
     print("\nmean of FPT distribution (MFPT):\t","{:.6e}".format(mfpt))
     print("variance of FPT distribution:\t\t","{:.6e}".format(var_fptd))
-    print("standard error in MFPT:\t\t\t","{:.6e}".format(std_err))
-    print("standard error in var:\t\t\t","{:.6e}".format(var_fptd*sqrt(2./(calc_hist_obj.ntpaths-1.))))
+    print("rate estimate:\t\t\t\t","{:.6e}".format(rate))
+    # print("standard error in MFPT:\t\t\t","{:.6e}".format(std_err))
+    # print("standard error in var:\t\t\t","{:.6e}".format(var_fptd*sqrt(2./(calc_hist_obj.ntpaths-1.))))
+    linevals = np.array([rate])
     # plot
-    if logvals: linevals = np.log10(linevals)
+    # if logvals: linevals = np.log10(linevals)
     fpd_name=None
     if stat==1: fpd_name = "t_\mathrm{FPT}"
     elif stat==2: fpd_name = "\mathcal{L}"
     elif stat==3: fpd_name = "- \ln \mathcal{P}"
     elif stat==4: fpd_name = "\mathcal{S} / k_\mathrm{B}"
     else: quit("error in choice of stat")
-#    calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2,linevals=linevals)
+    try:
+        calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2,linevals=linevals)
+    except:
+        calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2)

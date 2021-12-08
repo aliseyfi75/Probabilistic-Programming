@@ -1,5 +1,7 @@
 from __future__ import division
 import warnings
+import json
+import subprocess
 import os
 import numpy as np
 import  random
@@ -57,6 +59,7 @@ class ParentComplex(object):
             raise ValueError('Error: Please specify rate_method to be Arrhenius or Metropolis in the configuration file!')
         
         # self.create_discotress = False
+        # self.discotress_samples=False
         self.dataset_name = dataset_name
         self.docID = docID 
         self.T = T
@@ -75,6 +78,9 @@ class ParentComplex(object):
 
         with open(PATH + "CTMCs/" +self.dataset_name+ "/" + "fast_access" + "/" + "fast_access" + str(self.docID), "rb") as fast_file:
             self.fast_access = pickle.load(fast_file, encoding='latin1')
+
+
+        self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
 
 
         # if self.create_discotress:
@@ -249,6 +255,11 @@ class ParentComplex(object):
             samples.append(self.sample_path(self.statespace[initialState], self.statespace[finalState], rate_method))
 
         return average(samples)
+
+    def discotress_sampler(self):
+        proc = subprocess.run(['discotress'],capture_output=True, cwd=self.discotress_path)
+        if(proc.returncode != 0):
+            raise Exception(proc.stdout.decode() + proc.stderr.decode())
         
     def MFPT_matrix(self, rate_method):
         """finds the MFPT from the initial state to the final state by solving a system of linear equations """
@@ -336,6 +347,9 @@ class ParentComplex(object):
 
         # if self.create_discotress:
         #     self.create_discotress_files()
+
+        # if self.discotress_samples:
+        #     self.discotress_sampler()
 
         return firstpassagetime
     

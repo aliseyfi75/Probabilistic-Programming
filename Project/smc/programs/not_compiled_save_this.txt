@@ -1,0 +1,1936 @@
+(let [     theta1 (sample (normal 13.0580 1))
+           theta2 (sample (normal 3 1))
+           theta3 (sample (normal 13.0580 1))
+           theta4 (sample (normal 3 1))
+           theta5 (sample (normal 13.0580 1))
+           theta6 (sample (normal 3 1))
+           theta7 (sample (normal 13.0580 1))
+           theta8 (sample (normal 3 1))
+           theta9 (sample (normal 13.0580 1))
+           theta10 (sample (normal 3 1))
+           theta11 (sample (normal 13.0580 1))
+           theta12 (sample (normal 3 1))
+           theta13 (sample (normal 13.0580 1))
+           theta14 (sample (normal 3 1))
+           theta15 (sample (normal 0.0402 1))
+           predicted_log_10_rates (theta2k [theta1 theta2 theta3 theta4 theta5 theta6 theta7 theta8 theta9 theta10 theta11 theta12 theta13 theta14 theta15])
+           real_log_10_rates  [4.553860314632207, 4.262718955647051, 3.9987448398911516, 3.74132544909795, 3.530570121616913, 3.3468704674987335, 3.1697255382271297, 2.8156030346831513, 2.5920729666071356, 2.3219346200679403, 4.2119547025722746, 3.8414314403534977, 3.604066718701865, 3.360258841813936, 3.1231172599611017, 2.8459221242746127, 2.5890047975264707, 2.2720908177305748, 2.015340845581043, 4.325337498560441, 4.007977239871952, 3.790778757134599, 3.4269217896483695, 3.1497824389030216, 2.865976793499679, 2.64905723527528, 2.372141024164125, 2.102002677564631, 4.112016066016064, 3.93470378222346, 3.670729666395569, 3.300206404164047, 2.9830692848376668, 2.659377440562343, 2.4024043288424073, 2.1454312172876966, 1.735356465466475, 4.733850273370317, 4.636087247560277, 4.565324110207536, 4.607999553667554, 4.583788909918445, 4.600133883701602, 4.6029231284709855, 4.475343077084275, 4.385138904355862, 4.24160437362082, 4.372113131841535, 4.294683699667536, 4.303971884514081, 4.273541225006781, 4.249721075648034, 4.1726263527101235, 4.142195693452522, 4.045325225765718, 4.0017851165643945, 4.118738145642521, 4.054752872955935, 4.064096842678376, 3.9801684703747453, 3.9764029900539435, 3.9326397411602896, 3.9355963405136816, 3.90522146602526, 3.8884023206619536, 3.8880397188345523, 3.830832310612419, 3.6936293651781793, 3.6630313511499657, 3.585936628349167, 3.562283833536035, 3.538631038676363, 3.361820818896897, 4.375995763153834, 4.015711543174839, 3.812123485695648, 3.427852682279424, 3.1700686277003087, 2.8761833307701097, 2.642650660906508, 2.3729064148891394, 2.0912019770993435, 4.183154224798589, 3.8892027274527017, 3.6073438224074454, 3.3194165544540786, 3.091753646429727, 2.79186618708206, 2.552287221077494, 1.8080411324673673, 4.518282322310005, 3.978418694972051, 3.726592669425353, 3.4507138601998184, 3.138689675075755, 2.832711785834653, 2.406315510674685, 2.034225566537109, 1.4105081978157403, 4.162867718599273, 4.07890122730426, 4.096824469069485, 4.0134424315339485, 4.031365673027247, 3.973309955195559, 3.991622832648531, 3.9468147282362076, 3.9401909214770856, 4.6118299445785755, 4.468156612288175, 4.460930935937387, 4.418417072717736, 4.3765753654920525, 4.357923038220563, 4.3041505629764565, 4.250546126777225, 4.014619391663463, 4.764705882324992, 4.717647058787282, 4.6823529411767035, 4.60000000005073, 4.529411764650921, 4.341176470673008, 4.258823529498078, 4.047058823625447, 4.341935155003407, 4.148387020336521, 3.7806460410973663, 3.7935492358129372, 3.3354840069153213, 3.1096773653521708, 2.9483871764008183, 2.7419355304263577, 2.4838709508714967, 4.580645744622138, 4.361290157510047, 4.070967512784218, 3.7161291335320144, 3.5161289710979515, 3.303226120325015, 3.09677431718383, 2.8774194674957188, 2.7161291335320144, 4.483870686213436, 4.258064856115445, 4.174193635340825, 3.845162320354441, 3.5483870099766928, 3.2709681117876572, 3.0709675127842178, 2.7870967992341003, 2.6258065125477, 4.464515996773309, 4.367742184885043, 4.141935249296441, 4.038709451215954, 3.587096144111775, 3.387096463975667, 2.9806452247742232, 2.7354839276365848, 2.4580644812403607, 4.0757863800918175, 4.1771248058968045, 4.180899797858772, 4.343099143313611, 4.145532418550324, 4.197857314853334, 4.061122679510397, 4.119457354831794, 3.976480047961426, 4.435552913230938, 4.4393570150022486, 4.595546029572789, 4.501670144662345, 4.419930777274963, 4.362525280924833, 4.347744953849318, 4.259676793617007, 4.25087846832305, 4.813611611751743, 4.829612122778191, 4.802840785537166, 4.708964325231734, 4.712621577627209, 4.673510524326298, 4.622085725271157, 4.558494958875983, 4.531375046224638, 4.911176674686232, 4.957637158861863, 4.833356787780556, 4.9482572383289884, 4.828507572747099, 4.7710737755852195, 4.744069313926971, 4.686546188557815, 4.537471733295817, 5.568201724066995, 5.544068044350275, 5.672097857935717, 5.255272505103306, 5.845098040014256, 4.845098040014256, 5.9344984512435675, 4.778151250383643, 5.556302500767287, 4.778151250383643, 5.602059991327962, 5.602059991327962, 5.6127838567197355, 5.4471580313422185, 5.690196080028513, 5.113943352306836, 5.716003343634799, 4.954242509439324, 5.230448921378273, 4.602059991327962, -0.9999999999999998, -1.476821192, -1.8741721849999997, -2.112582781, -2.589403974, -2.589403974, -0.9735099339999999, -1.0529801319999998, -1.3708609269999998, -1.847682119, -2.2715231789999994, -2.7483443709999995, 7.6357615889999995, 7.370860926999999, 7.42384106, 7.21192053, 7.105960265, 6.682119205, 6.523178807999999, 6.364238411, 5.940397351, 6.099337747999999, 6.920529800999999, 6.788079469999999, 6.682119205, 6.629139072999999, 6.3377483439999995, -5.251811972993799, -4.585026652029182, -4.1249387366083, -3.6903698325741012, -3.2518119729937993, -5.200659450546418, -4.657577319177793, -4.259637310505756, -3.6252516539898956, -3.1713401034646798, -5.309803919971486, -4.111820506081674, -3.3990271043132516, -2.860120913598763, 0.9166666669999999, 2.166666667, 3.0555555559999994, 4.75, 6.027777778, 6.444444443999999, 6.583333333, 6.583333333, 6.499999999999999, 6.527777777999999, 0.9166666669999999, 1.805555556, 2.6944444439999997, 3.4444444439999997, 4.222222222, 5.0, 5.527777778, 5.472222221999999, 5.722222222, 5.611111111, 1.2777777779999997, 3.4444444439999997, 4.583333333, 6.3888888889999995, 6.888888889, 6.972222222, 6.805555555999999, 6.805555555999999, 6.722222221999999, 6.777777778, 0.5563025007672872, 0.8195439355418686, 0.9684829485539351, 1.1072099696478683, 1.2878017299302258, 0.9542425094393249, 1.2552725051033058, 1.414973347970818, 1.4727564493172123, 1.6989700043360185, 1.1072099696478683, 1.6020599913279623, 1.7993405494535815, 1.8976270912904412, 4.220612049010863, 4.249008210612101, 4.008737143781354, 3.9301026087921493, -1.000086850211649, -1.48158376538911, -0.03205524299378281, -1.4090508604731216, -0.015138900592826257, 1.7322696934082114, 2.662710564106222, 1.6850700548365778, 2.844046479011635, 0.6940626698412745, 3.9597287989560117, 4.773682474920017, 5.309382070028747, 5.5555478620337055]
+           lik (normal (first predicted_log_10_rates) 1)]
+       (observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+(
+let [real_log_10_rates (rest real_log_10_rates)
+predicted_log_10_rates (rest predicted_log_10_rates)
+lik (normal (first predicted_log_10_rates) 1)]
+(observe lik (first real_log_10_rates))
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+)
+(vector theta1 theta2 theta3 theta4 theta5 theta6 theta7 theta8 theta9 theta10 theta11 theta12 theta13 theta14 theta15)
+)
+

@@ -14,9 +14,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import floor
 from math import sqrt
+import seaborn as sns
 
 
-relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue1/'
+
+relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/three_waystranddisplacement/Fig3b/discotress/Zhang4/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse1/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse2/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse3/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse4/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue1/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue2/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue3/'
+# relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_1/discotress/GoddardTTrue4/'
+
+
+
+
+
+
 
 class Analyse_fpp_properties(object):
 
@@ -38,7 +54,7 @@ class Analyse_fpp_properties(object):
         with open(relative+"fpp_properties.dat","r") as pathprops_f:
             for line in pathprops_f.readlines():
                 val=float(line.split()[stat])
-                if self.logvals: val=np.log10(1/val)
+                if self.logvals: val=np.log10(val)
                 vals.append(val)
                 if not (val>=self.bin_max or val<self.bin_min):
                     hist_arr[int(floor((val-self.bin_min)/self.binw))] += 1
@@ -54,41 +70,32 @@ class Analyse_fpp_properties(object):
         hist_arr=hist_arr.astype(np.float64)*1./float(self.ntpaths) # normalise
         bins=[self.bin_min+(i*self.binw) for i in range(self.nbins)]
         plt.figure(figsize=(10.,7.)) # size in inches
-        plt.bar(bins,hist_arr,self.binw,color=color,edgecolor=color)
+        sns.histplot(x=self.vals, bins=100, kde=True,stat="probability")
+        plt.figure(figsize=(10.,7.)) # size in inches
+        sns.histplot(self.vals, bins=100, kde=True,cumulative=True,stat="density")
         if self.logvals:
-            plt.xlabel("$\log_{10}(1/"+fpd_name+")$",fontsize=42)
-            plt.ylabel("$p ( \log_{10} (1/"+fpd_name+") )$",fontsize=42)
+            plt.xlabel("$\log_{10}("+fpd_name+")$",fontsize=42)
+            plt.ylabel("$p ( \log_{10} ("+fpd_name+") )$",fontsize=42)
         else:
             plt.xlabel("$"+fpd_name+"$",fontsize=42)
             plt.ylabel("$p("+fpd_name+")$",fontsize=42)
         if linevals is not None:
             plt.vlines(linevals,0.,ymax,colors=linecolor,linewidths=6.,linestyles="dashed")
-        ax = plt.gca()
-        ax.set_xlim([self.bin_min,self.bin_max])
-        ax.set_ylim([0.,ymax])
-        ax.tick_params(direction="out",labelsize=24)
-        xtick_intvl=float(self.bin_max-self.bin_min)/float(nxticks)
-        ytick_intvl=float(ymax)/float(nyticks)
-        xtick_vals=[self.bin_min+(float(i)*xtick_intvl) for i in range(nxticks+1)]
-        if xtick_intvl.is_integer(): xtick_vals = [int(xtick_val) for xtick_val in xtick_vals]
-        ytick_vals=[0.+(float(i)*ytick_intvl) for i in range(nyticks+1)]
-        ax.set_xticks(xtick_vals)
-        ax.set_yticks(ytick_vals)
-        xticklabels=["$"+(("%."+str(xtick_dp)+"f") % xtick_val)+"$" for xtick_val in xtick_vals]
-        yticklabels=["$"+(("%."+str(ytick_dp)+"f") % ytick_val)+"$" for ytick_val in ytick_vals]
-        ax.set_xticklabels(xticklabels)
-        ax.set_yticklabels(yticklabels)
-        plt.tight_layout()
         plt.savefig("fp_distribn."+figfmt,format=figfmt,bbox_inches="tight")
         plt.show()
 
     ''' calculate mean of first passage time (FPT) distribution '''
     def calc_mfpt(self):
-        if not self.logvals: return np.sum(self.vals)/float(self.ntpaths)
-        else: return np.sum([10**val for val in self.vals])/float(self.ntpaths)
+        if not self.logvals: self.mfpt = np.sum(self.vals)/float(self.ntpaths)
+        else: self.mfpt = np.sum([10**val for val in self.vals])/float(self.ntpaths)
+        return self.mfpt
 
     def calc_rate(self):
-        return np.sum(self.vals)/float(self.ntpaths)
+        concentration = 1e-8
+        # concentration = 1
+        print("USING CONCENTRATION, make sure set correctly")
+        return np.log10(1/(concentration*self.mfpt))
+        # return np.log10(1/self.calc_mfpt())
 
     ''' calculate variance of first passage time (FPT) distribution '''
     def calc_var_fptd(self):
@@ -112,47 +119,45 @@ if __name__=="__main__":
 
     # statistic to analyse
     # 1=time, 2=dynamical activity (path length), 3=-ln(path prob) [path action], 4=entropy flow
+    # TODO: option 4 doesn't seem to work, yet. 
     stat=1
 
     # binning params
 
-    nbins=100
+    nbins=40
     binw=0.1
-    bin_min=0.
+    bin_min=1.
     binall=False # enforce that all values must be encompassed in the bin range
     logvals=True # take log_10 of values
     # plot params
     nxticks=8 # no. of ticks on x axis
     nyticks=10 # no. of ticks on y axis
     ymax=0.1 # max value for y (prob) axis
-    # can add one or more vertical lines to plot (e.g. to indicate mean value)
+    # # can add one or more vertical lines to plot (e.g. to indicate mean value)
+    linevals = np.array([3.612046E+03])
 
     # run
     calc_hist_obj=Analyse_fpp_properties(stat,nbins,binw,bin_min,binall,logvals)
     hist_arr = calc_hist_obj.get_hist_arr()
-    print("\nhistogram bin counts:\n",hist_arr)
-    print("\ntotal number of observed A<-B transition paths:\t",calc_hist_obj.ntpaths)
-    print("total number of binned A<-B transition paths:\t",np.sum(hist_arr))
+    # print("\nhistogram bin counts:\n",hist_arr)
+    # print("\ntotal number of observed A<-B transition paths:\t",calc_hist_obj.ntpaths)
+    # print("total number of binned A<-B transition paths:\t",np.sum(hist_arr))
     mfpt = calc_hist_obj.calc_mfpt()
     rate = calc_hist_obj.calc_rate()
-    var_fptd = calc_hist_obj.calc_var_fptd()
-    std_err = calc_hist_obj.calc_stderr_mfpt(mfpt)
-    std_dev=sqrt(var_fptd)
-    print("\nmean of FPT distribution (MFPT):\t","{:.6e}".format(mfpt))
-    print("variance of FPT distribution:\t\t","{:.6e}".format(var_fptd))
-    print("rate estimate:\t\t\t\t","{:.6e}".format(rate))
+    # var_fptd = calc_hist_obj.calc_var_fptd()
+    # std_err = calc_hist_obj.calc_stderr_mfpt(mfpt)
+    # std_dev=sqrt(var_fptd)
+    print("\nestimate of rate with MFPT:\t\t","{:.6e}".format(rate))
+    print("mean of FPT distribution (MFPT):\t","{:.6e}".format(mfpt))
+    # print("variance of FPT distribution:\t\t","{:.6e}".format(var_fptd))
     # print("standard error in MFPT:\t\t\t","{:.6e}".format(std_err))
     # print("standard error in var:\t\t\t","{:.6e}".format(var_fptd*sqrt(2./(calc_hist_obj.ntpaths-1.))))
-    linevals = np.array([rate])
     # plot
-    # if logvals: linevals = np.log10(linevals)
+    if logvals: linevals = np.log10(linevals)
     fpd_name=None
     if stat==1: fpd_name = "t_\mathrm{FPT}"
     elif stat==2: fpd_name = "\mathcal{L}"
     elif stat==3: fpd_name = "- \ln \mathcal{P}"
     elif stat==4: fpd_name = "\mathcal{S} / k_\mathrm{B}"
     else: quit("error in choice of stat")
-    try:
-        calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2,linevals=linevals)
-    except:
-        calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2)
+    calc_hist_obj.plot_hist(hist_arr,nxticks,nyticks,ymax,fpd_name,figfmt="pdf",xtick_dp=1,ytick_dp=2)

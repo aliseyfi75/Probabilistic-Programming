@@ -18,9 +18,10 @@ datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
 
 def from_theta_to_rate(theta, datasets=datasets, kinetic_model="ARRHENIUS"):
     
-    PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+    # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
     # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
     # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates = [], []
     for reaction_type in datasets:
             if reaction_type == "bubble":

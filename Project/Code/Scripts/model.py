@@ -12,7 +12,7 @@ import four_waystrandexchange
 
 PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 
 def open_csv(document) :

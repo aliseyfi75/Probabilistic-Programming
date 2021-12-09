@@ -4,6 +4,7 @@ import torch
 from graph_based_sampling import topological, sub_in_vals
 from daphne import daphne
 import numpy as np
+import json
 from evaluation_based_sampling import eval
 import matplotlib.pyplot as plt
 from statistics import variance, mean
@@ -187,7 +188,14 @@ if __name__ == '__main__':
 
         globals.initialize() 
 
-        graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+        with open(PATH+'smc/programs/_with_loop.daphne','r') as f:
+            graph = json.load(f)
+
+        # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+        # with open(PATH+'smc/programs/_with_loop.daphne','w') as f:
+        #     json.dump(graph, f)
+
+
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
         L= 10

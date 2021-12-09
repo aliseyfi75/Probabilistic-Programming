@@ -3,7 +3,6 @@ from torch._C import dtype
 from primitives import standard_env
 import torch
 from graph_based_sampling import topological, sub_in_vals
-from daphne import daphne
 import numpy as np
 from evaluation_based_sampling import eval
 import matplotlib.pyplot as plt
@@ -16,7 +15,8 @@ import wandb
 
 wandb.init(project="Probprog_project", entity="aliseyfi")
 
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 # PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 
@@ -175,7 +175,7 @@ def BBVI_sampler(graph, L,T, lr):
 
         if t%25==0:
             sigma['q'] = optimizer_step(sigma_tl, g_hat)
-            # print("q after step",t, sigma['q'],"\n\n")
+            print("q after step",t, sigma['q'],"\n\n")
 
 
     return return_values, prob_sequence, prob_means, sigma['q']

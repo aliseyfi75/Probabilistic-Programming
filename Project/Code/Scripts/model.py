@@ -10,7 +10,8 @@ import helix
 import three_waystranddisplacement
 import four_waystrandexchange
 
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 # PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 

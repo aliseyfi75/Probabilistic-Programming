@@ -3,7 +3,7 @@ import numpy as np
 import operator as op
 from math import sqrt
 from theta_to_rate import from_theta_to_rate
-import globals
+from distributions import Normal, Bernoulli, Categorical, Dirichlet, Gamma, UniformContinuous
 
 # rest, nth, conj, cons as described in the book
 
@@ -15,7 +15,7 @@ List   = torch.tensor             # A Scheme List is implemented as a Python lis
 Expression  = (Atom, List)     # A Scheme expression is an Atom or List
 
 
-from distributions import Normal, Bernoulli, Categorical, Dirichlet, Gamma, UniformContinuous
+theta2k_storage = {}
 
 class Env(dict):
     "An environment: a dict of {'var': val} pairs, with an outer Env."
@@ -124,12 +124,12 @@ def first(x):
 
 def theta2k(x):
     theta = np.array(x)
-    if (theta == globals.stored_theta).all():
-        return globals.stored_vals
+    if tuple(theta) in theta2k_storage:
+        return theta2k_storage[tuple(theta)]
     else:
-        globals.stored_theta = theta
-        globals.stored_vals = torch.FloatTensor(from_theta_to_rate(theta))
-    return globals.stored_vals
+        k = torch.FloatTensor(from_theta_to_rate(theta))
+        theta2k_storage[tuple(theta)] = k
+        return k
 
 
 # def uniform_continuous(a,b):

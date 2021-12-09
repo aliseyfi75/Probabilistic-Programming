@@ -1,3 +1,4 @@
+import json
 from torch._C import dtype
 from primitives import standard_env
 import torch
@@ -11,11 +12,12 @@ import seaborn as sns
 import scipy.stats as stats
 import math
 from plots import plots 
-import globals
+import wandb
 
+wandb.init(project="Probprog_project", entity="aliseyfi")
 
 PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 
 
@@ -168,11 +170,12 @@ def BBVI_sampler(graph, L,T, lr):
 
         g_hat = elbo_gradients(G_sequence, prob_sequence_l)
         prob_means.append(mean(prob_sequence_l))
+        wandb.log({'prob_mean':mean(prob_sequence_l)})
 
 
         if t%25==0:
             sigma['q'] = optimizer_step(sigma_tl, g_hat)
-            print("q after step",t, sigma['q'],"\n\n")
+            # print("q after step",t, sigma['q'],"\n\n")
 
 
     return return_values, prob_sequence, prob_means, sigma['q']
@@ -185,9 +188,9 @@ if __name__ == '__main__':
     # for i in range(1,6):
     for i in [1]:
 
-        globals.initialize() 
-
-        graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+        # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+        with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
+            graph = json.load(f)
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
         L= 10

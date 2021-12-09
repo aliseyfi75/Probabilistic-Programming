@@ -170,7 +170,10 @@ def BBVI_sampler(graph, L,T, lr):
         prob_means.append(mean(prob_sequence_l))
 
 
-        sigma['q'] = optimizer_step(sigma_tl, g_hat)
+        if t%25==0:
+            sigma['q'] = optimizer_step(sigma_tl, g_hat)
+            print("q after step",t, sigma['q'],"\n\n")
+
 
     return return_values, prob_sequence, prob_means, sigma['q']
 
@@ -185,15 +188,14 @@ if __name__ == '__main__':
         globals.initialize() 
 
         graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
-        print(graph)
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
-        L= 20
-        T =3000
-        lr= 0.03
+        L= 10
+        T = 500
+        lr= 0.05
         
         print('\n\n\nOur Program {}:')
         return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
         print(sigma['q']) 
-        # plots(10, return_values, prob_sequence, prob_means, sigma['q'])
+        plots(return_values, prob_sequence, prob_means, sigma['q'])
 

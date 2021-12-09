@@ -1,6 +1,7 @@
 import torch
 import operator as op
 from math import sqrt
+from theta_to_rate import from_theta_to_rate
 
 # rest, nth, conj, cons as described in the book
 
@@ -119,6 +120,14 @@ def first(x):
     except:
         return x
 
+def theta2k(x):
+    print(x)
+    alpha = eval(args[0], sigma, env=env)
+    theta = eval(args[1], sigma, env=env)
+    k = eval(args[2], sigma, env=env)
+    vals = from_theta_to_rate(theta)
+    return torch.FloatTensor(vals), sigma 
+
 # def uniform_continuous(a,b):
 #     mu = torch.tensor(((a + b)/2).type(torch.float))
 #     sig = torch.tensor(sqrt((b-a)**2 / 12))
@@ -183,7 +192,8 @@ def standard_env() -> Env:
         'mat-tanh': lambda x: x.tanh(),
         'mat-mul': lambda x,y: torch.matmul(x.float(),y.float()),
         'mat-add': lambda x, y: x+y,
-        'mat-repmat': lambda x,y,z: x.repeat((int(y), int(z)))
+        'mat-repmat': lambda x,y,z: x.repeat((int(y), int(z))),
+        'theta2k': theta2k,
     })
     return env
 

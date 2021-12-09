@@ -175,17 +175,17 @@ def weighted_avg(X, weights):
 if __name__ == '__main__':
 
     # for i in range(1,6):
-    for i in [2]:
-        graph = daphne(['graph','-i','C:/Users/jlovr/CS532-HW4/BBVI/programs/{}.daphne'.format(i)])
-
+    for i in [1]:
+        graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/full_program.daphne'])
+        print(graph)
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
         L= 20
-        T =3000
+        T =100
         lr= 0.03
         
-        print('\n\n\nProgram {}:'.format(i))
+        print('\n\n\nOur Program {}:')
         return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
         print(sigma['q']) 
-        plots(i, return_values, prob_sequence, prob_means, sigma['q'])
+        plots(10, return_values, prob_sequence, prob_means, sigma['q'])
 

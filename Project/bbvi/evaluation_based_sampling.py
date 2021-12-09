@@ -1,4 +1,5 @@
 from daphne import daphne
+from torch.functional import Tensor
 from tests import is_tol, run_prob_test,load_truth
 from primitives import standard_env, Symbol, Env
 import torch
@@ -29,7 +30,9 @@ def eval(x, sigma, env=standard_env()):
     "Evaluate an expression in an environment."
     if isinstance(x, Symbol):    # variable reference
         return env.find(x)[x], sigma
-    elif not isinstance(x, list): # constant 
+    elif not isinstance(x, list) and type(x)==Tensor: # constant 
+        return x, sigma
+    elif not isinstance(x, list):
         return torch.tensor(x), sigma
     op, *args = x       
     if op == 'if':             # conditional

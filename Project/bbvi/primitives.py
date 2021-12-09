@@ -1,7 +1,9 @@
 import torch
+import numpy as np
 import operator as op
 from math import sqrt
 from theta_to_rate import from_theta_to_rate
+import globals
 
 # rest, nth, conj, cons as described in the book
 
@@ -121,12 +123,14 @@ def first(x):
         return x
 
 def theta2k(x):
-    print(x)
-    alpha = eval(args[0], sigma, env=env)
-    theta = eval(args[1], sigma, env=env)
-    k = eval(args[2], sigma, env=env)
-    vals = from_theta_to_rate(theta)
-    return torch.FloatTensor(vals), sigma 
+    theta = np.array(x)
+    if (theta == globals.stored_theta).all():
+        return globals.stored_vals
+    else:
+        globals.stored_theta = theta
+        globals.stored_vals = torch.FloatTensor(from_theta_to_rate(theta))
+    return globals.stored_vals
+
 
 # def uniform_continuous(a,b):
 #     mu = torch.tensor(((a + b)/2).type(torch.float))

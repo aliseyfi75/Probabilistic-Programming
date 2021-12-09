@@ -11,6 +11,11 @@ import seaborn as sns
 import scipy.stats as stats
 import math
 from plots import plots 
+import globals
+
+
+PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 
 
 
@@ -176,16 +181,19 @@ if __name__ == '__main__':
 
     # for i in range(1,6):
     for i in [1]:
-        graph = daphne(['graph','-i','/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/full_program.daphne'])
+
+        globals.initialize() 
+
+        graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
         print(graph)
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
         L= 20
-        T =100
+        T =3000
         lr= 0.03
         
         print('\n\n\nOur Program {}:')
         return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
         print(sigma['q']) 
-        plots(10, return_values, prob_sequence, prob_means, sigma['q'])
+        # plots(10, return_values, prob_sequence, prob_means, sigma['q'])
 

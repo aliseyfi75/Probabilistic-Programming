@@ -13,6 +13,7 @@ import scipy.stats as stats
 import math
 from plots import plots 
 import wandb
+import argparse
 
 wandb.init(project="Probprog_project", entity="aliseyfi")
 
@@ -21,6 +22,12 @@ wandb.init(project="Probprog_project", entity="aliseyfi")
 # PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--L', type=int, default=10)
+parser.add_argument('--lr', type=float, default=0.5)
+
+L = parser.parse_args().L
+lr = parser.parse_args().lr
 
 def bb_eval(exp, env):
     "Evaluation function for the deterministic target language of the graph based representation."
@@ -186,30 +193,16 @@ def weighted_avg(X, weights):
 
 if __name__ == '__main__':
 
-    # for i in range(1,6):
-    for i in [1]:
 
-        # globals.initialize() 
+    # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+    with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
+        graph = json.load(f)
+    sigma = {'logW':0, 'q':{}, 'G':{}}
 
-        # with open(PATH+'smc/programs/_with_loop.daphne','r') as f:
-        #     graph = json.load(f)
-
-        # # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
-        # # with open(PATH+'smc/programs/_with_loop.daphne','w') as f:
-        # #     json.dump(graph, f)
-
-
-        # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
-        with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
-            graph = json.load(f)
-        sigma = {'logW':0, 'q':{}, 'G':{}}
-
-        L= 10
-        T = 500
-        lr= 0.05
-        
-        print('\n\n\nOur Program {}:')
-        return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
-        print(sigma['q']) 
-        plots(return_values, prob_sequence, prob_means, sigma['q'])
+    T= 500
+    
+    print('\n\n\nOur Program {}:')
+    return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
+    print(sigma['q']) 
+    plots(return_values, prob_sequence, prob_means, sigma['q'])
 

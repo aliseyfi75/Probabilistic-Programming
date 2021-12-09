@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH --array=10,15,20,25,30
 #SBATCH --job-name=BBVI
 #SBATCH --account=def-condon
 #SBATCH --mail-user=jlovrod@cs.ubc.ca 
@@ -14,4 +15,4 @@ source /home/jlovrod/projects/def-condon/jlovrod/dp_gen_env/bin/activate
 
 wandb login 33f5ffa304d256a59512bb634dcf8da21304837f
 
-python blackbox_VI.py
+python blackbox_VI.py --L $SLURM_ARRAY_TASK_ID --lr 0.05

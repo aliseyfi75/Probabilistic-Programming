@@ -189,22 +189,18 @@ if __name__ == '__main__':
     # for i in range(1,6):
     for i in [1]:
 
-<<<<<<< HEAD
-        globals.initialize() 
+        # globals.initialize() 
 
-        with open(PATH+'smc/programs/_with_loop.daphne','r') as f:
-            graph = json.load(f)
+        # with open(PATH+'smc/programs/_with_loop.daphne','r') as f:
+        #     graph = json.load(f)
 
-        # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
-        # with open(PATH+'smc/programs/_with_loop.daphne','w') as f:
-        #     json.dump(graph, f)
+        # # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
+        # # with open(PATH+'smc/programs/_with_loop.daphne','w') as f:
+        # #     json.dump(graph, f)
 
-
-=======
         # graph = daphne(['graph','-i',PATH+'smc/programs/_with_loop.daphne'])
         with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
             graph = json.load(f)
->>>>>>> 3d567bae863cbd35a949b408a484cc7a9c5209c0
         sigma = {'logW':0, 'q':{}, 'G':{}}
 
         L= 10

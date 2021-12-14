@@ -109,7 +109,6 @@ def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, ki
 
     return predicted_log_10_rate, real_log_10_rate, sq_error
 
-
     ## Alpha = kbi/kuni = 0.0402
 
 

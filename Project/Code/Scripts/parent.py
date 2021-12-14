@@ -11,6 +11,7 @@ from numpy.lib.function_base import average
 from  scipy.sparse.linalg import spsolve
 from scipy.sparse import csr_matrix, coo_matrix
 from scipy.special import logsumexp as logsumexp 
+from scipy import stats
 
 R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
@@ -19,8 +20,8 @@ TRANSLATION_TABLE = str.maketrans(NUCLEOTIDES, "TGAC")
 RETURN_MINUS_INF = 1e-10
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 # PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 class MyStrand(object):   
@@ -117,7 +118,7 @@ class ParentComplex(object):
         return self.neighbours_dictionary[state] 
     
         
-    def initial_final_state(self ):
+    def initial_final_state(self):
         initialStateConfig, finalStateConfig = self.initial_final_state_config()
         initialState = self.statespace.index(initialStateConfig) 
         finalState = self.statespace.index(finalStateConfig) 
@@ -258,10 +259,8 @@ class ParentComplex(object):
 
         return average(samples)
 
-    def discotress_sampler(self):
-        proc = subprocess.run(['discotress'],capture_output=True, cwd=self.discotress_path)
-        if(proc.returncode != 0):
-            raise Exception(proc.stdout.decode() + proc.stderr.decode())
+    def discotress(self):
+        subprocess.run(['discotress'],capture_output=True, cwd=self.discotress_path)
         
     def MFPT_matrix(self, rate_method):
         """finds the MFPT from the initial state to the final state by solving a system of linear equations """
@@ -289,7 +288,7 @@ class ParentComplex(object):
                 if rate_method =="ARRHENIUS":
                     myRate = self.Arrhenius_rate(state, state2 )
                 elif rate_method == "METROPOLIS":
-                    myRate= self.Metropolis_rate(state,state2)
+                    myRate = self.Metropolis_rate(state,state2)
                 else:
                     raise ValueError('Error: Please specify rate_method to be Arrhenius or Metropolis!')
           
@@ -351,62 +350,138 @@ class ParentComplex(object):
         #     self.create_discotress_files()
 
         # if self.discotress_samples:
-        #     self.discotress_sampler()
+        #     self.discotress()
 
         return firstpassagetime
+
     
     def create_discotress_files(self):
         "making input for DISCOTRESS"
         
-        self.create_discotress = False
+        # self.create_discotress = False
 
         self.stat_prob = dict()
         kb = 1.380649E10-23
         C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
 
+        try:
+            os.remove(self.discotress_path+"stat_prob.dat")
+        except:
+            pass
         with open(self.discotress_path+"stat_prob.dat", "a") as f:
             for si in self.statespace:
                 self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
                 line = str(self.stat_prob[si])+"\n"
                 f.write(line)
 
+        try:
+            os.remove(self.discotress_path+"input.kmc")
+        except:
+            pass
         with open(self.discotress_path+"input.kmc", "a") as f:
             text = "NNODES " + str(len(self.statespace))+"\n"
             text += "NEDGES " + str(len(self.transition_structure))+"\n"
             text += "WRAPPER BTOA" + "\n"
             text += "TRAJ BKL" + "\n"
             text += "BRANCHPROBS" + "\n"
-            text += "NABPATHS 100000" + "\n"
+            text += "NABPATHS 1000" + "\n"
             text += "COMMSFILE communities.dat " + str(len(self.statespace))+"\n"
             text += "NODESAFILE nodes.A 1"+"\n"
             text += "NODESBFILE nodes.B 1"+"\n"
             text += "NTHREADS 4"+"\n"
             f.write(text)
 
+        try:
+            os.remove(self.discotress_path+"communities.dat")
+        except:
+            pass
         with open(self.discotress_path+"communities.dat", "a") as f:
             for i in range(len(self.statespace)):
                 f.write(str(i)+"\n")
 
         initial, final = self.initial_final_state()
+        try:
+            os.remove(self.discotress_path+"nodes.A")
+        except:
+            pass
         with open(self.discotress_path+"nodes.A", "a") as f:
             f.write(str(final+1)+"\n")
+
+
+        try:
+            os.remove(self.discotress_path+"nodes.B")
+        except:
+            pass
         with open(self.discotress_path+"nodes.B", "a") as f:
             f.write(str(initial+1)+"\n")       
         
+        try:
+            os.remove(self.discotress_path+"edge_conns.dat")
+        except:
+            pass
         with open(self.discotress_path+"edge_conns.dat", "a") as f:
             for s1, s2 in self.transition_structure.keys():
                 line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
                 f.write(line)
 
+        try:
+            os.remove(self.discotress_path+"edge_weights.dat")
+        except:
+            pass
         with open(self.discotress_path+"edge_weights.dat", "a") as f:
             for s1, s2 in self.transition_structure.keys():
-                line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
+                try:
+                    line = str(np.log(self.rates[(s1,s2)]).item())+"\t"+str(np.log(self.rates[(s2,s1)].item())) + "\n"
+                except:
+                    line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
                 f.write(line)
+
+    def F(self, t):
+        # uses m (mean first passage time)
+        # m = 2.3727131391650352e-05
+        # return 1 - np.exp(-t/m)  
+        
+        # same thing, uses k (log_10 of the rate constant) instead of m
+        # print("real k", self.real_log_10_rate)
+        return 1 - np.exp(-t*10**(self.real_log_10_rate)) 
+
+
+    def get_score(self):
+        self.create_discotress_files()
+
+        try:
+            os.remove(self.discotress_path+"fpp_properties.dat")
+        except:
+            pass
+
+        try:
+            os.remove(self.discotress_path+"tp_stats.dat")
+        except:
+            pass
+
+
+        self.discotress()
+
+        vals = []
+        with open(self.discotress_path+"fpp_properties.dat","r") as pathprops_f:
+            for line in pathprops_f.readlines():
+                val=float(line.split()[1])
+                vals.append(val)
+        
+        vals=np.array(vals,dtype=float)
+
+        # print(stats.kstest(vals,cdf=self.F))
+        return stats.kstest(vals,cdf=self.F)[0]
     
         
-    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model):
+    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model, stochastic_conditionning=False):
         """ Computes the estimated rate constant, and the error """
-        mfpt = self.MFPT_matrix(kinetic_model)
+
+        real_log_10_rate = np.log(real_rate)/np.log(10)
+        self.real_log_10_rate = real_log_10_rate
+
+        # TODO: don't actually need to get the mfpt if stochastic_conditionning=True, just need to make sure the matrix is constructed. 
+        mfpt = self.MFPT_matrix(kinetic_model) 
 
         # This estimates MFPT using SSA. Only works for very quick reactions such as hairpins
         # mfpt = self.MFPT_paths(kinetic_model)
@@ -422,7 +497,11 @@ class ParentComplex(object):
             predicted_log_10_rate = np.log(predicted_rate)/np.log(10)
         except:
             predicted_log_10_rate = RETURN_MINUS_INF
-        real_log_10_rate = np.log(real_rate)/np.log(10)
-        error  = math.pow( real_log_10_rate - predicted_log_10_rate, 2)
 
-        return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]
+        if stochastic_conditionning==True:
+            print("getting score")
+            error = self.get_score()
+            return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]
+        else:
+            error  = math.pow( real_log_10_rate - predicted_log_10_rate, 2)
+            return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]

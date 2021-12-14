@@ -19,8 +19,8 @@ wandb.init(project="Probprog_project", entity="aliseyfi")
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
-PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--L', type=int, default=10)

@@ -18,7 +18,13 @@ import seaborn as sns
 
 
 
+# concentration = 10-8
 relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/three_waystranddisplacement/Fig3b/discotress/Zhang4/'
+
+
+# concentration = 1
+# relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False1/"
+relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False2/"
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse1/'
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse2/'
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse3/'
@@ -91,8 +97,8 @@ class Analyse_fpp_properties(object):
         return self.mfpt
 
     def calc_rate(self):
-        concentration = 1e-8
-        # concentration = 1
+        # concentration = 1e-8
+        concentration = 1
         print("USING CONCENTRATION, make sure set correctly")
         return np.log10(1/(concentration*self.mfpt))
         # return np.log10(1/self.calc_mfpt())

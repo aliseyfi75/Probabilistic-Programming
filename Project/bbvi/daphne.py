@@ -2,8 +2,9 @@ import json
 import subprocess
 import sys
 
-cwd = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/daphne'
-# cwd = 'C:/Users/jlovr/CS532-HW2/daphne'
+# cwd = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/daphne'
+cwd = 'C:/Users/jlovr/CS532-HW2/daphne'
+
 def daphne(args, cwd=cwd):
     sys.setrecursionlimit(100000)
     proc = subprocess.run(['lein','run','-f','json'] + args,

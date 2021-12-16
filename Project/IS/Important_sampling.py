@@ -196,7 +196,7 @@ if __name__ == '__main__':
     kss, realss = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets) for theta in tqdm(thetas)))
     ks = list(kss)
     reals = list(realss)
-    logprobs = Parallel(n_jobs=16)((delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals)), total=len(ks))
+    logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
     print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
     thetas = np.array(thetas)

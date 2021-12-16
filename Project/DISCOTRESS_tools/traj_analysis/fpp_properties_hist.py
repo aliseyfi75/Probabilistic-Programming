@@ -23,8 +23,8 @@ relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs
 
 
 # concentration = 1
-# relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False1/"
-relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False2/"
+relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False1/"
+# relative = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin/Fig4_0/discotress/Bonnet4False2/"
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse1/'
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse2/'
 # relative = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/CTMCs/hairpin1/Fig3_T_0/discotress/GoddardTFalse3/'

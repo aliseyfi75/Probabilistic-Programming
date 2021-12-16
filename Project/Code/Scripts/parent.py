@@ -12,6 +12,7 @@ from  scipy.sparse.linalg import spsolve
 from scipy.sparse import csr_matrix, coo_matrix
 from scipy.special import logsumexp as logsumexp 
 from scipy import stats
+from filelock import Timeout, FileLock
 
 R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
@@ -84,7 +85,8 @@ class ParentComplex(object):
 
 
         self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
-
+        
+        self.lock_path = self.discotress_path+"edge_weights.dat.lock"
 
         # if self.create_discotress:
         #     try:
@@ -360,81 +362,83 @@ class ParentComplex(object):
         
         # self.create_discotress = False
 
-        self.stat_prob = dict()
-        kb = 1.380649E10-23
-        C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
+        # try:
+        #     os.remove(self.discotress_path+"fpp_properties.dat")
+        # except:
+        #     pass
 
-        try:
-            os.remove(self.discotress_path+"stat_prob.dat")
-        except:
-            pass
-        with open(self.discotress_path+"stat_prob.dat", "a") as f:
-            for si in self.statespace:
-                self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
-                line = str(self.stat_prob[si])+"\n"
-                f.write(line)
+        # try:
+        #     os.remove(self.discotress_path+"tp_stats.dat")
+        # except:
+        #     pass
 
-        try:
-            os.remove(self.discotress_path+"input.kmc")
-        except:
-            pass
-        with open(self.discotress_path+"input.kmc", "a") as f:
-            text = "NNODES " + str(len(self.statespace))+"\n"
-            text += "NEDGES " + str(len(self.transition_structure))+"\n"
-            text += "WRAPPER BTOA" + "\n"
-            text += "TRAJ BKL" + "\n"
-            text += "BRANCHPROBS" + "\n"
-            text += "NABPATHS 1000" + "\n"
-            text += "COMMSFILE communities.dat " + str(len(self.statespace))+"\n"
-            text += "NODESAFILE nodes.A 1"+"\n"
-            text += "NODESBFILE nodes.B 1"+"\n"
-            text += "NTHREADS 4"+"\n"
-            f.write(text)
+        if not os.path.isfile(self.discotress_path+"stat_prob.dat"):
+            self.stat_prob = dict()
+            kb = 1.380649E10-23
+            C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
 
-        try:
-            os.remove(self.discotress_path+"communities.dat")
-        except:
-            pass
-        with open(self.discotress_path+"communities.dat", "a") as f:
-            for i in range(len(self.statespace)):
-                f.write(str(i)+"\n")
+            with open(self.discotress_path+"stat_prob.dat", "a") as f:
+                for si in self.statespace:
+                    self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
+                    line = str(self.stat_prob[si])+"\n"
+                    f.write(line)
+
+        if not os.path.isfile(self.discotress_path+"input.kmc"):
+            with open(self.discotress_path+"input.kmc", "a") as f:
+                text =  "NNODES " + str(len(self.statespace))+"\n"
+                text += "NEDGES " + str(len(self.transition_structure))+"\n"
+                text += "WRAPPER BTOA" + "\n"
+                text += "TRAJ KPS" + "\n"
+                text += "BRANCHPROBS" + "\n"
+                text += "NELIM 5000" + "\n"
+                text += "NABPATHS 1000" + "\n"
+                text += "COMMSFILE communities.dat 2" +"\n"
+                text += "NODESAFILE nodes.A 1"+"\n"
+                text += "NODESBFILE nodes.B 1"+"\n"
+                text += "NTHREADS 4"+"\n"
+                f.write(text)
 
         initial, final = self.initial_final_state()
-        try:
-            os.remove(self.discotress_path+"nodes.A")
-        except:
-            pass
-        with open(self.discotress_path+"nodes.A", "a") as f:
-            f.write(str(final+1)+"\n")
+        if not os.path.isfile(self.discotress_path+"nodes.A"):
+            with open(self.discotress_path+"nodes.A", "a") as f:
+                f.write(str(final+1)+"\n")
 
+        if not os.path.isfile(self.discotress_path+"nodes.B"):
+            with open(self.discotress_path+"nodes.B", "a") as f:
+                f.write(str(initial+1)+"\n")  
 
-        try:
-            os.remove(self.discotress_path+"nodes.B")
-        except:
-            pass
-        with open(self.discotress_path+"nodes.B", "a") as f:
-            f.write(str(initial+1)+"\n")       
+        if not os.path.isfile(self.discotress_path+"communities.dat"):
+            with open(self.discotress_path+"communities.dat", "a") as f:
+                for i in range(len(self.statespace)):
+                    if i==final:
+                        f.write("1\n")     
+                    else:
+                        f.write("0\n")  
+
+        if not os.path.isfile(self.discotress_path+"edge_conns.dat"):
+            with open(self.discotress_path+"edge_conns.dat", "a") as f:
+                for s1, s2 in self.transition_structure.keys():
+                    line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
+                    f.write(line)
+
+        # only this one file needs to be updated every time. 
+        # TODO: double check that this is true
+
         
-        try:
-            os.remove(self.discotress_path+"edge_conns.dat")
-        except:
-            pass
-        with open(self.discotress_path+"edge_conns.dat", "a") as f:
-            for s1, s2 in self.transition_structure.keys():
-                line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
-                f.write(line)
+        lock = FileLock(self.lock_path, timeout=5)
+        with lock:
+            with open(self.discotress_path+"edge_weights.dat", "w") as f:
+                for s1, s2 in self.transition_structure.keys():
+                    try:
+                        line = str(np.log(self.rates[(s1,s2)]).item())+"\t"+str(np.log(self.rates[(s2,s1)].item())) + "\n"
+                    except:
+                        line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
+                    f.write(line)
 
-        try:
-            os.remove(self.discotress_path+"edge_weights.dat")
-        except:
-            pass
-        with open(self.discotress_path+"edge_weights.dat", "a") as f:
-            for s1, s2 in self.transition_structure.keys():
-                try:
-                    line = str(np.log(self.rates[(s1,s2)]).item())+"\t"+str(np.log(self.rates[(s2,s1)].item())) + "\n"
-                except:
-                    line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
-                f.write(line)
+        # if os.path.isfile(self.discotress_path+"edge_conns.dat"):
+        #     os.remove(self.discotress_path+"edge_weights.dat")
+        # with open(self.discotress_path+"edge_weights.dat", "a") as f:
+
 
     def F(self, t):
         # uses m (mean first passage time)
@@ -448,17 +452,6 @@ class ParentComplex(object):
 
     def get_score(self):
         self.create_discotress_files()
-
-        try:
-            os.remove(self.discotress_path+"fpp_properties.dat")
-        except:
-            pass
-
-        try:
-            os.remove(self.discotress_path+"tp_stats.dat")
-        except:
-            pass
-
 
         self.discotress()
 
@@ -499,7 +492,6 @@ class ParentComplex(object):
             predicted_log_10_rate = RETURN_MINUS_INF
 
         if stochastic_conditionning==True:
-            print("getting score")
             error = self.get_score()
             return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]
         else:

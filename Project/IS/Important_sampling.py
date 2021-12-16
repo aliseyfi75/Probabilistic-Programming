@@ -20,8 +20,8 @@ from Scripts.model import *
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS"):
     
-    PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-    # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+    PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates = [], []
     for reaction_type in datasets:
             if reaction_type == "bubble":
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     kss, realss = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets) for theta in tqdm(thetas)))
     ks = list(kss)
     reals = list(realss)
-    logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals), total=len(ks))
+    logprobs = Parallel(n_jobs=16)((delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals)), total=len(ks))
     print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
     thetas = np.array(thetas)

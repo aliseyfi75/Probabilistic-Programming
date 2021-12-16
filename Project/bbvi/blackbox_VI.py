@@ -200,9 +200,12 @@ if __name__ == '__main__':
     sigma = {'logW':0, 'q':{}, 'G':{}}
 
     T= 500
+
+    wandb.log({'L':L})
+    wandb.log({'lr':lr})
     
     print('\n\n\nOur Program {}:')
     return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
     print(sigma['q']) 
-    plots(return_values, prob_sequence, prob_means, sigma['q'])
+    plots(return_values, prob_sequence, prob_means, sigma['q'], L, lr)
 

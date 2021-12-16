@@ -13,7 +13,7 @@ import math
 def weighted_avg(X, weights):
     return (weights.dot(X)) / weights.sum()
 
-def plots(return_values, prob_sequence, prob_means, q):
+def plots(return_values, prob_sequence, prob_means, q, L, lr):
 
     num_samples = len(return_values)
 
@@ -23,7 +23,7 @@ def plots(return_values, prob_sequence, prob_means, q):
     plt.ylabel("ELBO")
     plt.title("ELBO trace plot")
     plt.plot(prob_means)
-    figstr = "elbo_plot/elbo"
+    figstr = "elbo_plot/elbo"+"_L_"+str(L)+"_lr_"+str(lr)
     plt.savefig(figstr)
     # plt.show()
     print("Last ELBO", prob_sequence[-1])
@@ -44,7 +44,7 @@ def plots(return_values, prob_sequence, prob_means, q):
         plt.ylabel("density")
         plt.title("Weighted posterior probability of " + xname)
         sns.histplot(x=variables[d], weights=np.exp(prob_sequence), kde=True, bins=50, stat="probability")
-        figstr = "posterior_plot/" + xname
+        figstr = "posterior_plot/" + xname + "_L_"+str(L)+"_lr_"+str(lr)
         plt.savefig(figstr)
         # plt.show()
 
@@ -52,7 +52,7 @@ def plots(return_values, prob_sequence, prob_means, q):
         plt.xlabel("mu")
         plt.ylabel("density")
         plt.title("Plot of final q")
-        figstr = "q_plot/" + xname
+        figstr = "q_plot/" + xname + "_L_"+str(L)+"_lr_"+str(lr)
         mu = float(q[v].Parameters()[0])
         variance = float(q[v].Parameters()[1])
         s = math.sqrt(abs(variance))

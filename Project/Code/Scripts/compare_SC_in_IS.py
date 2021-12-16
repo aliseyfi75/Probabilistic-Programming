@@ -11,18 +11,20 @@ from Scripts.new_sc_model import open_csv
 from Scripts.new_sc_model import *
 from test_theta_on_hairpins import eval_theta
 
-datasets = { "bubble": ["Fig4"],
-             "four_waystrandexchange": ["Table5.2"],
-             "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
-             "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
-             "hairpin4" : ["Table1_0", "Table1_1"],
-             "helix" : ["Fig6_0", "Fig6_1"],
-             "helix1" : ["Fig6a"],
-             "three_waystranddisplacement" : ["Fig3b"], 
-             "three_waystranddisplacement1" : ["Fig6b"]
-}
+# datasets = { "bubble": ["Fig4"],
+#              "four_waystrandexchange": ["Table5.2"],
+#              "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
+#              "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
+#              "hairpin4" : ["Table1_0", "Table1_1"],
+#              "helix" : ["Fig6_0", "Fig6_1"],
+#              "helix1" : ["Fig6a"],
+#              "three_waystranddisplacement" : ["Fig3b"], 
+#              "three_waystranddisplacement1" : ["Fig6b"]
+# }
 
-datasets = { "hairpin" : ["Fig4_0"]}
+# datasets = { "hairpin" : ["Fig4_0"]}
+
+datasets = { "bubble": ["Fig4"],"hairpin" : ["Fig4_0"]}
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS", stochastic_conditionning=False):
     
@@ -189,11 +191,14 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
                     loglik -= ks_stat**2
 
             else:
-                assert(used_KS_error[n]==False)
 
-                # synthetic likelihood
-                squared_error = synthetic_errors[n]
-                loglik += normal01.log_prob(torch.tensor(squared_error))
+                # ABC synthetic likelihood
+
+                # The following are equivalent
+                # normalp1 = torch.distributions.Normal(torch.tensor(preds[n]), torch.tensor(1))
+                # z = normal01.log_prob(torch.tensor(preds[n]-reals[n]))
+                # w = normalp1.log_prob(torch.tensor(reals[n]))
+                loglik += normal01.log_prob(torch.tensor(preds[n]-reals[n]))
         
         samples.append(theta)
         logWs.append(loglik)
@@ -202,6 +207,7 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
 
 def interpret_results(samples, logWs):
     print("\n\n\n")
+    print(logWs)
     n_samples = len(samples)
     W = np.exp([logwi - max(logWs) for logwi in logWs])
     W = W/sum(W)
@@ -223,21 +229,21 @@ def interpret_results(samples, logWs):
 
 def main():
 
-    n_samples = 5
+    n_samples = 15
 
-    start = time.time()
-    samples, logWs = run_IS(n_samples, stochastic_conditionning=False)
-    end = time.time()
-    samples, W = interpret_results(samples, logWs)
+    # start = time.time()
+    # samples, logWs = run_IS(n_samples, stochastic_conditionning=False)
+    # end = time.time()
+    # samples, W = interpret_results(samples, logWs)
 
-    variables = np.array(samples,dtype=object).T.tolist()
-    for d in range(len(variables)):
-        plt.figure()
-        sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
-        plt.ylabel("density")
-        plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_MFPT")
-        plt.close('all')
-    print("Without path samples time:", end - start)
+    # variables = np.array(samples,dtype=object).T.tolist()
+    # for d in range(len(variables)):
+    #     plt.figure()
+    #     sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+    #     plt.ylabel("density")
+    #     plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_MFPT")
+    #     plt.close('all')
+    # print("Without path samples time:", end - start)
 
     start = time.time()
     samples, logWs = run_IS(n_samples, stochastic_conditionning=True)
@@ -246,24 +252,27 @@ def main():
     variables = np.array(samples,dtype=object).T.tolist()
     for d in range(len(variables)):
         plt.figure()
-        sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+        try:
+            sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+        except:
+            sns.histplot(x = variables[d], weights=W, bins=10)
         plt.ylabel("density")
         plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD")
         plt.close('all')
     print("With path samples time:", end - start)
 
-    start = time.time()
-    samples, logWs = run_IS(n_samples, stochastic_conditionning=True, squared_KS=True)
-    end = time.time()
-    samples, W = interpret_results(samples, logWs)
-    variables = np.array(samples,dtype=object).T.tolist()
-    for d in range(len(variables)):
-        plt.figure()
-        sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
-        plt.ylabel("density")
-        plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD_squaredKS")
-        plt.close('all')
-    print("With path samples time:", end - start)
+    # start = time.time()
+    # samples, logWs = run_IS(n_samples, stochastic_conditionning=True, squared_KS=True)
+    # end = time.time()
+    # samples, W = interpret_results(samples, logWs)
+    # variables = np.array(samples,dtype=object).T.tolist()
+    # for d in range(len(variables)):
+    #     plt.figure()
+    #     sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+    #     plt.ylabel("density")
+    #     plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD_squaredKS")
+    #     plt.close('all')
+    # print("With path samples time:", end - start)
 
 if __name__ == "__main__":
     main()

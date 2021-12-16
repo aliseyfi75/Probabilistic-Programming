@@ -12,23 +12,29 @@ def get_title(eval,i,dim=False,d=0, fig_type='hist'):
         return "{} Sampled {} for Program {} {}".format(eval, fig_type, i, label)
     else:
         return "{} Sampled {} for Program {}".format(eval,fig_type, i)
-def get_fname(eval,i,dim=False,d=0, fig_type='hist'):
+def get_fname(eval,i,dim=False,d=0, fig_type='hist', alpha=None):
     if dim:
-        return dirn + '/figures/{}_plt_{}_program_{}_d_{}.jpg'.format(eval,fig_type, i,d)
+        if alpha != None:
+            return dirn + '/figures/{}_plt_{}_program_{}_d_{}_alpha_{}.jpg'.format(eval,fig_type, i,d,alpha)
+        else:
+            return dirn + '/figures/{}_plt_{}_program_{}_d_{}.jpg'.format(eval,fig_type, i,d)
     else:
         return dirn + '/figures/{}_plt_{}_program_{}.jpg'.format(eval,fig_type, i)
-def plot_hists_n(eval, i, hists, weights):
+def plot_hists_n(eval, i, hists, weights, alpha=None):
     for d in range(len(hists)):
         samples = np.array(hists[d])
         if samples.ndim < 3:
             # 2D >= random var
-            plot_hist_arr(eval,i, samples, weights=weights,dim=True,d=d)
+            plot_hist_arr(eval,i, samples, weights=weights,dim=True,d=d,alpha=alpha)
         else:
             # ND random var 
             _,k,_ = samples.shape 
             fig, axs = plt.subplots(2,5, figsize=(20,10), dpi=100)
             for j, ax in zip(range(k), axs.flat):
-                sns.histplot(x=samples[:][j],kde=True,stat='density',cbar=True,multiple='dodge', ax=ax, weights=weights)
+                try:
+                    sns.histplot(x=samples[:][j],kde=True,stat='density',cbar=True,multiple='dodge', ax=ax, weights=weights)
+                except:
+                    pass
                 ax.title.set_text('range over {}[{}]'.format(labels[i][d],j))
             fname = get_fname(eval, i,True,d)
             title = get_title(eval, i, True, d)
@@ -56,11 +62,14 @@ def plot_traces_n(eval, i, traces):
             plt.savefig(fname)
             plt.clf()
             plt.close()
-def plot_hist_arr(eval, i, samples, weights, dim=False, d=0):
+def plot_hist_arr(eval, i, samples, weights, dim=False, d=0, alpha=None):
     plt.figure(figsize=(10,7))
     nbins = int(max(samples.max()-samples.min(),30))
-    sns.histplot(x=samples,kde=True,stat='density',cbar=True,multiple='dodge',bins=nbins, weights=weights)
-    fname = get_fname(eval, i,dim,d)
+    try:
+        sns.histplot(x=samples,kde=True,stat='density',cbar=True,multiple='dodge',bins=nbins, weights=weights)
+    except:
+        pass
+    fname = get_fname(eval, i,dim,d, alpha=alpha)
     title = get_title(eval, i, dim, d)
     plt.title(title)
     plt.savefig(fname)
@@ -79,7 +88,10 @@ def plot_trace_arr(eval, i, samples, dim=False, d=0):
 
 def plot_hist(eval, i, samples, weights, bins):
     plt.figure(figsize=(10,7))
-    sns.histplot(x=samples,bins=bins,kde=True, stat='density', weights=weights)
+    try:
+        sns.histplot(x=samples,bins=bins,kde=True, stat='density', weights=weights)
+    except:
+        pass
     fname = get_fname(eval, i)
     title = get_title(eval, i)
     plt.title(title)
@@ -97,7 +109,7 @@ def plot_trace(eval, i, samples):
     plt.clf()
     plt.close()
 
-def gen_hists(eval, i, samples, weights):
+def gen_hists(eval, i, samples, weights, alpha=None):
     try:
         # list of c
         min_v, max_v = min(samples), max(samples)
@@ -109,14 +121,14 @@ def gen_hists(eval, i, samples, weights):
             # 1 rnd var
             assert(samples.dim <= 1)
             samples = samples.detach().numpy().T
-            plot_hist_arr(eval, i, samples, weights=weights)
+            plot_hist_arr(eval, i, samples, weights=weights, alpha=alpha)
         except:
             # n rnd vars
             hists = []
             samples = samples.detach().numpy()
             for d in range(samples.shape[0]):
                 hists.append(samples[d,:].T)
-            plot_hists_n(eval, i, hists, weights=weights)
+            plot_hists_n(eval, i, hists, weights=weights, alpha=alpha)
 
 def gen_traces(eval, i, samples):
     try:
@@ -139,8 +151,8 @@ def gen_traces(eval, i, samples):
                 traces.append(samples[d,:].T)
             plot_traces_n(eval, i, traces)
 
-def draw_hists(eval, samples, i, weights=None):
-    gen_hists(eval, i, samples, weights=weights)
+def draw_hists(eval, samples, i, weights=None,alpha=None):
+    gen_hists(eval, i, samples, weights=weights, alpha=alpha)
 
 def draw_trace(eval, samples, i):
     gen_traces(eval, i, samples)

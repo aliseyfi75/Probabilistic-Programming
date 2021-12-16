@@ -12,8 +12,8 @@ import four_waystrandexchange
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
-PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 
 def open_csv(document) :
@@ -44,11 +44,11 @@ def estimate_DabbyThesis(row, theta , file, dataset_name , docID, name, kinetic_
 
 
 # hairpin
-def estimate_Bonnet(row, theta, _zip, file, dataset_name, docID, name, kinetic_model):
+def estimate_Bonnet(row, theta, _zip, file, dataset_name, docID, name, kinetic_model, stochastic_conditionning=False):
     docID = name + str(_zip) + docID
     magnesium = 0
     [sq_error, predicted_log_10_rate, real_log_10_rate, stuctureCounterUniLocal, half_context_biLocal] \
-        = hairpin.main( float (file[row][5]), theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float( file[row][3] )- 273.15, float ( file[row][7] ), float ( file[row][8] ), magnesium, dataset_name, docID, kinetic_model)
+        = hairpin.main( float (file[row][5]), theta, file[row][1].rstrip(),file[row][2].rstrip(), _zip, 1000/  float( file[row][3] )- 273.15, float ( file[row][7] ), float ( file[row][8] ), magnesium, dataset_name, docID, kinetic_model, stochastic_conditionning)
 
     return predicted_log_10_rate, real_log_10_rate, sq_error
 
@@ -109,7 +109,6 @@ def estimate_ReyanldoSequential( row, theta, file, dataset_name, docID, name, ki
 
     return predicted_log_10_rate, real_log_10_rate, sq_error
 
-
     ## Alpha = kbi/kuni = 0.0402
 
 
@@ -122,11 +121,15 @@ def main():
         # Initial parameter set for the Arrhenius model
         # theta = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
 
+
+        # MH within GIBBS
+        theta = [11.6269,  3.3337, 13.0822,  2.9460, 12.4943,  2.9274, 13.4771,  4.1739, 13.0477,  2.8996, 12.9732,  3.2236, 12.7746,  2.5012,  0.1312]
+
         # near optimal parameter set for the Arrhenius model (roughly fig 6 from DNA23) : Total error 131
         # theta = [13.0580, 5, 17.0580, 5,  10.0580, 1, 1.0580, -2,  13.0580, 1, 5.0580, 0,  4.0580, -2,   0.0402 ]
 
         # result from importance sampling : Total error 87
-        theta = [11.8214,  2.4291, 13.5964,  3.7051, 14.5229,  2.7318, 11.2671,  3.9952, 12.7210,  3.8409, 12.5655,  4.5394, 11.9421,  2.3308,  0.1189]
+        # theta = [11.8214,  2.4291, 13.5964,  3.7051, 14.5229,  2.7318, 11.2671,  3.9952, 12.7210,  3.8409, 12.5655,  4.5394, 11.9421,  2.3308,  0.1189]
 
     elif kinetic_model == "METROPOLIS":
         # Initial parameter set for the Metropolis model
@@ -146,6 +149,8 @@ def main():
                  "three_waystranddisplacement" : ["Fig3b"], 
                  "three_waystranddisplacement1" : ["Fig6b"]
     }
+
+    # datasets = { "hairpin" : ["Fig4_0"]}
 
     total_sq_error = []
     for reaction_type in datasets:

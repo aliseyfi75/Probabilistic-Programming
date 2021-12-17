@@ -1,6 +1,11 @@
 import numpy as np
 from math import pow, log10, sqrt
 import csv
+import sys
+
+sys.path.append('../')
+sys.path.append('../Code/Scripts')
+sys.path.append('../Code/')
 
 from numpy.lib.function_base import average
 
@@ -12,6 +17,7 @@ import four_waystrandexchange
 
 from Scripts.model import open_csv
 from Scripts.model import *
+
 
 
 PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
@@ -147,3 +153,79 @@ def eval_theta_all(theta):
     print("Within factor of three (correct)", within3)
 
     return mse, within3
+
+
+# # # alpha = 1, samples=50
+# # theta = [13.06118825,  2.96903267, 13.08879566 , 3.08324999, 13.1165558,   3.09489443, \
+# #      12.97678333 , 2.88934503, 12.96237856,  3.01360373, 12.89525469 , 2.9064522  ,\
+# #           12.84361076,  3.15635367, -0.02622133]
+# # MSE 5.924722419549694
+# # Within factor of three (Nasim) 0.584375
+# # Within factor of three (correct) 0.446875
+
+# # # alpha=1, theta = 100
+# # theta = [13.02079458,  3.05853647, 13.1689483  , 2.95179187, 12.83109197,  3.00781622, \
+# #     13.04630884 , 3.06074229 ,13.14258137 , 3.26062992, 13.16966668,  2.8629887,\
+# #         12.83335831 , 2.75356964 , 0.02324164]
+# # MSE 0.6225347436713771
+# # Within factor of three (Nasim) 0.665625
+# # Within factor of three (correct) 0.440625
+
+# #  # alpha = 1, theta = 250
+# # theta = [13.08422124,  2.91626845, 13.15549004,  2.94207538, 13.06600446,  2.96746481,  \
+# #     13.10760293,  2.90387457, 13.04850659,  2.98913925, 13.12353384,  3.03318451,   \
+# #         12.98680545,  2.93091869,  0.03826118]
+# # MSE 0.769348909555317
+# # Within factor of three (Nasim) 0.5875  
+# # Within factor of three (correct) 0.3625
+
+#  # alpha = 2, theta = 50
+# # theta = [13.47270692,  2.96462669, 13.07673163 , 3.03380658, 13.43435709,  3.00044792, \
+# #       12.76918284 , 2.86601009, 13.31278815  ,2.97103586 ,13.2342286  , 3.18714006, 
+# #        12.97825425 , 3.01830007, -0.10731259]
+# # MSE 5.410478619047245
+# # Within factor of three (Nasim) 0.515625
+# # Within factor of three (correct) 0.340625
+
+# # # alpha = 2, theta = 100
+# # theta = [ 1.30945015e+01,  2.88553283e+00,  1.28909934e+01,  3.21180607e+00, \
+# #   1.31362605e+01,  3.02593002e+00,  1.31859112e+01,  2.96292555e+00, \
+# #   1.29623183e+01,  2.94133526e+00,  1.30061344e+01,  3.00568477e+00, \
+# #   1.29894063e+01,  2.97815887e+00, -5.89998716e-03]
+# # MSE 5.451022063013895
+# # Within factor of three (Nasim) 0.65
+# # Within factor of three (correct) 0.590625
+
+# # # alpha = 2, samples = 250
+# # theta = [13.10052837,  3.06820081, 13.08189501,  3.06649163, 12.96714323,  2.94806634, \
+# #     12.97405858,  2.94277147, 13.0963243,   2.97091484, 13.11001231,  3.02589739, \
+# #         13.14727626,  2.8982616,   0.021218  ]
+# # MSE 0.5656632439519658
+# # Within factor of three (Nasim) 0.715625  
+# # Within factor of three (correct) 0.540625
+
+# #  # alpha = 4, samples = 50
+# # theta = [13.04616153,  2.99346818, 13.02384133,  2.89847984, 12.98567399,  3.14762197, \
+# #     13.21290992,  3.1381616 , 13.23129644 , 3.02215763, 13.16989318 , 3.01209141, \
+# #         12.9081389 ,  2.97200462, -0.07885271]
+# # MSE 5.575008006289387
+# # Within factor of three (Nasim) 0.51875
+# # Within factor of three (correct) 0.321875
+
+# #  # alpha = 4, samples = 100
+# # theta = [12.91871982,  2.99136128, 13.12235062,  2.86346823, 13.1008569,   2.95072911, \
+# #      13.15901815,  2.90054416, 12.86449901,  2.913547,   12.97036645 , 2.88958644, \
+# #          13.03420697,  3.09293625, -0.16487232]
+# # MSE 4.701011531513089
+# # Within factor of three (Nasim) 0.45625   
+# # Within factor of three (correct) 0.246875
+
+#  # alpha = 4, samples = 250 
+# theta = [13.11927312,  2.94534727, 13.16256703,  2.94424204, 13.07477452,  \
+#     2.86149381, 13.07832981,  2.99417638, 13.11264839,  3.06783864, 13.12858785,  \
+#         2.94152868, 13.09096029,  3.03766899,  0.07344786]
+# # MSE 0.7801398683272824
+# # Within factor of three (Nasim) 0.578125  
+# # Within factor of three (correct) 0.346875
+
+# eval_theta_all(theta)

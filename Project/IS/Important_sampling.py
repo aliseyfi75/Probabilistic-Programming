@@ -185,7 +185,7 @@ if __name__ == '__main__':
     sigma = 1
     # implement importance sampling
 
-    N = 1000
+    N = 10
     
     # start_time = time.time()
     # theta, logprob = zip(*Parallel(n_jobs=4)(delayed(par_fun)() for i in range(N)))

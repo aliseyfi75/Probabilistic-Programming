@@ -20,8 +20,8 @@ from Scripts.model import *
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS"):
     
-    # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-    PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+    # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates = [], []
     for reaction_type in datasets:
             if reaction_type == "bubble":
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     sigma = 1
     # implement importance sampling
 
-    N = 10
+    N = 100
     
     # start_time = time.time()
     # theta, logprob = zip(*Parallel(n_jobs=4)(delayed(par_fun)() for i in range(N)))
@@ -197,12 +197,10 @@ if __name__ == '__main__':
     ks = list(kss)
     reals = list(realss)
     logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
-    print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
+    # print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
     thetas = np.array(thetas)
     logprobs = np.array(logprobs).reshape(-1,1)
-    print(thetas.shape)
-    print(logprobs.shape)
 
     samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
     samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)

@@ -89,7 +89,6 @@ def SMC(n_particles, exp):
     smc_cnter = 0
     count=0
     while not done:
-        print('iteration: ', count)
         # particles, weights, dones = zip(*Parallel(n_jobs=8)(delayed(parallel_helper)(particles[i], i, weights[i], done) for i in range(n_particles)))
         # print("particles: ", particles)
         # print("dones: ", dones)
@@ -176,10 +175,11 @@ def my_main():
     plt.savefig(figstr)
 
 if __name__ == '__main__':
-    sys.setrecursionlimit(100000)
-    # threading.stack_size(200000000)
+    sys.setrecursionlimit(100000000)
+    # threading.stack_size(0x200000000)
     # thread = threading.Thread(target=my_main)
     # thread.start()     
+    # thread.join()
     my_main()
 
 

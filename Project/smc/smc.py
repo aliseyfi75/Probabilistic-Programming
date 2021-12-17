@@ -7,6 +7,8 @@ import sys
 import threading
 import matplotlib.pyplot as plt
 from daphne import daphne
+from joblib import Parallel, delayed
+from time import time
 
 from primitives import log
 from plots import plots
@@ -45,6 +47,30 @@ def resample_particles(particles, log_weights, count):
 
     return logZ, new_particles
 
+def parallel_helper(particle, i, weight, done):
+    res = run_until_observe_or_end(particle)
+    if 'done' in res[2]: #this checks if the calculation is done
+        particle = res[0]
+        if i == 0:
+            done = True  #and enforces everything to be the same as the first particle
+            address = ''    
+        else:
+            if not done:        # is the /first/ particle i=0 done?
+                raise RuntimeError('Failed SMC, finished one calculation before the other')
+
+    else:  # res[2] == 'observe'
+        cont, args, sigma = res
+        weight = res[2]['logW'].clone().detach()        # get weights
+        particle = cont, args, {'logW':weight}      # get continuation
+
+        if i == 0:
+            address = sigma['alpha']
+        try:
+            assert(sigma['alpha'] == address)
+        except:
+            raise AssertionError('particle address error')
+    
+    return particle, weight, done
 
 def SMC(n_particles, exp):
     particles = []
@@ -64,6 +90,12 @@ def SMC(n_particles, exp):
     smc_cnter = 0
     count=0
     while not done:
+        print('iteration: ', count)
+        # particles, weights, dones = zip(*Parallel(n_jobs=8)(delayed(parallel_helper)(particles[i], i, weights[i], done) for i in range(n_particles)))
+        # print("particles: ", particles)
+        # print("dones: ", dones)
+        # done = all(dones)
+        # print("done: ", done)
         for i in range(n_particles): #Even though this can be parallelized, we run it serially
             res = run_until_observe_or_end(particles[i])
             if 'done' in res[2]: #this checks if the calculation is done
@@ -78,7 +110,7 @@ def SMC(n_particles, exp):
                 cont, args, sigma = res
                 weights[i] = res[2]['logW'].clone().detach()        # get weights
                 particles[i] = cont, args, {'logW':weights[i]}      # get continuation
-
+                
                 if i == 0:
                     address = sigma['alpha']
                 try:
@@ -106,7 +138,8 @@ def my_main():
     # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'w') as f:
     #     json.dump(exp, f)
 
-    with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'r') as f:
+    # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'r') as f:
+    with open('/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
         exp = json.load(f)
 
     logZ_list = []
@@ -146,8 +179,9 @@ def my_main():
 
 if __name__ == '__main__':
     sys.setrecursionlimit(100000)
-    threading.stack_size(200000000)
-    thread = threading.Thread(target=my_main)
-    thread.start()     
+    # threading.stack_size(200000000)
+    # thread = threading.Thread(target=my_main)
+    # thread.start()     
+    my_main()
 
 

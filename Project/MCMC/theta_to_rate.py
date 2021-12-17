@@ -138,7 +138,7 @@ def parallel_helper(theta, reaction_type, kinetic_model):
     return predicted_log_10_rates
 
 def from_theta_to_rate(theta, datasets=datasets, kinetic_model="ARRHENIUS"):
-    predicted_log_10_rates = zip(*Parallel(n_jobs=8)(delayed(parallel_helper)(theta, reaction_type, kinetic_model) for reaction_type in datasets))
+    predicted_log_10_rates = Parallel(n_jobs=8)(delayed(parallel_helper)(theta, reaction_type, kinetic_model) for reaction_type in datasets)
     return functools.reduce(operator.iconcat, predicted_log_10_rates, [])
     
 

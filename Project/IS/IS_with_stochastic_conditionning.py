@@ -8,9 +8,11 @@ from plot import draw_hists
 import torch
 import argparse
 from tqdm import tqdm
-import wandb
+import matplotlib.pyplot as plt
+import seaborn as sns
+# import wandb
 
-wandb.init(project="Probprog_project", entity="aliseyfi")
+# wandb.init(project="Probprog_project", entity="aliseyfi")
 
 from joblib import Parallel, delayed
 
@@ -21,13 +23,13 @@ sys.path.append('../Code/')
 from Scripts.model import open_csv
 from Scripts.model import *
 
-from test_theta_on_hairpins import eval_theta
+from test_theta_on_hairpins import eval_theta as eval_theta_hairpins
 from test_theta_on_all import eval_theta_all
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--alpha', type=float, default=1)
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--alpha', type=float, default=1)
 
-alpha = parser.parse_args().alpha
+# alpha = parser.parse_args().alpha
 
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS", stochastic_conditionning=False):
@@ -164,13 +166,16 @@ def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS", stochastic_co
 
     return predicted_log_10_rates, real_log_10_rates, errors, used_KS_error
 
-def log_prob(pred, real, error, used_ks):
+def log_prob(pred, real, error, used_ks, alpha, squaredKS=False):
     # returns log_prob for a single point
     # return -np.log(sigma*np.sqrt(2*np.pi)) - 0.5*((k-real)/sigma)**2
     # return - 0.5*(ks_stat)**2
     if used_ks:
         ks_stat = error
-        return -alpha * ks_stat
+        if squaredKS:
+            return -alpha * ks_stat**2
+        else:
+            return -alpha * ks_stat
     else:
         squared_error = error
         x =-0.5*np.log(2*np.pi) - 0.5*squared_error
@@ -179,9 +184,9 @@ def log_prob(pred, real, error, used_ks):
 # def list_log_prob_par(ks, reals, sigma):
 #     return np.sum(Parallel(n_jobs=16)(delayed(log_prob)(k, real, sigma) for k, real in zip(ks, reals)))
 
-def list_log_prob(pred_rates, real_rates, errors, used_ks_errors):
+def list_log_prob(pred_rates, real_rates, errors, used_ks_errors, alpha, squaredKS=False):
     # gets log_prob for one theta sample
-    return np.sum([log_prob(pred, real, error, used_ks) for pred,real,error,used_ks in zip(pred_rates,real_rates,errors,used_ks_errors)])
+    return np.sum([log_prob(pred, real, error, used_ks, alpha, squaredKS) for pred,real,error,used_ks in zip(pred_rates,real_rates,errors,used_ks_errors)])
 
 def expectation_calculator(results, log_weights, func, *args):
     weights = np.exp(log_weights)
@@ -209,57 +214,93 @@ def expectation_calculator(results, log_weights, func, *args):
 
 
 if __name__ == '__main__':
-    # datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
-    #             "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
-    #             "hairpin4" : ["Table1_0", "Table1_1"],
-    #             "helix" : ["Fig6_0", "Fig6_1"],
-    #             "helix1" : ["Fig6a"],
-    #             "three_waystranddisplacement" : ["Fig3b"],
-    #             "three_waystranddisplacement1" : ["Fig6b"],
-    #             "bubble": ["Fig4"],
-    #             "four_waystrandexchange": ["Table5.2"]
-    # }
+    datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
+                "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
+                "hairpin4" : ["Table1_0", "Table1_1"],
+                "helix" : ["Fig6_0", "Fig6_1"],
+                "helix1" : ["Fig6a"],
+                "three_waystranddisplacement" : ["Fig3b"],
+                "three_waystranddisplacement1" : ["Fig6b"],
+                "bubble": ["Fig4"],
+                "four_waystrandexchange": ["Table5.2"]
+    }
 
-    datasets = {    "hairpin" : ["Fig4_0"]   }
+    # datasets = {    "hairpin" : ["Fig4_0"]   }
 
     prior = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
     sigma = 1
-    wandb.log({'alpha':alpha})
+    # wandb.log({'alpha':alpha})
     # implement importance sampling
 
     # N = 10
     
+    # for alpha=0.5,1,2,3,4,5
     # for N in [1,2,4,8,16,32,64,128,256,512]:
-    for N in [200,400,600,800,1000,1200]:
+    alpha = 1
+    squaredKS = False
+    N_set =  [50,100,150]
+    for alpha in [2,3,4]:
+        mses = []
+        within3s = []
+        for N in N_set:
 
-        start_time = time.time()
-        thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
+            start_time = time.time()
+            thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
 
-        predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=True) for theta in tqdm(thetas)))
-        ks = list(predicted_log_10_rates)
-        reals = list(real_log_10_rates)
-        # logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(error) for error in errors)
-        logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS) for pred,real,error,used_KS in zip(predicted_log_10_rates, real_log_10_rates, errors, used_KS_error))
+            predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=True) for theta in tqdm(thetas)))
+            ks = list(predicted_log_10_rates)
+            reals = list(real_log_10_rates)
+            # logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(error) for error in errors)
+            logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS, alpha, squaredKS) for pred,real,error,used_KS in zip(predicted_log_10_rates, real_log_10_rates, errors, used_KS_error))
 
-        print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
+            print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
-        print("n_dataset", len(predicted_log_10_rates[0]))
-        thetas = np.array(thetas)
-        logprobs = np.array(logprobs).reshape(-1,1)
-        print("n_samples x dim-theta", thetas.shape)
-        print("n_samples x 1", logprobs.shape)
+            print("n_dataset", len(predicted_log_10_rates[0]))
+            thetas = np.array(thetas)
+            logprobs = np.array(logprobs).reshape(-1,1)
+            print("n_samples x dim-theta", thetas.shape)
+            print("n_samples x 1", logprobs.shape)
 
-        samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
-        samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
+            samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
+            samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
 
-        print('Number of samples: ', N)
-        print('Mean: ', samples_mean)
-        print('Variance: ', samples_var)
+            print('Number of samples: ', N)
+            print('Mean: ', samples_mean)
+            print('Variance: ', samples_var)
 
-        mse, within3 = eval_theta_all(samples_mean)
-        wandb.log({'MSE':mse})
-        wandb.log({'Within 3':within3})
+            mse, within3 = eval_theta_all(samples_mean)
+            eval_theta_hairpins(samples_mean)
+            mses.append(mse)
+            within3s.append(within3)
+            # wandb.log({'MSE':mse})
+            # wandb.log({'Within 3':within3})
+
+            weights = torch.tensor(np.exp(logprobs))
+            draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0], alpha=alpha)
+        
+        plt.figure(1)
+        lab = "alpha ="+str(alpha)
+        plt.plot(N_set, mses, label=lab)
 
 
-        weights = torch.tensor(np.exp(logprobs))
-        draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0], alpha=alpha)
+        plt.figure(2)
+        lab = "alpha ="+str(alpha)
+        plt.plot(N_set, within3s, label=lab)
+        
+    plt.figure(1)
+    plt.xlabel("N")
+    plt.ylabel("MSE")
+    plt.legend()
+    figstr = "tune_alpha/MSE_hairpin_KS"
+    plt.savefig(figstr)  
+
+    plt.figure(2)
+    plt.xlabel("N")
+    plt.ylabel("proportion within 3")
+    plt.legend()
+    figstr = "tune_alpha/within3_hairpin_KS"
+    plt.savefig(figstr)  
+
+    plt.show()
+
+

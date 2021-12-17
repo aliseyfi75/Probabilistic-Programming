@@ -38,8 +38,7 @@ def resample_particles(particles, log_weights, count):
             k = discrete_dist.sample()
             new_particles[i] = particles[k]
         
-        print('intermediate variance: ', np.diag(np.cov(torch.stack(new_particles).float().detach().numpy(),rowvar=False)))  
-
+        # print('intermediate variance: ', np.diag(np.cov(torch.stack(new_particles).float().detach().numpy(),rowvar=False)))  
 
     logZ = torch.logsumexp(log_ws,0) - torch.log(torch.tensor(log_ws.shape[0],dtype=float))
 
@@ -100,7 +99,6 @@ def SMC(n_particles, exp):
 
 
 def my_main():
-
 
     # exp = daphne(['desugar-hoppl-cps', '-i', 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7)])
     # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'w') as f:

@@ -85,25 +85,19 @@ def mh_within_gibbs_sampling(graph, num_samples):
 
     values = [sample_from_joint(graph, var=True)]
 
-    start_time = time.time()
     for _ in trange(num_samples):
         values.append(gibbs_step(graph[1]['P'], unobserved_variables, values[-1], free_variables_inverse))
-    print("Gibbs sampling took {} seconds".format(time.time() - start_time))
 
-    start_time
     sample_temp = deterministic_eval(value_subs(graph[2], values[0]))
-    print("Initial sample temp took {} seconds".format(time.time() - start_time))
 
     n_params = 1
     if sample_temp.dim() != 0:
         n_params = len(sample_temp)
     samples = torch.zeros(n_params, num_samples+1)
 
-    start_time = time.time()
     for idx, value in enumerate(tqdm(values)):
         sample = deterministic_eval(value_subs(graph[2], value))
         samples[:, idx] = sample
-    print("Sampling took {} seconds".format(time.time() - start_time))
     return samples, values
 
 
@@ -186,12 +180,12 @@ if __name__ == '__main__':
     with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
         graph = json.load(f)
     
-    print('\n\n\nSample of posterior') 
-    n_samples = int(1e2)
-    print('\n\n\nMH within Gibbs:')
-    start_time = time.time()
+    # print('\n\n\nSample of posterior') 
+    n_samples = int(1e0)
+    # print('\n\n\nMH within Gibbs:')
+    # start_time = time.time()
     samples, nodes_values = mh_within_gibbs_sampling(graph, num_samples=n_samples)
-    print('Time taken: {}'.format(time.time() - start_time))
+    # print('Time taken: {}'.format(time.time() - start_time))
 
     samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
     samples_var = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)

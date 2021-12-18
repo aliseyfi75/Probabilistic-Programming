@@ -20,8 +20,8 @@ datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
     }
 
 def parallel_helper(theta, reaction_type, kinetic_model):
-    # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-    PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+    PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+    # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
     # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
     # PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 

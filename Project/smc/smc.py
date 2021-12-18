@@ -9,13 +9,14 @@ import matplotlib.pyplot as plt
 from daphne import daphne
 from joblib import Parallel, delayed
 from time import time
+from tqdm import trange
 
 from primitives import log
 from plots import plots
 import time
+import wandb
 
-
-
+wandb.init(project="Prob_prog_SMC", entity="aliseyfi")
 
 def run_until_observe_or_end(res):
     cont, args, sigma = res
@@ -94,7 +95,7 @@ def SMC(n_particles, exp):
         # print("dones: ", dones)
         # done = all(dones)
         # print("done: ", done)
-        for i in range(n_particles): #Even though this can be parallelized, we run it serially
+        for i in trange(n_particles): #Even though this can be parallelized, we run it serially
             res = run_until_observe_or_end(particles[i])
             if 'done' in res[2]: #this checks if the calculation is done
                 particles[i] = res[0]
@@ -119,6 +120,7 @@ def SMC(n_particles, exp):
         if not done:
             count+=1
             logZn, particles = resample_particles(particles, weights, count)
+            wandb.log({'logZ':logZn})
             logZs.append(logZn)
             
         smc_cnter += 1  # number of continuations/observes completed. 
@@ -136,13 +138,14 @@ def my_main():
     #     json.dump(exp, f)
 
     # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'r') as f:
-    with open('/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
+    # with open('/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
+    with open('/home/aliseyfi/scratch/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
         exp = json.load(f)
 
     logZ_list = []
 
     # for n_particles in [5,50,500]:
-    for n_particles in [2]:
+    for n_particles in [2000]:
         start = time.time()
         
         logZ, particles = SMC(n_particles, exp)
@@ -173,6 +176,7 @@ def my_main():
     plt.plot(logZ_list)
     figstr = "logZ_estimates/program"
     plt.savefig(figstr)
+    plt.close()
 
 if __name__ == '__main__':
     sys.setrecursionlimit(100000000)

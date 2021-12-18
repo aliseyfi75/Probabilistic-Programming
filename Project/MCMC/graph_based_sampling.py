@@ -9,8 +9,8 @@ from evaluation_based_sampling import evaluate_program, expectation_calculator
 from plot import draw_hists, draw_trace, draw_log_joint
 from tqdm import trange, tqdm
 
-# PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 
 def topological_sort(graph):
     nodes = graph[1]['V']
@@ -183,9 +183,9 @@ if __name__ == '__main__':
     # print('\n\n\nSample of posterior') 
     n_samples = int(1e0)
     # print('\n\n\nMH within Gibbs:')
-    # start_time = time.time()
+    start_time = time.time()
     samples, nodes_values = mh_within_gibbs_sampling(graph, num_samples=n_samples)
-    # print('Time taken: {}'.format(time.time() - start_time))
+    print('Time taken: {}'.format(time.time() - start_time))
 
     samples_mean = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x:x)
     samples_var = expectation_calculator(samples, torch.zeros(samples.shape[1]), lambda x: x**2 - samples_mean.view(samples.shape[0],1)**2)

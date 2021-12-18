@@ -207,6 +207,7 @@ if __name__ == '__main__':
     samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
 
     print('Number of samples: ', N)
+    print('Sampling time: ', time.time() - start_time)
     print('Mean: ', samples_mean)
     print('Variance: ', samples_var)
 

@@ -20,7 +20,8 @@ from Scripts.model import *
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS"):
     
-    PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+    PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+    # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
     # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates = [], []
     for reaction_type in datasets:
@@ -185,7 +186,7 @@ if __name__ == '__main__':
     sigma = 1
     # implement importance sampling
 
-    N = 100
+    N = 10000
     
     # start_time = time.time()
     # theta, logprob = zip(*Parallel(n_jobs=4)(delayed(par_fun)() for i in range(N)))

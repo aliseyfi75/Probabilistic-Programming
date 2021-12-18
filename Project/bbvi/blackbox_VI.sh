@@ -6,12 +6,12 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
-#SBATCH --mem=2000
-#SBATCH --time=10:00:00
+#SBATCH --mem=4000
+#SBATCH --time=50:00:00
 
 module load python/3.7
-source /home/jlovrod/projects/def-condon/jlovrod/dp_gen_env/bin/activate
+source $HOME/pytorch/bin/activate
 
-wandb login 33f5ffa304d256a59512bb634dcf8da21304837f
+wandb login 47c7b14ac80e20c67500d9e9ff90f61f5bc447e2
 
-python -u blackbox_VI.py --L $SLURM_ARRAY_TASK_ID --lr 0.005 > bbvi.out
+python -u blackbox_VI.py --L 5 --lr 0.05 > bbvi.out

@@ -181,7 +181,7 @@ if __name__ == '__main__':
         graph = json.load(f)
     
     # print('\n\n\nSample of posterior') 
-    n_samples = int(1e0)
+    n_samples = int(1e3)
     # print('\n\n\nMH within Gibbs:')
     start_time = time.time()
     samples, nodes_values = mh_within_gibbs_sampling(graph, num_samples=n_samples)

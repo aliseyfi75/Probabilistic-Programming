@@ -1,0 +1,31 @@
+TODO:
+- Make graph justifying the random seed
+- Tuning alpha (likelihood parameter)
+	o Make graph for various alpha, what is MSE for various?
+	o Ks_squared or KS, alpha=.5,1,2,3,4,5
+- Once alpha is tuned, find “average” MSE vs Samples plot, with and without stochastic conditioning. (Might need the “average” MSE because the variance might be high)
+- Analyze what is the effect on the posterior with the new observation model? Look at the posterior for, say theta[11] when IS samples = 100
+- Parallelize MCMC (is this possible?)
+- Parallelize BBVI (is this possible?)
+- Make SMC correctly sequential (resample after each reaction)
+- Double check MCMC and SMC likelihood is correct
+- Get best possible results without stochastic conditioning
+	o IS
+	o BBVI
+	o SMC
+	o MCMC
+- Get best possible results for IS with stochastic conditioning (needs alpha tuned)
+	o IS (for sure)
+	o BBVI
+	o MCMC
+	o SMC (probably not, since parallelizing might not be possible)
+- Compare results with and without stochastic conditioning  
+- Tune IS and SMC prior with BBVI or MCMC and get new results, see if improved
+- BBVI ELBO plot, with and without stochastic conditioning. WandB plots for BBVI for SMC with and without stochastic conditioning, see if there is an improved ELBO convergence with different hyperparameters. 
+- Write the paper
+- Prepare the presentation 
+
+To put in paper
+-	Justify not integrating out the randomness of the simulator (read pseudo marginal methods)
+Today: 
+-	What about a different number of paths?? Is KS the same if I use 10k paths instead of 1k?

@@ -228,4 +228,8 @@ def eval_theta_all(theta):
 # # Within factor of three (Nasim) 0.578125  
 # # Within factor of three (correct) 0.346875
 
-# eval_theta_all(theta)
+theta = [12.48210154,  3.90275578, 13.09800791,  2.84315634, 12.93531016,  3.03627209,
+ 12.73331783,  3.37982778, 13.59546396,  3.64466079, 12.79966671,  3.41207022,
+ 13.22211924,  3.11840773,  0.11566866]
+
+eval_theta_all(theta)

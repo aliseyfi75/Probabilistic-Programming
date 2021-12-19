@@ -9,8 +9,8 @@ from evaluation_based_sampling import evaluate_program, expectation_calculator
 from plot import draw_hists, draw_trace, draw_log_joint
 from tqdm import trange, tqdm
 
-# PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 
 def topological_sort(graph):
     nodes = graph[1]['V']
@@ -85,25 +85,19 @@ def mh_within_gibbs_sampling(graph, num_samples):
 
     values = [sample_from_joint(graph, var=True)]
 
-    start_time = time.time()
     for _ in trange(num_samples):
         values.append(gibbs_step(graph[1]['P'], unobserved_variables, values[-1], free_variables_inverse))
-    print("Gibbs sampling took {} seconds".format(time.time() - start_time))
 
-    start_time
     sample_temp = deterministic_eval(value_subs(graph[2], values[0]))
-    print("Initial sample temp took {} seconds".format(time.time() - start_time))
 
     n_params = 1
     if sample_temp.dim() != 0:
         n_params = len(sample_temp)
     samples = torch.zeros(n_params, num_samples+1)
 
-    start_time = time.time()
     for idx, value in enumerate(tqdm(values)):
         sample = deterministic_eval(value_subs(graph[2], value))
         samples[:, idx] = sample
-    print("Sampling took {} seconds".format(time.time() - start_time))
     return samples, values
 
 
@@ -186,9 +180,9 @@ if __name__ == '__main__':
     with open(PATH+'bbvi/programs/_with_loop.daphne','r') as f:
         graph = json.load(f)
     
-    print('\n\n\nSample of posterior') 
-    n_samples = int(1e2)
-    print('\n\n\nMH within Gibbs:')
+    # print('\n\n\nSample of posterior') 
+    n_samples = int(1e3)
+    # print('\n\n\nMH within Gibbs:')
     start_time = time.time()
     samples, nodes_values = mh_within_gibbs_sampling(graph, num_samples=n_samples)
     print('Time taken: {}'.format(time.time() - start_time))

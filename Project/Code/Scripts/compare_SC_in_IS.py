@@ -215,20 +215,22 @@ def run_IS(n_samples, stochastic_conditionning):
             12.954033117162176,3.233111020749515,12.298319716642903,2.177464964997234,13.542831816491484,2.839804444835156,0.13583210648998936]
         theta_var = [0.028087434304683592,0.019482164640259283,0.016245441771574755,0.009112691618076695,0.038730375626556866,0.017621165478233853,0.051216615884872294,0.02878774592534887, \
             0.031570835744080504,0.04593872444285535,0.01728817309129082,0.04589162018443524,0.025638869311833987,0.01855789302744983,0.007727050475379378]
-        prior = torch.distributions.MultivariateNormal(torch.tensor(theta_mean), torch.diag(theta_var))
+        prior = torch.distributions.MultivariateNormal(torch.tensor(theta_mean), torch.diag(torch.tensor(theta_var)))
 
     thetas = [prior.sample() for i in range(n_samples)]
 
     if stochastic_conditionning==False:
         preds, reals, synthetic_errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=stochastic_conditionning) for theta in thetas))
     else:
-        preds, reals, synthetic_errors, used_KS_error = [],[],[],[]
-        for theta in thetas:
-            pred, real, synthetic_error, used_KS = from_theta_to_rate(theta, datasets, stochastic_conditionning=stochastic_conditionning)
-            preds.append(pred)
-            reals.append(real)
-            synthetic_errors.append(synthetic_error)
-            used_KS_error.append(used_KS)      
+        preds, reals, synthetic_errors, used_KS_error = zip(*Parallel(n_jobs=16,require='sharedmem')(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=stochastic_conditionning) for theta in thetas))
+
+        # preds, reals, synthetic_errors, used_KS_error = [],[],[],[]
+        # for theta in thetas:
+        #     pred, real, synthetic_error, used_KS = from_theta_to_rate(theta, datasets, stochastic_conditionning=stochastic_conditionning)
+        #     preds.append(pred)
+        #     reals.append(real)
+        #     synthetic_errors.append(synthetic_error)
+        #     used_KS_error.append(used_KS)      
 
     logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS) for pred,real,error,used_KS in zip(preds, reals, synthetic_errors, used_KS_error))
 
@@ -296,7 +298,7 @@ def run_IS(n_samples, stochastic_conditionning):
 def interpret_results(samples, logWs):
 
     print("\n\n\n")
-    print(logWs)
+    # print(logWs)
     W = np.exp([logwi - max(logWs) for logwi in logWs])
     W = W/sum(W)
     # ess = ESS(W)

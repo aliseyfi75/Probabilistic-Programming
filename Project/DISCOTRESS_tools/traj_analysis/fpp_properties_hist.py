@@ -134,7 +134,7 @@ if __name__=="__main__":
     binw=0.1
     bin_min=1.
     binall=False # enforce that all values must be encompassed in the bin range
-    logvals=True # take log_10 of values
+    logvals=False # take log_10 of values
     # plot params
     nxticks=8 # no. of ticks on x axis
     nyticks=10 # no. of ticks on y axis

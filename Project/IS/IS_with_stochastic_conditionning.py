@@ -237,70 +237,93 @@ if __name__ == '__main__':
     # for alpha=0.5,1,2,3,4,5
     # for N in [1,2,4,8,16,32,64,128,256,512]:
     alpha = 1
-    squaredKS = False
-    N_set =  [50,100,150]
-    for alpha in [2,3,4]:
-        mses = []
-        within3s = []
-        for N in N_set:
+    # squaredKS = False
+    N_set =  [50,100,200]
+    for squaredKS in [True,False]:
+        for alpha in [0.25,0.5,0.75,1,1.5,2]:
+            mses = []
+            within3s = []
+            mses_hairpins = []
+            within3s_hairpins = []
+            for N in N_set:
+                start_time = time.time()
+                thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
 
-            start_time = time.time()
-            thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
+                predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=True) for theta in tqdm(thetas)))
+                ks = list(predicted_log_10_rates)
+                reals = list(real_log_10_rates)
+                # logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(error) for error in errors)
+                logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS, alpha, squaredKS) for pred,real,error,used_KS in zip(predicted_log_10_rates, real_log_10_rates, errors, used_KS_error))
 
-            predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=True) for theta in tqdm(thetas)))
-            ks = list(predicted_log_10_rates)
-            reals = list(real_log_10_rates)
-            # logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(error) for error in errors)
-            logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS, alpha, squaredKS) for pred,real,error,used_KS in zip(predicted_log_10_rates, real_log_10_rates, errors, used_KS_error))
+                print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
-            print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
+                print("n_dataset", len(predicted_log_10_rates[0]))
+                thetas = np.array(thetas)
+                logprobs = np.array(logprobs).reshape(-1,1)
 
-            print("n_dataset", len(predicted_log_10_rates[0]))
-            thetas = np.array(thetas)
-            logprobs = np.array(logprobs).reshape(-1,1)
-            print("n_samples x dim-theta", thetas.shape)
-            print("n_samples x 1", logprobs.shape)
+                print("n_samples x dim-theta", thetas.shape)
+                print("n_samples x 1", logprobs.shape)
 
-            samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
-            samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
+                samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
+                samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
 
-            print('Number of samples: ', N)
-            print('Mean: ', samples_mean)
-            print('Variance: ', samples_var)
+                print('Number of samples: ', N)
+                print("squaredKS: ", squaredKS)
+                print("alpha: ", alpha)
+                print('Mean: ', samples_mean)
+                print('Variance: ', samples_var)
 
-            mse, within3 = eval_theta_all(samples_mean)
-            eval_theta_hairpins(samples_mean)
-            mses.append(mse)
-            within3s.append(within3)
-            # wandb.log({'MSE':mse})
-            # wandb.log({'Within 3':within3})
+                mse, within3 = eval_theta_all(samples_mean)
+                mse_hairpins, within3_hairpins = eval_theta_hairpins(samples_mean)
+                mses.append(mse)
+                within3s.append(within3)
+                mses_hairpins.append(mse_hairpins)
+                within3s_hairpins.append(within3_hairpins)
 
-            weights = torch.tensor(np.exp(logprobs))
-            draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0], alpha=alpha)
+                # wandb.log({'MSE':mse})
+                # wandb.log({'Within 3':within3})
+
+                weights = torch.tensor(np.exp(logprobs))
+            # draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0], alpha=alpha)
         
-        plt.figure(1)
-        lab = "alpha ="+str(alpha)
-        plt.plot(N_set, mses, label=lab)
+            plt.figure(1)
+            if squaredKS:
+                lab = "alpha ="+str(alpha)+", full dataset"+" squared KS"
+            else:
+                lab = "alpha ="+str(alpha)+", full dataset"
+            plt.plot(N_set, mses, label=lab)
+            if squaredKS:
+                lab = "alpha ="+str(alpha)+", only hairpins"+" squared KS"
+            else:
+                lab = "alpha ="+str(alpha)+", only hairpins"
+            plt.plot(N_set, mses_hairpins, label=lab)
 
+            plt.figure(2)
+            if squaredKS:
+                lab = "alpha ="+str(alpha)+", full dataset"+" squared KS"
+            else:
+                lab = "alpha ="+str(alpha)+", full dataset"
+            plt.plot(N_set, within3s, label=lab)
+            if squaredKS:
+                lab = "alpha ="+str(alpha)+", only hairpins"+" squared KS"
+            else: 
+                lab = "alpha ="+str(alpha)+", only hairpins"
+            plt.plot(N_set, within3s_hairpins, label=lab)
 
-        plt.figure(2)
-        lab = "alpha ="+str(alpha)
-        plt.plot(N_set, within3s, label=lab)
-        
     plt.figure(1)
     plt.xlabel("N")
     plt.ylabel("MSE")
-    plt.legend()
-    figstr = "tune_alpha/MSE_hairpin_KS"
-    plt.savefig(figstr)  
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    figstr = "tune_alpha/MSE"
+    plt.savefig(figstr, bbox_inches='tight')
 
     plt.figure(2)
     plt.xlabel("N")
     plt.ylabel("proportion within 3")
-    plt.legend()
-    figstr = "tune_alpha/within3_hairpin_KS"
-    plt.savefig(figstr)  
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    figstr = "tune_alpha/within3"
+    plt.savefig(figstr, bbox_inches='tight')
 
-    plt.show()
+    # plt.show()
 
 

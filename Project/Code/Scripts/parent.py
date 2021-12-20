@@ -21,8 +21,8 @@ TRANSLATION_TABLE = str.maketrans(NUCLEOTIDES, "TGAC")
 RETURN_MINUS_INF = 1e-10
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 # PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 class MyStrand(object):   
@@ -362,15 +362,11 @@ class ParentComplex(object):
         
         # self.create_discotress = False
 
-        # try:
-        #     os.remove(self.discotress_path+"fpp_properties.dat")
-        # except:
-        #     pass
+        if os.path.isfile(self.discotress_path+"fpp_properties.dat"):
+            os.remove(self.discotress_path+"fpp_properties.dat")
 
-        # try:
-        #     os.remove(self.discotress_path+"tp_stats.dat")
-        # except:
-        #     pass
+        if os.path.isfile(self.discotress_path+"tp_stats.dat"):
+            os.remove(self.discotress_path+"tp_stats.dat")
 
         if not os.path.isfile(self.discotress_path+"stat_prob.dat"):
             self.stat_prob = dict()
@@ -383,20 +379,20 @@ class ParentComplex(object):
                     line = str(self.stat_prob[si])+"\n"
                     f.write(line)
 
-        if not os.path.isfile(self.discotress_path+"input.kmc"):
-            with open(self.discotress_path+"input.kmc", "a") as f:
-                text =  "NNODES " + str(len(self.statespace))+"\n"
-                text += "NEDGES " + str(len(self.transition_structure))+"\n"
-                text += "WRAPPER BTOA" + "\n"
-                text += "TRAJ KPS" + "\n"
-                text += "BRANCHPROBS" + "\n"
-                text += "NELIM 5000" + "\n"
-                text += "NABPATHS 1000" + "\n"
-                text += "COMMSFILE communities.dat 2" +"\n"
-                text += "NODESAFILE nodes.A 1"+"\n"
-                text += "NODESBFILE nodes.B 1"+"\n"
-                text += "NTHREADS 4"+"\n"
-                f.write(text)
+        # if not os.path.isfile(self.discotress_path+"input.kmc"):
+        with open(self.discotress_path+"edge_weights.dat", "w") as f:
+            text =  "NNODES " + str(len(self.statespace))+"\n"
+            text += "NEDGES " + str(len(self.transition_structure))+"\n"
+            text += "WRAPPER BTOA" + "\n"
+            text += "TRAJ KPS" + "\n"
+            text += "BRANCHPROBS" + "\n"
+            text += "NELIM 5000" + "\n"
+            text += "NABPATHS 10000" + "\n"
+            text += "COMMSFILE communities.dat 2" +"\n"
+            text += "NODESAFILE nodes.A 1"+"\n"
+            text += "NODESBFILE nodes.B 1"+"\n"
+            text += "NTHREADS 4"+"\n"
+            f.write(text)
 
         initial, final = self.initial_final_state()
         if not os.path.isfile(self.discotress_path+"nodes.A"):
@@ -421,24 +417,20 @@ class ParentComplex(object):
                     line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
                     f.write(line)
 
-        # only this one file needs to be updated every time. 
-        # TODO: double check that this is true
+        if os.path.isfile(self.discotress_path+"edge_conns.dat"):
+            os.remove(self.discotress_path+"edge_weights.dat")
 
-        
-        lock = FileLock(self.lock_path, timeout=5)
-        with lock:
-            with open(self.discotress_path+"edge_weights.dat", "w") as f:
-                for s1, s2 in self.transition_structure.keys():
-                    try:
-                        line = str(np.log(self.rates[(s1,s2)]).item())+"\t"+str(np.log(self.rates[(s2,s1)].item())) + "\n"
-                    except:
-                        line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
-                    f.write(line)
+        with open(self.discotress_path+"edge_weights.dat", "w") as f:
+            for s1, s2 in self.transition_structure.keys():
+                try:
+                    line = str(np.log(self.rates[(s1,s2)]).item())+"\t"+str(np.log(self.rates[(s2,s1)].item())) + "\n"
+                except:
+                    line = str(np.log(self.rates[(s1,s2)]))+"\t"+str(np.log(self.rates[(s2,s1)])) + "\n"
+                f.write(line)
 
         # if os.path.isfile(self.discotress_path+"edge_conns.dat"):
         #     os.remove(self.discotress_path+"edge_weights.dat")
         # with open(self.discotress_path+"edge_weights.dat", "a") as f:
-
 
     def F(self, t):
         # uses m (mean first passage time)

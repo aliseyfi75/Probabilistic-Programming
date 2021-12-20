@@ -181,11 +181,9 @@ def BBVI_sampler(graph, L,T, lr):
         prob_means.append(mean(prob_sequence_l))
         wandb.log({'prob_mean':mean(prob_sequence_l)})
 
-
         if t%25==0:
             sigma['q'] = optimizer_step(sigma_tl, g_hat)
             print("q after step",t, sigma['q'],"\n\n")
-
 
     return return_values, prob_sequence, prob_means, sigma['q']
 

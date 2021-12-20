@@ -81,7 +81,7 @@ class HairpinComplex(ParentComplex):
 			finalStateConfig  = (0, 0)
 		return [initialStateConfig, finalStateConfig]
 	
-def main(real_Rate, theta, beta, gamma, zip, T, concentration, sodium, magnesium , dataset_name, docID, kinetic_model, stochastic_conditionning=False):
+def main(real_Rate, theta, beta, gamma, zip, T, concentration, sodium, magnesium , dataset_name, docID, kinetic_model, stochastic_conditionning=False, distance="KS_test"):
 	
 	betaprime = ''.join(list(reversed(beta))).translate(
 		TRANSLATION_TABLE)
@@ -90,7 +90,7 @@ def main(real_Rate, theta, beta, gamma, zip, T, concentration, sodium, magnesium
 	hairpin = MyStrand(hairpinString)
 	hairpin_complex = HairpinComplex(theta, beta, gamma , betaprime, zip, hairpin, len(beta) , len(hairpin) ,   T, concentration, sodium, magnesium ,  dataset_name, docID, kinetic_model)
 	bimolTransition  = False
-	return hairpin_complex.rate_constant(concentration, real_Rate, bimolTransition, kinetic_model, stochastic_conditionning)
+	return hairpin_complex.rate_constant(concentration, real_Rate, bimolTransition, kinetic_model, stochastic_conditionning, distance)
    
 	
 if __name__ == "__main__":

@@ -256,9 +256,6 @@ if __name__ == '__main__':
         for N in N_set:
             start_time = time.time()
             thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
-            thetas = [[12.08498719,  3.9264619,  8.78452361,  2.4836623,  8.70107978,  3.3134583,
-                        13.06708679,  3.36649785, 8.21150548,  2.96242796, 8.51392362,  2.8573691,
-                        8.83886797, 2.99156085,  0.1387697]]
 
             predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=SC) for theta in tqdm(thetas)))
             ks = list(predicted_log_10_rates)

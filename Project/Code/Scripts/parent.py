@@ -13,6 +13,7 @@ from scipy.sparse import csr_matrix, coo_matrix
 from scipy.special import logsumexp as logsumexp 
 from scipy import stats
 from filelock import Timeout, FileLock
+from shutil import rmtree
 
 R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
@@ -22,8 +23,8 @@ RETURN_MINUS_INF = 1e-10
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
-PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
+PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 class MyStrand(object):   
     def __init__(self, sequence, complement=None):
@@ -86,9 +87,9 @@ class ParentComplex(object):
 
         # self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
         self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/" + str(random.uniform(0,1)) + "/"
-        
-        if not os.path.exists(self.discotress_path):
-            os.makedirs(self.discotress_path)
+        while os.path.exists(self.discotress_path):
+            self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/" + str(random.uniform(0,1)) + "/"
+        os.makedirs(self.discotress_path)
         
         # self.lock_path = self.discotress_path+"edge_weights.dat.lock"
 
@@ -437,6 +438,10 @@ class ParentComplex(object):
         #     os.remove(self.discotress_path+"edge_weights.dat")
         # with open(self.discotress_path+"edge_weights.dat", "a") as f:
 
+    def f(self, t):
+
+        return 10**self.real_log_10_rate*np.exp(-t*10**(self.real_log_10_rate))  
+
     def F(self, t):
         # uses m (mean first passage time)
         # m = 2.3727131391650352e-05
@@ -445,6 +450,32 @@ class ParentComplex(object):
         # same thing, uses k (log_10 of the rate constant) instead of m
         # print("real k", self.real_log_10_rate)
         return 1 - np.exp(-t*10**(self.real_log_10_rate)) 
+
+
+    def get_wasserstein(self):
+
+        self.create_discotress_files()
+
+        self.discotress()
+
+        vals = []
+        with open(self.discotress_path+"fpp_properties.dat","r") as pathprops_f:
+            for line in pathprops_f.readlines():
+                val=float(line.split()[1])
+                vals.append(val)
+        vals=np.array(vals,dtype=float)
+
+        hist_arr = np.zeros(100,dtype=int)
+        width = max(vals)/99
+        for val in vals:
+            if not (val<0):
+                bin = int(np.floor(val/width))
+                hist_arr[bin] += 1
+        summ = np.sum([width*h for h in hist_arr])
+        hist_arr = [x/summ for x in hist_arr]
+        X = np.linspace(0, max(vals), num=100)
+
+        return stats.wasserstein_distance(hist_arr[10:90],self.f(X)[10:90])
 
 
     def get_score(self):
@@ -464,7 +495,7 @@ class ParentComplex(object):
         return stats.kstest(vals,cdf=self.F)[0]
     
         
-    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model, stochastic_conditionning=False):
+    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model, stochastic_conditionning=False, distance="KS_test"):
         """ Computes the estimated rate constant, and the error """
 
         real_log_10_rate = np.log(real_rate)/np.log(10)
@@ -487,10 +518,17 @@ class ParentComplex(object):
             predicted_log_10_rate = np.log(predicted_rate)/np.log(10)
         except:
             predicted_log_10_rate = RETURN_MINUS_INF
+            
 
         if stochastic_conditionning==True:
-            error = self.get_score()
+
+            if distance == "KS_test":
+                error = self.get_score()
+            elif distance == "wasserstein":
+                error = self.get_wasserstein()
+            rmtree(self.discotress_path)
             return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]
         else:
             error  = math.pow( real_log_10_rate - predicted_log_10_rate, 2)
+            rmtree(self.discotress_path)
             return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]

@@ -1,22 +1,21 @@
 import sys
 import torch
-import pyro
+# import pyro
 sys.path.append('../')
 sys.path.append('../Scripts')
 import time
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 from Scripts.new_sc_model import open_csv
 from Scripts.new_sc_model import *
 # from test_theta_on_hairpins import eval_theta
-from test_theta_on_all import eval_theta_all
-import matplotlib
+# from test_theta_on_all import eval_theta_all
+# import matplotlib
 import json
 import argparse
 
-
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 from joblib import Parallel, delayed
 
@@ -25,23 +24,24 @@ parser.add_argument('--alpha', type=float, default=1)
 
 alpha = parser.parse_args().alpha
 
-datasets = { "bubble": ["Fig4"],
-             "four_waystrandexchange": ["Table5.2"],
-             "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
-             "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
-             "hairpin4" : ["Table1_0", "Table1_1"],
-             "helix" : ["Fig6_0", "Fig6_1"],
-             "helix1" : ["Fig6a"],
-             "three_waystranddisplacement" : ["Fig3b"], 
-             "three_waystranddisplacement1" : ["Fig6b"]
-}
+# datasets = { "bubble": ["Fig4"],
+#              "four_waystrandexchange": ["Table5.2"],
+#              "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
+#              "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
+#              "hairpin4" : ["Table1_0", "Table1_1"],
+#              "helix" : ["Fig6_0", "Fig6_1"],
+#              "helix1" : ["Fig6a"],
+#              "three_waystranddisplacement" : ["Fig3b"], 
+#              "three_waystranddisplacement1" : ["Fig6b"]
+# }
 
-# datasets = { "hairpin" : ["Fig4_0"]}
+datasets = { "hairpin" : ["Fig4_0"]}
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS", stochastic_conditionning=False):
     
     # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-    PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = [], [], [], []
     for reaction_type in datasets:
             if reaction_type == "bubble":
@@ -254,7 +254,7 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
         samples.append(theta)
         logWs.append(loglik)
 
-        if i%1==0:
+        if i%100==1:
             # interpret_results(samples,logWs)
 
             if stochastic_conditionning==True:
@@ -266,42 +266,42 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
             else:
                 sb = ""
 
-            filestr = "saved_IS_particles/samples_" + str(i) + st + sb
+            filestr = "saved_IS_particles/samples_" + str(i+1) + st + sb + "alpha"+str(alpha)+"_hairpins"
             with open(filestr, 'w') as f:
                 json.dump([sample.tolist() for sample in samples], f)
-            filestr = "saved_IS_particles/weights_" + str(i) + st + sb
+            filestr = "saved_IS_particles/weights_" + str(i+1) + st + sb + "alpha"+str(alpha)+"_hairpins"
             with open(filestr, 'w') as f:
                 json.dump([logW.item() for logW in logWs], f)
             
     return samples, logWs
 
 
-def interpret_results(samples, logWs):
+# def interpret_results(samples, logWs):
 
-    print("\n\n\n")
-    print(logWs)
-    n_samples = len(samples)
-    W = np.exp([logwi - max(logWs) for logwi in logWs])
-    W = W/sum(W)
-    # ess = ESS(W)
+#     print("\n\n\n")
+#     print(logWs)
+#     n_samples = len(samples)
+#     W = np.exp([logwi - max(logWs) for logwi in logWs])
+#     W = W/sum(W)
+#     # ess = ESS(W)
 
-    for n in range(n_samples):
-        samples[n] = [float(x) for x in samples[n]]
+#     for n in range(n_samples):
+#         samples[n] = [float(x) for x in samples[n]]
 
-    means = weighted_avg(samples, W)
-    vars = weighted_avg((samples - means)**2, W)
+#     means = weighted_avg(samples, W)
+#     vars = weighted_avg((samples - means)**2, W)
 
-    print("mean", means)
-    print("variance", vars)
-    # print("ess", ess)
+#     print("mean", means)
+#     print("variance", vars)
+#     # print("ess", ess)
 
-    eval_theta_all(means)
+#     eval_theta_all(means)
 
-    return samples, W
+#     return samples, W
 
 def main():
 
-    n_samples = 5
+    n_samples = 2000
 
     # start = time.time()
     # samples, logWs = run_IS(n_samples, stochastic_conditionning=False)
@@ -318,10 +318,12 @@ def main():
     #     plt.close('all')
     # print("Without path samples time:", end - start)
 
+
     start = time.time()
-    samples, logWs = run_IS(n_samples, stochastic_conditionning=True)
+    samples, logWs = run_IS(n_samples, stochastic_conditionning=True, squared_KS=True)
+    # samples, logWs = run_IS(n_samples, stochastic_conditionning=True, squared_KS=True)
     end = time.time()
-    print("done in", end-start)
+    print("done in", end-start, "s")
 
     # samples, W = interpret_results(samples, logWs)
 

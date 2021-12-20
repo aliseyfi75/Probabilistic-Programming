@@ -22,8 +22,8 @@ RETURN_MINUS_INF = 1e-10
 
 # PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
-# PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
+# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 class MyStrand(object):   
     def __init__(self, sequence, complement=None):
@@ -84,9 +84,13 @@ class ParentComplex(object):
             self.fast_access = pickle.load(fast_file, encoding='latin1')
 
 
-        self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
+        # self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
+        self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/" + str(random.uniform(0,1)) + "/"
         
-        self.lock_path = self.discotress_path+"edge_weights.dat.lock"
+        if not os.path.exists(self.discotress_path):
+            os.makedirs(self.discotress_path)
+        
+        # self.lock_path = self.discotress_path+"edge_weights.dat.lock"
 
         # if self.create_discotress:
         #     try:
@@ -99,7 +103,8 @@ class ParentComplex(object):
         #     except:
         #         print("Exception creating directories")
         #         raise
-        
+
+
         self.neighbours_dictionary = {s:set([]) for s in self.statespace}
         for s0, s1 in list(self.transition_structure.keys()):
             self.neighbours_dictionary[s1].add(s0)
@@ -362,49 +367,49 @@ class ParentComplex(object):
         
         # self.create_discotress = False
 
-        if os.path.isfile(self.discotress_path+"fpp_properties.dat"):
-            os.remove(self.discotress_path+"fpp_properties.dat")
+        # if os.path.isfile(self.discotress_path+"fpp_properties.dat"):
+        #     os.remove(self.discotress_path+"fpp_properties.dat")
 
-        if os.path.isfile(self.discotress_path+"tp_stats.dat"):
-            os.remove(self.discotress_path+"tp_stats.dat")
+        # if os.path.isfile(self.discotress_path+"tp_stats.dat"):
+        #     os.remove(self.discotress_path+"tp_stats.dat")
 
         if not os.path.isfile(self.discotress_path+"stat_prob.dat"):
             self.stat_prob = dict()
             kb = 1.380649E10-23
             C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
 
-            with open(self.discotress_path+"stat_prob.dat", "a") as f:
+            with open(self.discotress_path+"stat_prob.dat", "w") as f:
                 for si in self.statespace:
                     self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
                     line = str(self.stat_prob[si])+"\n"
                     f.write(line)
 
-        # if not os.path.isfile(self.discotress_path+"input.kmc"):
-        with open(self.discotress_path+"edge_weights.dat", "w") as f:
-            text =  "NNODES " + str(len(self.statespace))+"\n"
-            text += "NEDGES " + str(len(self.transition_structure))+"\n"
-            text += "WRAPPER BTOA" + "\n"
-            text += "TRAJ KPS" + "\n"
-            text += "BRANCHPROBS" + "\n"
-            text += "NELIM 5000" + "\n"
-            text += "NABPATHS 10000" + "\n"
-            text += "COMMSFILE communities.dat 2" +"\n"
-            text += "NODESAFILE nodes.A 1"+"\n"
-            text += "NODESBFILE nodes.B 1"+"\n"
-            text += "NTHREADS 4"+"\n"
-            f.write(text)
+        if not os.path.isfile(self.discotress_path+"input.kmc"):
+            with open(self.discotress_path+"input.kmc", "w") as f:
+                text =  "NNODES " + str(len(self.statespace))+"\n"
+                text += "NEDGES " + str(len(self.transition_structure))+"\n"
+                text += "WRAPPER BTOA" + "\n"
+                text += "TRAJ KPS" + "\n"
+                text += "BRANCHPROBS" + "\n"
+                text += "NELIM 5000" + "\n"
+                text += "NABPATHS 10000" + "\n"
+                text += "COMMSFILE communities.dat 2" +"\n"
+                text += "NODESAFILE nodes.A 1"+"\n"
+                text += "NODESBFILE nodes.B 1"+"\n"
+                text += "NTHREADS 4"+"\n"
+                f.write(text)
 
         initial, final = self.initial_final_state()
         if not os.path.isfile(self.discotress_path+"nodes.A"):
-            with open(self.discotress_path+"nodes.A", "a") as f:
+            with open(self.discotress_path+"nodes.A", "w") as f:
                 f.write(str(final+1)+"\n")
 
         if not os.path.isfile(self.discotress_path+"nodes.B"):
-            with open(self.discotress_path+"nodes.B", "a") as f:
+            with open(self.discotress_path+"nodes.B", "w") as f:
                 f.write(str(initial+1)+"\n")  
 
         if not os.path.isfile(self.discotress_path+"communities.dat"):
-            with open(self.discotress_path+"communities.dat", "a") as f:
+            with open(self.discotress_path+"communities.dat", "w") as f:
                 for i in range(len(self.statespace)):
                     if i==final:
                         f.write("1\n")     
@@ -412,13 +417,13 @@ class ParentComplex(object):
                         f.write("0\n")  
 
         if not os.path.isfile(self.discotress_path+"edge_conns.dat"):
-            with open(self.discotress_path+"edge_conns.dat", "a") as f:
+            with open(self.discotress_path+"edge_conns.dat", "w") as f:
                 for s1, s2 in self.transition_structure.keys():
                     line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
                     f.write(line)
 
-        if os.path.isfile(self.discotress_path+"edge_conns.dat"):
-            os.remove(self.discotress_path+"edge_weights.dat")
+        # if os.path.isfile(self.discotress_path+"edge_conns.dat"):
+        #     os.remove(self.discotress_path+"edge_weights.dat")
 
         with open(self.discotress_path+"edge_weights.dat", "w") as f:
             for s1, s2 in self.transition_structure.keys():

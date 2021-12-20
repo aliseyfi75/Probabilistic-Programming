@@ -22,8 +22,8 @@ parser.add_argument('--N', type=int, default=100)
 
 n_particles = parser.parse_args().N
 
-# PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
-PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+# PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
 # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
 
 datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
@@ -228,28 +228,6 @@ if __name__ == '__main__':
 
     # n_particles = 10
 
-    # bubble
-    start_time = time.time()
-    kss, realss = zip(*Parallel(n_jobs=8)(delayed(from_theta_to_rate_bubble)(theta) for theta in tqdm(thetas)))
-    ks = list(kss)
-    reals = list(realss)
-    logprobs = Parallel(n_jobs=8)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
-
-    logZ, thetas = resample_particles(thetas, logprobs)
-    logZs.append(logZ)
-    print("bubble:", time.time() - start_time)
-
-    # four_waystrandexchange
-    start_time = time.time()
-    kss, realss = zip(*Parallel(n_jobs=8)(delayed(from_theta_to_rate_four_waystrandexchange)(theta) for theta in tqdm(thetas)))
-    ks = list(kss)
-    reals = list(realss)
-    logprobs = Parallel(n_jobs=8)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
-
-    logZ, thetas = resample_particles(thetas, logprobs)
-    logZs.append(logZ)
-    print("four_waystrandexchange:", time.time() - start_time)
-
     # hairpin
     start_time = time.time()
     kss, realss = zip(*Parallel(n_jobs=8)(delayed(from_theta_to_rate_hairpin)(theta) for theta in tqdm(thetas)))
@@ -327,6 +305,29 @@ if __name__ == '__main__':
     logZs.append(logZ)
     print("three_waystranddisplacement1:", time.time() - start_time)
 
+    # bubble
+    start_time = time.time()
+    kss, realss = zip(*Parallel(n_jobs=8)(delayed(from_theta_to_rate_bubble)(theta) for theta in tqdm(thetas)))
+    ks = list(kss)
+    reals = list(realss)
+    logprobs = Parallel(n_jobs=8)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
+
+    logZ, thetas = resample_particles(thetas, logprobs)
+    logZs.append(logZ)
+    print("bubble:", time.time() - start_time)
+
+    # four_waystrandexchange
+    start_time = time.time()
+    kss, realss = zip(*Parallel(n_jobs=8)(delayed(from_theta_to_rate_four_waystrandexchange)(theta) for theta in tqdm(thetas)))
+    ks = list(kss)
+    reals = list(realss)
+    logprobs = Parallel(n_jobs=8)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
+
+    logZ, thetas = resample_particles(thetas, logprobs)
+    logZs.append(logZ)
+    print("four_waystrandexchange:", time.time() - start_time)
+
+    
     thetas = np.array(thetas)
     logprobs = np.array(logprobs).reshape(-1,1)
 

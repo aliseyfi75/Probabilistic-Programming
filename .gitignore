@@ -10,4 +10,7 @@ wandb/
 *.fls
 *.fdb*
 core.*
-*.lock
+*.dat
+*.kmc
+*.B
+*.A

@@ -13,6 +13,7 @@ from scipy.sparse import csr_matrix, coo_matrix
 from scipy.special import logsumexp as logsumexp 
 from scipy import stats
 from filelock import Timeout, FileLock
+from shutil import rmtree
 
 R = 0.001987 # R is the molar gas constant in kcal/(mol K).
 MOLARITY_OF_WATER = 55.14 # mol/L at 37C
@@ -84,9 +85,13 @@ class ParentComplex(object):
             self.fast_access = pickle.load(fast_file, encoding='latin1')
 
 
-        self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
+        # self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/"
+        self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/" + str(random.uniform(0,1)) + "/"
+        while os.path.exists(self.discotress_path):
+            self.discotress_path = PATH + "CTMCs" +self.dataset_name+ "/" + "discotress" + "/" + str(self.docID) + "/" + str(random.uniform(0,1)) + "/"
+        os.makedirs(self.discotress_path)
         
-        self.lock_path = self.discotress_path+"edge_weights.dat.lock"
+        # self.lock_path = self.discotress_path+"edge_weights.dat.lock"
 
         # if self.create_discotress:
         #     try:
@@ -99,7 +104,8 @@ class ParentComplex(object):
         #     except:
         #         print("Exception creating directories")
         #         raise
-        
+
+
         self.neighbours_dictionary = {s:set([]) for s in self.statespace}
         for s0, s1 in list(self.transition_structure.keys()):
             self.neighbours_dictionary[s1].add(s0)
@@ -362,49 +368,49 @@ class ParentComplex(object):
         
         # self.create_discotress = False
 
-        if os.path.isfile(self.discotress_path+"fpp_properties.dat"):
-            os.remove(self.discotress_path+"fpp_properties.dat")
+        # if os.path.isfile(self.discotress_path+"fpp_properties.dat"):
+        #     os.remove(self.discotress_path+"fpp_properties.dat")
 
-        if os.path.isfile(self.discotress_path+"tp_stats.dat"):
-            os.remove(self.discotress_path+"tp_stats.dat")
+        # if os.path.isfile(self.discotress_path+"tp_stats.dat"):
+        #     os.remove(self.discotress_path+"tp_stats.dat")
 
         if not os.path.isfile(self.discotress_path+"stat_prob.dat"):
             self.stat_prob = dict()
             kb = 1.380649E10-23
             C = logsumexp(-np.array(list(self.energies.values())) / (kb*self.T))
 
-            with open(self.discotress_path+"stat_prob.dat", "a") as f:
+            with open(self.discotress_path+"stat_prob.dat", "w") as f:
                 for si in self.statespace:
                     self.stat_prob[si] = - C - self.energies[si] / (kb*self.T)
                     line = str(self.stat_prob[si])+"\n"
                     f.write(line)
 
-        # if not os.path.isfile(self.discotress_path+"input.kmc"):
-        with open(self.discotress_path+"edge_weights.dat", "w") as f:
-            text =  "NNODES " + str(len(self.statespace))+"\n"
-            text += "NEDGES " + str(len(self.transition_structure))+"\n"
-            text += "WRAPPER BTOA" + "\n"
-            text += "TRAJ KPS" + "\n"
-            text += "BRANCHPROBS" + "\n"
-            text += "NELIM 5000" + "\n"
-            text += "NABPATHS 10000" + "\n"
-            text += "COMMSFILE communities.dat 2" +"\n"
-            text += "NODESAFILE nodes.A 1"+"\n"
-            text += "NODESBFILE nodes.B 1"+"\n"
-            text += "NTHREADS 4"+"\n"
-            f.write(text)
+        if not os.path.isfile(self.discotress_path+"input.kmc"):
+            with open(self.discotress_path+"input.kmc", "w") as f:
+                text =  "NNODES " + str(len(self.statespace))+"\n"
+                text += "NEDGES " + str(len(self.transition_structure))+"\n"
+                text += "WRAPPER BTOA" + "\n"
+                text += "TRAJ KPS" + "\n"
+                text += "BRANCHPROBS" + "\n"
+                text += "NELIM 5000" + "\n"
+                text += "NABPATHS 10000" + "\n"
+                text += "COMMSFILE communities.dat 2" +"\n"
+                text += "NODESAFILE nodes.A 1"+"\n"
+                text += "NODESBFILE nodes.B 1"+"\n"
+                text += "NTHREADS 4"+"\n"
+                f.write(text)
 
         initial, final = self.initial_final_state()
         if not os.path.isfile(self.discotress_path+"nodes.A"):
-            with open(self.discotress_path+"nodes.A", "a") as f:
+            with open(self.discotress_path+"nodes.A", "w") as f:
                 f.write(str(final+1)+"\n")
 
         if not os.path.isfile(self.discotress_path+"nodes.B"):
-            with open(self.discotress_path+"nodes.B", "a") as f:
+            with open(self.discotress_path+"nodes.B", "w") as f:
                 f.write(str(initial+1)+"\n")  
 
         if not os.path.isfile(self.discotress_path+"communities.dat"):
-            with open(self.discotress_path+"communities.dat", "a") as f:
+            with open(self.discotress_path+"communities.dat", "w") as f:
                 for i in range(len(self.statespace)):
                     if i==final:
                         f.write("1\n")     
@@ -412,13 +418,13 @@ class ParentComplex(object):
                         f.write("0\n")  
 
         if not os.path.isfile(self.discotress_path+"edge_conns.dat"):
-            with open(self.discotress_path+"edge_conns.dat", "a") as f:
+            with open(self.discotress_path+"edge_conns.dat", "w") as f:
                 for s1, s2 in self.transition_structure.keys():
                     line = str(self.statespace.index(s1)+1)+"\t"+str(self.statespace.index(s2)+1)+"\n"
                     f.write(line)
 
-        if os.path.isfile(self.discotress_path+"edge_conns.dat"):
-            os.remove(self.discotress_path+"edge_weights.dat")
+        # if os.path.isfile(self.discotress_path+"edge_conns.dat"):
+        #     os.remove(self.discotress_path+"edge_weights.dat")
 
         with open(self.discotress_path+"edge_weights.dat", "w") as f:
             for s1, s2 in self.transition_structure.keys():
@@ -432,6 +438,10 @@ class ParentComplex(object):
         #     os.remove(self.discotress_path+"edge_weights.dat")
         # with open(self.discotress_path+"edge_weights.dat", "a") as f:
 
+    def f(self, t):
+
+        return 10**self.real_log_10_rate*np.exp(-t*10**(self.real_log_10_rate))  
+
     def F(self, t):
         # uses m (mean first passage time)
         # m = 2.3727131391650352e-05
@@ -440,6 +450,32 @@ class ParentComplex(object):
         # same thing, uses k (log_10 of the rate constant) instead of m
         # print("real k", self.real_log_10_rate)
         return 1 - np.exp(-t*10**(self.real_log_10_rate)) 
+
+
+    def get_wasserstein(self):
+
+        self.create_discotress_files()
+
+        self.discotress()
+
+        vals = []
+        with open(self.discotress_path+"fpp_properties.dat","r") as pathprops_f:
+            for line in pathprops_f.readlines():
+                val=float(line.split()[1])
+                vals.append(val)
+        vals=np.array(vals,dtype=float)
+
+        hist_arr = np.zeros(100,dtype=int)
+        width = max(vals)/99
+        for val in vals:
+            if not (val<0):
+                bin = int(np.floor(val/width))
+                hist_arr[bin] += 1
+        summ = np.sum([width*h for h in hist_arr])
+        hist_arr = [x/summ for x in hist_arr]
+        X = np.linspace(0, max(vals), num=100)
+
+        return stats.wasserstein_distance(hist_arr[10:90],self.f(X)[10:90])
 
 
     def get_score(self):
@@ -459,7 +495,7 @@ class ParentComplex(object):
         return stats.kstest(vals,cdf=self.F)[0]
     
         
-    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model, stochastic_conditionning=False):
+    def rate_constant(self, concentration, real_rate, bimolTransition, kinetic_model, stochastic_conditionning=False, distance="KS_test"):
         """ Computes the estimated rate constant, and the error """
 
         real_log_10_rate = np.log(real_rate)/np.log(10)
@@ -482,10 +518,17 @@ class ParentComplex(object):
             predicted_log_10_rate = np.log(predicted_rate)/np.log(10)
         except:
             predicted_log_10_rate = RETURN_MINUS_INF
+            
 
         if stochastic_conditionning==True:
-            error = self.get_score()
+
+            if distance == "KS_test":
+                error = self.get_score()
+            elif distance == "wasserstein":
+                error = self.get_wasserstein()
+            rmtree(self.discotress_path)
             return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]
         else:
             error  = math.pow( real_log_10_rate - predicted_log_10_rate, 2)
+            rmtree(self.discotress_path)
             return  [   error ,  predicted_log_10_rate , real_log_10_rate , self.local_context_uni, self.local_context_bi]

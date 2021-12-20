@@ -181,12 +181,10 @@ def log_prob(pred, real, error, used_ks, alpha, squaredKS=False):
             # print("Here")
             # print("alpha")
             # print(-alpha * ks_stat)
-            print(-alpha * ks_stat)
             return -alpha * ks_stat
     else:
         squared_error = error
         x =-0.5*np.log(2*np.pi) - 0.5*squared_error
-        print(x)
         return x
 
 # def list_log_prob_par(ks, reals, sigma):
@@ -222,18 +220,18 @@ def expectation_calculator(results, log_weights, func, *args):
 
 
 if __name__ == '__main__':
-    # datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
-    #             "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
-    #             "hairpin4" : ["Table1_0", "Table1_1"],
-    #             "helix" : ["Fig6_0", "Fig6_1"],
-    #             "helix1" : ["Fig6a"],
-    #             "three_waystranddisplacement" : ["Fig3b"],
-    #             "three_waystranddisplacement1" : ["Fig6b"],
-    #             "bubble": ["Fig4"],
-    #             "four_waystrandexchange": ["Table5.2"]
-    # }
+    datasets = {    "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"],
+                "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
+                "hairpin4" : ["Table1_0", "Table1_1"],
+                "helix" : ["Fig6_0", "Fig6_1"],
+                "helix1" : ["Fig6a"],
+                "three_waystranddisplacement" : ["Fig3b"],
+                "three_waystranddisplacement1" : ["Fig6b"],
+                "bubble": ["Fig4"],
+                "four_waystrandexchange": ["Table5.2"]
+    }
 
-    datasets = {    "hairpin" : ["Fig4_0"]   }
+    # datasets = {    "hairpin" : ["Fig4_0"]   }
 
     prior = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
     sigma = 1
@@ -246,7 +244,7 @@ if __name__ == '__main__':
     # for N in [1,2,4,8,16,32,64,128,256,512]:
     alpha = 1
     squaredKS = False
-    N_set =  [1]
+    N_set =  [5]
 
     for SC in [True]:
         mses = []
@@ -256,11 +254,8 @@ if __name__ == '__main__':
         for N in N_set:
             start_time = time.time()
             thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
-            thetas = [[12.08498719,  3.9264619,  8.78452361,  2.4836623,  8.70107978,  3.3134583,
-                        13.06708679,  3.36649785, 8.21150548,  2.96242796, 8.51392362,  2.8573691,
-                        8.83886797, 2.99156085,  0.1387697]]
 
-            predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=SC) for theta in tqdm(thetas)))
+            predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16,require='sharedmem')(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=SC) for theta in tqdm(thetas)))
             ks = list(predicted_log_10_rates)
             reals = list(real_log_10_rates)
             # logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(error) for error in errors)
@@ -282,8 +277,8 @@ if __name__ == '__main__':
             print('Mean: ', samples_mean)
             print('Variance: ', samples_var)
 
-            # mse, within3 = eval_theta_all(samples_mean)
-            mse, within3 = eval_theta_hairpins(samples_mean)
+            mse, within3 = eval_theta_all(samples_mean)
+            # mse, within3 = eval_theta_hairpins(samples_mean)
 
             # mse_hairpins, within3_hairpins = eval_theta_hairpins(samples_mean)
             mses.append(mse)

@@ -175,14 +175,18 @@ def log_prob(pred, real, error, used_ks, alpha, squaredKS=False):
     if used_ks:
         ks_stat = error
         if squaredKS:
+            # print(-alpha * ks_stat**2)
             return -alpha * ks_stat**2
         else:
-            print("Here")
-            print("alpha")
+            # print("Here")
+            # print("alpha")
+            # print(-alpha * ks_stat)
+            print(-alpha * ks_stat)
             return -alpha * ks_stat
     else:
         squared_error = error
         x =-0.5*np.log(2*np.pi) - 0.5*squared_error
+        print(x)
         return x
 
 # def list_log_prob_par(ks, reals, sigma):
@@ -238,13 +242,13 @@ if __name__ == '__main__':
 
     # N = 10
     
-    # for alpha=0.5,1,2,3,4,5
+    # for alpha=[0.5,1,2,3,4,5]:
     # for N in [1,2,4,8,16,32,64,128,256,512]:
     alpha = 1
     squaredKS = False
-    N_set =  [10,100,200,500,750,1000]
+    N_set =  [1]
 
-    for SC in [True, False]:
+    for SC in [True]:
         mses = []
         within3s = []
         # mses_hairpins = []
@@ -252,6 +256,9 @@ if __name__ == '__main__':
         for N in N_set:
             start_time = time.time()
             thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
+            thetas = [[12.08498719,  3.9264619,  8.78452361,  2.4836623,  8.70107978,  3.3134583,
+                        13.06708679,  3.36649785, 8.21150548,  2.96242796, 8.51392362,  2.8573691,
+                        8.83886797, 2.99156085,  0.1387697]]
 
             predicted_log_10_rates, real_log_10_rates, errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=SC) for theta in tqdm(thetas)))
             ks = list(predicted_log_10_rates)
@@ -330,4 +337,9 @@ if __name__ == '__main__':
     plt.savefig(figstr, bbox_inches='tight')
 
     # plt.show()
+
+
+
+# pick experiment, t x axis y axis arrival times (cdf or density)       Histogram
+# analytical for true measured rate
 

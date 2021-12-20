@@ -240,7 +240,7 @@ if __name__ == '__main__':
     # squaredKS = False
     N_set =  [50,100,200]
     for squaredKS in [True,False]:
-        for alpha in [0.25,0.5,0.75,1,1.5]:
+        for alpha in [0.25,0.5,0.75,1,1.5,2]:
             mses = []
             within3s = []
             mses_hairpins = []
@@ -260,6 +260,7 @@ if __name__ == '__main__':
                 print("n_dataset", len(predicted_log_10_rates[0]))
                 thetas = np.array(thetas)
                 logprobs = np.array(logprobs).reshape(-1,1)
+
                 print("n_samples x dim-theta", thetas.shape)
                 print("n_samples x 1", logprobs.shape)
 
@@ -296,7 +297,6 @@ if __name__ == '__main__':
             else:
                 lab = "alpha ="+str(alpha)+", only hairpins"
             plt.plot(N_set, mses_hairpins, label=lab)
-
 
             plt.figure(2)
             if squaredKS:

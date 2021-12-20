@@ -9,3 +9,5 @@ lein.txt
 wandb/
 *.fls
 *.fdb*
+core.*
+*.lock

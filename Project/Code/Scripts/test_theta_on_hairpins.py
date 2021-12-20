@@ -1,6 +1,11 @@
 import numpy as np
 from math import pow, log10, sqrt
 import csv
+import sys
+
+sys.path.append('../')
+sys.path.append('../Code/Scripts')
+sys.path.append('../Code/')
 
 from numpy.lib.function_base import average
 
@@ -60,4 +65,15 @@ def eval_theta(theta):
     for e in total_sq_error:
         if sqrt(e) <= log10(3):
             count+=1
-    print("Within factor of three (correct)", count/len(total_sq_error))
+    within3 = count/len(total_sq_error)
+    print("Within factor of three (correct)", within3)
+
+    return mse, within3
+
+
+# # # alpha = 2, samples = 250
+# theta = [13.10052837,  3.06820081, 13.08189501,  3.06649163, 12.96714323,  2.94806634, \
+#     12.97405858,  2.94277147, 13.0963243,   2.97091484, 13.11001231,  3.02589739, \
+#         13.14727626,  2.8982616,   0.021218  ]
+        
+# eval_theta(theta)

@@ -14,12 +14,13 @@ import math
 from plots import plots 
 import wandb
 import argparse
+import time
 
 wandb.init(project="Probprog_project", entity="aliseyfi")
 
-# PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
+PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
 # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
+# PATH = 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/'
 # PATH = "/home/jlovrod/projects/def-condon/jlovrod/Probabilistic-Programming/Project/"
 
 parser = argparse.ArgumentParser()
@@ -180,11 +181,9 @@ def BBVI_sampler(graph, L,T, lr):
         prob_means.append(mean(prob_sequence_l))
         wandb.log({'prob_mean':mean(prob_sequence_l)})
 
-
         if t%25==0:
             sigma['q'] = optimizer_step(sigma_tl, g_hat)
             print("q after step",t, sigma['q'],"\n\n")
-
 
     return return_values, prob_sequence, prob_means, sigma['q']
 
@@ -199,13 +198,15 @@ if __name__ == '__main__':
         graph = json.load(f)
     sigma = {'logW':0, 'q':{}, 'G':{}}
 
-    T= 500
+    T= 2000
 
     wandb.log({'L':L})
     wandb.log({'lr':lr})
     
-    print('\n\n\nOur Program {}:')
+    print('T: ', T)
+    start_time = time.time()
     return_values, prob_sequence, prob_means, sigma['q'] = BBVI_sampler(graph, L, T, lr)
+    print("Sampling time: ", time.time()-start_time)
     print(sigma['q']) 
-    plots(return_values, prob_sequence, prob_means, sigma['q'], L, lr)
+    plots(return_values, prob_sequence, prob_means, sigma['q'], L, int(lr*100))
 

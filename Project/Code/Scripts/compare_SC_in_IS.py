@@ -9,22 +9,34 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from Scripts.new_sc_model import open_csv
 from Scripts.new_sc_model import *
-from test_theta_on_hairpins import eval_theta
+# from test_theta_on_hairpins import eval_theta
+from test_theta_on_all import eval_theta_all
+import matplotlib
+import json
+import argparse
 
-# datasets = { "bubble": ["Fig4"],
-#              "four_waystrandexchange": ["Table5.2"],
-#              "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
-#              "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
-#              "hairpin4" : ["Table1_0", "Table1_1"],
-#              "helix" : ["Fig6_0", "Fig6_1"],
-#              "helix1" : ["Fig6a"],
-#              "three_waystranddisplacement" : ["Fig3b"], 
-#              "three_waystranddisplacement1" : ["Fig6b"]
-# }
+
+matplotlib.use('Agg')
+
+from joblib import Parallel, delayed
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--alpha', type=float, default=1)
+
+alpha = parser.parse_args().alpha
+
+datasets = { "bubble": ["Fig4"],
+             "four_waystrandexchange": ["Table5.2"],
+             "hairpin" : ["Fig4_0", "Fig4_1", "Fig6_0", "Fig6_1"], 
+             "hairpin1" : ["Fig3_T_0", "Fig3_T_1"],
+             "hairpin4" : ["Table1_0", "Table1_1"],
+             "helix" : ["Fig6_0", "Fig6_1"],
+             "helix1" : ["Fig6a"],
+             "three_waystranddisplacement" : ["Fig3b"], 
+             "three_waystranddisplacement1" : ["Fig6b"]
+}
 
 # datasets = { "hairpin" : ["Fig4_0"]}
-
-datasets = { "bubble": ["Fig4"],"hairpin" : ["Fig4_0"]}
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS", stochastic_conditionning=False):
     
@@ -166,6 +178,45 @@ def ESS(W):
 def weighted_avg(X, weights):
     return (weights.dot(X)) / weights.sum() 
 
+# def log_prob(pred, real, error, used_ks, alpha, squaredKS=False):
+#     if used_ks:
+#         ks_stat = error
+#         if squaredKS:
+#             return -alpha * ks_stat**2
+#         else:
+#             return -alpha * ks_stat
+#     else:
+#         squared_error = error
+#         x =-0.5*np.log(2*np.pi) - 0.5*squared_error
+#         return x
+
+# def list_log_prob(pred_rates, real_rates, errors, used_ks_errors, alpha, squaredKS=False):
+#     return np.sum([log_prob(pred, real, error, used_ks, alpha, squaredKS) for pred,real,error,used_ks in zip(pred_rates,real_rates,errors,used_ks_errors)])
+
+# def new_run_IS(n_samples, stochastic_conditionning, squared_KS=False):
+#     theta_dim = 15
+#     theta_mean = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
+
+#     prior = torch.distributions.MultivariateNormal(torch.tensor(theta_mean), torch.eye(theta_dim))
+
+#     thetas = [prior.sample() for i in range(n_samples)]
+
+#     if stochastic_conditionning==False:
+#         preds, reals, synthetic_errors, used_KS_error = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets, stochastic_conditionning=stochastic_conditionning) for theta in thetas))
+#     else:
+#         preds, reals, synthetic_errors, used_KS_error = [],[],[],[]
+#         for theta in thetas:
+#             pred, real, synthetic_error, used_KS = from_theta_to_rate(theta, datasets, stochastic_conditionning=stochastic_conditionning)
+#             preds.append(pred)
+#             reals.append(real)
+#             synthetic_errors.append(synthetic_error)
+#             used_KS_error.append(used_KS)      
+
+#     alpha=1
+#     logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(pred,real,error,used_KS, alpha, squared_KS) for pred,real,error,used_KS in zip(preds, reals, synthetic_errors, used_KS_error))
+
+#     return thetas, logprobs
+
 def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
     theta_dim = 15
     theta_mean = [13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3, 13.0580, 3,  13.0580, 3,   0.0402 ]
@@ -185,10 +236,10 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
                 if squared_KS==False:
                     # synthetic likelihood
                     ks_stat = synthetic_errors[n]
-                    loglik -= ks_stat
+                    loglik -= alpha*ks_stat
                 else:
                     ks_stat = synthetic_errors[n]
-                    loglik -= ks_stat**2
+                    loglik -= alpha*ks_stat**2
 
             else:
 
@@ -203,15 +254,36 @@ def run_IS(n_samples, stochastic_conditionning, squared_KS=False):
         samples.append(theta)
         logWs.append(loglik)
 
+        if i%1==0:
+            # interpret_results(samples,logWs)
+
+            if stochastic_conditionning==True:
+                st = "FPTD"
+            else:
+                st = "MFPT"
+            if squared_KS==True:
+                sb = "squaredKS"
+            else:
+                sb = ""
+
+            filestr = "saved_IS_particles/samples_" + str(i) + st + sb
+            with open(filestr, 'w') as f:
+                json.dump([sample.tolist() for sample in samples], f)
+            filestr = "saved_IS_particles/weights_" + str(i) + st + sb
+            with open(filestr, 'w') as f:
+                json.dump([logW.item() for logW in logWs], f)
+            
     return samples, logWs
 
+
 def interpret_results(samples, logWs):
+
     print("\n\n\n")
     print(logWs)
     n_samples = len(samples)
     W = np.exp([logwi - max(logWs) for logwi in logWs])
     W = W/sum(W)
-    ess = ESS(W)
+    # ess = ESS(W)
 
     for n in range(n_samples):
         samples[n] = [float(x) for x in samples[n]]
@@ -221,19 +293,20 @@ def interpret_results(samples, logWs):
 
     print("mean", means)
     print("variance", vars)
-    print("ess", ess)
+    # print("ess", ess)
 
-    eval_theta(means)
+    eval_theta_all(means)
 
     return samples, W
 
 def main():
 
-    n_samples = 15
+    n_samples = 5
 
     # start = time.time()
     # samples, logWs = run_IS(n_samples, stochastic_conditionning=False)
     # end = time.time()
+    # print("time", start-end)
     # samples, W = interpret_results(samples, logWs)
 
     # variables = np.array(samples,dtype=object).T.tolist()
@@ -248,29 +321,19 @@ def main():
     start = time.time()
     samples, logWs = run_IS(n_samples, stochastic_conditionning=True)
     end = time.time()
-    samples, W = interpret_results(samples, logWs)
-    variables = np.array(samples,dtype=object).T.tolist()
-    for d in range(len(variables)):
-        plt.figure()
-        try:
-            sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
-        except:
-            sns.histplot(x = variables[d], weights=W, bins=10)
-        plt.ylabel("density")
-        plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD")
-        plt.close('all')
-    print("With path samples time:", end - start)
+    print("done in", end-start)
 
-    # start = time.time()
-    # samples, logWs = run_IS(n_samples, stochastic_conditionning=True, squared_KS=True)
-    # end = time.time()
     # samples, W = interpret_results(samples, logWs)
+
     # variables = np.array(samples,dtype=object).T.tolist()
     # for d in range(len(variables)):
     #     plt.figure()
-    #     sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+    #     try:
+    #         sns.histplot(x = variables[d], weights=W, kde=True, bins=50)
+    #     except:
+    #         sns.histplot(x = variables[d], weights=W, bins=10)
     #     plt.ylabel("density")
-    #     plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD_squaredKS")
+    #     plt.savefig("IS_plots/theta"+str(d)+"_n_"+str(n_samples)+"_FPTD")
     #     plt.close('all')
     # print("With path samples time:", end - start)
 

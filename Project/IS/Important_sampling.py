@@ -4,7 +4,7 @@ from torch import distributions
 from torch.distributions import distribution
 import scipy.stats as stats
 import time
-from plot import draw_hists
+from newplot import draw_hists
 import torch
 from tqdm import tqdm
 
@@ -20,8 +20,9 @@ from Scripts.model import *
 
 def from_theta_to_rate(theta, datasets, kinetic_model="ARRHENIUS"):
     
+    PATH = '/home/aliseyfi/scratch/Probabilistic-Programming/Project/'
     # PATH = '/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/'
-    PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
+    # PATH = "C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/"
     predicted_log_10_rates, real_log_10_rates = [], []
     for reaction_type in datasets:
             if reaction_type == "bubble":
@@ -139,7 +140,7 @@ def log_prob(k, real, sigma):
     return -np.log(sigma*np.sqrt(2*np.pi)) - 0.5*((k-real)/sigma)**2
 
 def list_log_prob_par(ks, reals, sigma):
-    return np.sum(Parallel(n_jobs=16)(delayed(log_prob)(k, real, sigma) for k, real in zip(ks, reals)))
+    return np.sum(Parallel(n_jobs=32)(delayed(log_prob)(k, real, sigma) for k, real in zip(ks, reals)))
 
 def list_log_prob(ks, reals, sigma):
     return np.sum([log_prob(k, real, sigma) for k, real in zip(ks, reals)])
@@ -185,7 +186,7 @@ if __name__ == '__main__':
     sigma = 1
     # implement importance sampling
 
-    N = 1000
+    N = 20000
     
     # start_time = time.time()
     # theta, logprob = zip(*Parallel(n_jobs=4)(delayed(par_fun)() for i in range(N)))
@@ -193,26 +194,27 @@ if __name__ == '__main__':
 
     start_time = time.time()
     thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]
-    kss, realss = zip(*Parallel(n_jobs=16)(delayed(from_theta_to_rate)(theta, datasets) for theta in tqdm(thetas)))
+    kss, realss = zip(*Parallel(n_jobs=32)(delayed(from_theta_to_rate)(theta, datasets) for theta in tqdm(thetas)))
     ks = list(kss)
     reals = list(realss)
-    logprobs = Parallel(n_jobs=16)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
-    print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
+    logprobs = Parallel(n_jobs=32)(delayed(list_log_prob)(k, real, sigma) for k, real in zip(ks, reals))
+    # print("with parallelizing V.2: --- %s seconds ---" % (time.time() - start_time))
 
     thetas = np.array(thetas)
     logprobs = np.array(logprobs).reshape(-1,1)
-    print(thetas.shape)
-    print(logprobs.shape)
 
     samples_mean = expectation_calculator(thetas, logprobs, lambda x:x)
     samples_var = expectation_calculator(thetas, logprobs, lambda x: x**2 - samples_mean**2)
 
     print('Number of samples: ', N)
+    print('Sampling time: ', time.time() - start_time)
     print('Mean: ', samples_mean)
     print('Variance: ', samples_var)
 
     weights = torch.tensor(np.exp(logprobs))
-    draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0])
+    torch.save(torch.tensor(thetas).T, 'thetas.pt')
+    torch.save(weights.T[0], 'weights.pt')
+    # draw_hists("Importance_Sampling", torch.tensor(thetas).T, 1, weights=weights.T[0])
 
     # start_time = time.time()
     # thetas = [[np.random.normal(i, 1) for i in prior] for _ in range(N)]

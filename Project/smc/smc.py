@@ -7,13 +7,16 @@ import sys
 import threading
 import matplotlib.pyplot as plt
 from daphne import daphne
+from joblib import Parallel, delayed
+from time import time
+from tqdm import trange
 
 from primitives import log
 from plots import plots
 import time
+import wandb
 
-
-
+wandb.init(project="Prob_prog_SMC", entity="aliseyfi")
 
 def run_until_observe_or_end(res):
     cont, args, sigma = res
@@ -38,13 +41,36 @@ def resample_particles(particles, log_weights, count):
             k = discrete_dist.sample()
             new_particles[i] = particles[k]
         
-        print('intermediate variance: ', np.diag(np.cov(torch.stack(new_particles).float().detach().numpy(),rowvar=False)))  
-
+        # print('intermediate variance: ', np.diag(np.cov(torch.stack(new_particles).float().detach().numpy(),rowvar=False)))  
 
     logZ = torch.logsumexp(log_ws,0) - torch.log(torch.tensor(log_ws.shape[0],dtype=float))
 
     return logZ, new_particles
 
+def parallel_helper(particle, i, weight, done):
+    res = run_until_observe_or_end(particle)
+    if 'done' in res[2]: #this checks if the calculation is done
+        particle = res[0]
+        if i == 0:
+            done = True  #and enforces everything to be the same as the first particle
+            address = ''    
+        else:
+            if not done:        # is the /first/ particle i=0 done?
+                raise RuntimeError('Failed SMC, finished one calculation before the other')
+
+    else:  # res[2] == 'observe'
+        cont, args, sigma = res
+        weight = res[2]['logW'].clone().detach()        # get weights
+        particle = cont, args, {'logW':weight}      # get continuation
+
+        if i == 0:
+            address = sigma['alpha']
+        try:
+            assert(sigma['alpha'] == address)
+        except:
+            raise AssertionError('particle address error')
+    
+    return particle, weight, done
 
 def SMC(n_particles, exp):
     particles = []
@@ -64,7 +90,12 @@ def SMC(n_particles, exp):
     smc_cnter = 0
     count=0
     while not done:
-        for i in range(n_particles): #Even though this can be parallelized, we run it serially
+        # particles, weights, dones = zip(*Parallel(n_jobs=8)(delayed(parallel_helper)(particles[i], i, weights[i], done) for i in range(n_particles)))
+        # print("particles: ", particles)
+        # print("dones: ", dones)
+        # done = all(dones)
+        # print("done: ", done)
+        for i in trange(n_particles): #Even though this can be parallelized, we run it serially
             res = run_until_observe_or_end(particles[i])
             if 'done' in res[2]: #this checks if the calculation is done
                 particles[i] = res[0]
@@ -78,7 +109,7 @@ def SMC(n_particles, exp):
                 cont, args, sigma = res
                 weights[i] = res[2]['logW'].clone().detach()        # get weights
                 particles[i] = cont, args, {'logW':weights[i]}      # get continuation
-
+                
                 if i == 0:
                     address = sigma['alpha']
                 try:
@@ -89,6 +120,7 @@ def SMC(n_particles, exp):
         if not done:
             count+=1
             logZn, particles = resample_particles(particles, weights, count)
+            wandb.log({'logZ':logZn})
             logZs.append(logZn)
             
         smc_cnter += 1  # number of continuations/observes completed. 
@@ -101,18 +133,19 @@ def SMC(n_particles, exp):
 
 def my_main():
 
-
     # exp = daphne(['desugar-hoppl-cps', '-i', 'C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7)])
     # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'w') as f:
     #     json.dump(exp, f)
 
-    with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'r') as f:
+    # with open('C:/Users/jlovr/CS532-project/Probabilistic-Programming/Project/smc/programs/{}.daphne'.format(7),'r') as f:
+    # with open('/Users/aliseyfi/Documents/UBC/Probabilistic-Programming/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
+    with open('/home/aliseyfi/scratch/Probabilistic-Programming/Project/smc/programs/7.daphne', 'r') as f: 
         exp = json.load(f)
 
     logZ_list = []
 
     # for n_particles in [5,50,500]:
-    for n_particles in [2]:
+    for n_particles in [2000]:
         start = time.time()
         
         logZ, particles = SMC(n_particles, exp)
@@ -143,11 +176,14 @@ def my_main():
     plt.plot(logZ_list)
     figstr = "logZ_estimates/program"
     plt.savefig(figstr)
+    plt.close()
 
 if __name__ == '__main__':
-    sys.setrecursionlimit(100000)
-    threading.stack_size(200000000)
-    thread = threading.Thread(target=my_main)
-    thread.start()     
+    sys.setrecursionlimit(100000000)
+    # threading.stack_size(0x200000000)
+    # thread = threading.Thread(target=my_main)
+    # thread.start()     
+    # thread.join()
+    my_main()
 
 
